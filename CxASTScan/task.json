@@ -1,0 +1,131 @@
+{
+  "id": "5262FEE4-B921-4E23-9D22-3BCCAA562688",
+  "name": "Application security testing",
+  "friendlyName": "Checkmarx",
+  "description": "static application security testing",
+  "helpMarkDown": "[Information] https://checkmarx.atlassian.net/wiki/display/KC/CxSAST+MS-VSTS+Plugin",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Checkmarx",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.0.0",
+  "groups": [
+    {
+      "name": "projectName",
+      "displayName": "Project Name",
+      "isExpanded": true
+    },
+    {
+      "name": "scanSettings",
+      "displayName": "Checkmarx SAST Scan",
+      "isExpanded": "true"
+    },
+    {
+      "name": "dependencyScan",
+      "displayName": "Checkmarx SCA Scan",
+      "isExpanded": "false"
+    }
+  ],
+  "instanceNameFormat": "Application security testing",
+  "inputs": [
+    {
+      "name": "projectName",
+      "type": "string",
+      "label": "Project Name",
+      "required": true,
+      "helpMarkDown": "Either select an existing project name or type a name to create a new scan project"
+    },
+    {
+      "name": "syncMode",
+      "type": "boolean",
+      "label": "Synchronous Mode",
+      "required": false,
+      "defaultValue": true,
+      "helpMarkDown": "Enabling this option causes the build step to wait for scan results. You can follow the scan results in the Checkmarx plug-in results window. If disabled, the results are displayed inside the Checkmarx web application and available as a link in the logs once the scan is complete. The Sync/Async mode is configured globally for both SAST and SCA scans."
+    },
+    {
+      "name": "enableSastScan",
+      "type": "boolean",
+      "label": "Enable SAST scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the CxSast scan",
+      "groupName": "scanSettings",
+      "defaultValue": true
+    },
+    {
+      "name": "CheckmarxService",
+      "type": "connectedService:Checkmarx-Endpoint",
+      "label": "Checkmarx AST Endpoint",
+      "required": false,
+      "helpMarkDown": "The CX server endpoint.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "preset",
+      "type": "pickList",
+      "label": "Preset",
+      "required": false,
+      "groupName": "scanSettings",
+      "defaultValue": "Checkmarx Default",
+      "helpMarkDown": "predefined sets of queries that you can select when Creating, Configuring and Branching Projects. Predefined presets are provided by Checkmarx and you can configure your own. You can also import and export presets (on the server).",
+      "options": {
+        "Checkmarx Default": "Checkmarx Default"
+      },
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "customPreset",
+      "type": "string",
+      "label": "Custom Preset",
+      "required": false,
+      "helpMarkDown": "Custom presets are provided in cases where the desired preset is missing from the Checkmarx presets above. Leave empty in order to use a Checkmarx defined preset. In case a custom preset is selected, it will override the Checkmarx preset.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "incScan",
+      "type": "boolean",
+      "label": "Incremental Scan",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "Set true for incremental scan. If no scan was done yet, the scan will be a full scan and the following ones will be incremental.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "folderExclusion",
+      "type": "string",
+      "label": "Folder Exclusion",
+      "required": false,
+      "defaultValue": "cvs, .svn, .hg , .git, .bzr, bin , obj,  backup, .idea, node_modules",
+      "helpMarkDown": "Comma separated list of folders to exclude from scan. Entries in this list are automatically converted to exclude wildcard patterns and appended to the full pattern list provided in the 'Include/Exclude Wildcard Patterns' setting.\n\nConversion is done as follows: `folder1, folder2, folder3` is converted to: `!**/folder1/**, !**/folder2/**, !**/folder3/**`",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "fileExtension",
+      "type": "string",
+      "label": "Include/Exclude Wildcard Patterns",
+      "required": false,
+      "defaultValue": "!**/*.DS_Store, !**/*.ipr, !**/*.iws, !**/*.bak, !**/*.tmp, !**/*.aac, !**/*.aif, !**/*.iff, !**/*.m3u, !**/*.mid, !**/*.mp3,\n!**/*.mpa, !**/*.ra, !**/*.wav, !**/*.wma, !**/*.3g2, !**/*.3gp, !**/*.asf, !**/*.asx, !**/*.avi,!**/*.flv, !**/*.mov, !**/*.mp4, !**/*.mpg,  !**/*.rm, !**/*.swf, !**/*.vob, !**/*.wmv, !**/*.bmp, !**/*.gif, !**/*.jpg, !**/*.png, !**/*.psd, !**/*.tif, !**/*.swf, !**/*.jar, !**/*.zip, !**/*.rar, !**/*.exe, !**/*.dll, !**/*.pdb, !**/*.7z, !**/*.gz, !**/*.tar.gz, !**/*.tar, !**/*.gz, !**/*.ahtm, !**/*.ahtml, !**/*.fhtml, !**/*.hdm, !**/*.hdml,   !**/*.hsql, !**/*.ht, !**/*.hta, !**/*.htc, !**/*.htd, !**/*.war, !**/*.ear, !**/*.htmls, !**/*.ihtml, !**/*.mht, !**/*.mhtm, !**/*.mhtml, !**/*.ssi, !**/*.stm, !**/*.stml, !**/*.ttml, !**/*.txn, !**/*.xhtm, !**/*.xhtml, !**/*.class, !**/*.iml",
+      "helpMarkDown": "Comma separated list of include or exclude wildcard patterns. Exclude patterns start with exclamation mark `!`.\nExample: `**/*.java, **/*.html, !**\\test\\**\\XYZ*`\n\n#### Pattern Syntax\nA given directory is recursively scanned for all files and directories. Each file/directory is matched against a set of selectors, including special support for matching against filenames with include and exclude patterns. Only files/directories which match at least one pattern of the include pattern list, and don't match any pattern of the exclude pattern list will be placed in the list of files/directories found.\n\nWhen no list of include patterns is supplied, `**` will be used, which means that everything will be matched. When no list of exclude patterns is supplied, an empty list is used, such that nothing will be excluded.\n\nThe filename pattern matching is done as follows:\nThe name to be matched is split up in path segments. A path segment is the name of a directory or file, which is bounded by a path separator (forward or back slashes can be used).\nFor example, `abc/def/ghi/xyz.java` is split up in the segments `abc`, `def`, `ghi` and `xyz.java`. The same is done for the pattern against which it should be matched.\n\nThe segments of the name and the pattern are then matched against each other. When `**` is used for a path segment in the pattern, it matches zero or more path segments of the name.\n\nWhen a name path segment is matched against a pattern path segment, the following special characters can be used:\n- `*` matches zero or more characters\n- `?` matches one character.\t\n####Examples\n- `**\\*.class` matches all `.class` files/dirs in a directory tree.\n- `test\\a??.java` matches all files/dirs which start with an `a`, then two more characters and then `.java`, in a directory called `test`.\n- `**` matches everything in a directory tree.\n- `**\\test\\**\\XYZ*` matches all files/dirs which start with `XYZ` and where there is a parent directory called `test` (e.g. `abc\\test\\def\\ghi\\XYZ123`).",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "src/index.js"
+    }
+  },
+  "messages": {
+  }
+}

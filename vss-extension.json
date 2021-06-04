@@ -1,0 +1,121 @@
+{
+  "manifestVersion": 1,
+  "id": "JayNanduri",
+  "name": "Checkmarx AST Test",
+  "version": "0.0.24",
+  "publisher": "JayNanduri",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "public": false,
+  "description": "Add Secure Static Source Code Analysis inside your build process",
+  "icons": {
+    "default": "images/extension-icon.png"
+  },
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "tags": [
+    "Security",
+    "SCA",
+    "Static Code Analysis",
+    "Scan",
+    "SAST",
+    "Checkmarx",
+    "CxSAST",
+    "OSA",
+    "Open source",
+    "Software Composition Analysis"
+  ],
+  "scopes": [
+    "vso.build_execute"
+  ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    },
+    "license": {
+      "path": "checkmarx-license-terms.md"
+    }
+  },
+  "links": {
+    "getstarted": {
+      "uri": "https://info.checkmarx.com/cx-microsoft-vs-team-services"
+    },
+    "learn": {
+      "uri": "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/96731162/CxSAST+MS-VSTS+Plugin+v8.4.1+and+up"
+    },
+    "support": {
+      "uri": "https://support.checkmarx.com/home"
+    }
+  },
+  "branding": {
+    "color": "rgb(81, 53, 124)",
+    "theme": "dark"
+  },
+  "files": [
+    {
+      "path": "CxASTScan"
+    },
+    {
+      "path": "CxASTScan/src/",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "cx-scan-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "CxASTScan"
+      }
+    },
+    {
+      "id": "CxEndpoint",
+      "description": "Service Endpoint type for all Cx connections",
+      "type": "ms.vss-endpoint.service-endpoint-type",
+      "targets": [
+        "ms.vss-endpoint.endpoint-types"
+      ],
+      "properties": {
+        "name": "Checkmarx-Endpoint",
+        "displayName": "Checkmarx",
+        "authenticationSchemes": [
+          {
+            "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+            "inputDescriptors": [
+              {
+                "id": "username",
+                "name": "CLIENT ID",
+                "description": "AST OAUTH2 client id",
+                "inputMode": "textbox",
+                "isConfidential": false,
+                "validation": {
+                  "dataType": "String",
+                  "isRequired": true
+                }
+              },
+              {
+                "id": "password",
+                "name": "CLIENT SECRET",
+                "description": "AST OAUTH2 client secret",
+                "inputMode": "passwordbox",
+                "isConfidential": true,
+                "validation": {
+                  "dataType": "String",
+                  "isRequired": true
+                }
+              }
+            ]
+          }
+        ],
+        "helpMarkDown": "<span style=\"color: #222\"><font size=\"3\"><span style=\"color: #222\"><font size=\"3\">If you don't already have Checkmarx installed, click </font></span><a href=\"https://info.checkmarx.com/cx-microsoft-vs-team-services\" target=\"_blank\"><span style=\"color: #0072c6\"><font size=\"3\">here</font></span></a>   to register for a Checkmarx cloud account</span>"
+      }
+    }
+  ]
+}

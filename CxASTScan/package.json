@@ -1,0 +1,25 @@
+{
+  "name": "checkmarx-ast-azure-plugin",
+  "version": "1.0.0",
+  "description": "Add Secure Static Source Code Analysis inside your build process",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
+  "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Jay Nanduri",
+  "license": "SEE LICENSE IN checkmarx-license-terms.md",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.8.0",
+    "superagent": "^5.1.0",
+    "tmp": "^0.1.0",
+    "typescript-logging": "^1.0.0",
+    "webpack": "^5.38.1"
+  },
+  "devDependencies": {
+    "@types/node": "^6.14.7",
+    "@types/q": "^1.5.4",
+    "@types/tmp": "^0.1.0"
+  }
+}
