@@ -12,14 +12,16 @@
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.8.0",
-    "superagent": "^5.1.0",
-    "tmp": "^0.1.0",
-    "typescript-logging": "^1.0.0",
-    "webpack": "^5.38.1"
+    "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.4",
+    "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
     "@types/node": "^6.14.7",
     "@types/q": "^1.5.4",
-    "@types/tmp": "^0.1.0"
+    "@types/tmp": "^0.1.0",
+    "superagent": "^5.1.0",
+    "tmp": "^0.1.0",
+    "typescript-logging": "^1.0.0",
+    "webpack": "^5.38.1"
   }
 }
