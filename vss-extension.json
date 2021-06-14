@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "JayNanduri",
   "name": "Checkmarx AST Test",
-  "version": "0.0.39",
+  "version": "0.0.52",
   "publisher": "JayNanduri",
   "targets": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "public": false,
-  "description": "Add Secure Static Source Code Analysis inside your build process",
+  "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
   },
@@ -72,7 +72,8 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "CxASTScan"
+        "name": "CxASTScan",
+        "icon":"images/extension-icon.png"
       }
     },
     {
@@ -90,9 +91,20 @@
             "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
             "inputDescriptors": [
               {
+                "id": "authURL",
+                "name": "Checkmarx AST Auth URL",
+                "description": "Checkmarx AST portal Auth URL",
+                "inputMode": "textbox",
+                "isConfidential": false,
+                "validation": {
+                  "dataType": "String",
+                  "isRequired": false
+                }
+              },
+              {
                 "id": "username",
-                "name": "CLIENT ID",
-                "description": "AST OAUTH2 client id",
+                "name": "Checkmarx Client ID",
+                "description": "Checkmarx AST portal authorized OAUTH2 client id",
                 "inputMode": "textbox",
                 "isConfidential": false,
                 "validation": {
@@ -102,8 +114,8 @@
               },
               {
                 "id": "password",
-                "name": "CLIENT SECRET",
-                "description": "AST OAUTH2 client secret",
+                "name": "Checkmarx Client Secret",
+                "description": "Checkmarx AST portal authorized OAUTH2 client secret",
                 "inputMode": "passwordbox",
                 "isConfidential": true,
                 "validation": {
@@ -111,6 +123,7 @@
                   "isRequired": true
                 }
               }
+
             ]
           }
         ],

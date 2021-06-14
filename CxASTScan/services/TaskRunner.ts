@@ -11,17 +11,15 @@ export class TaskRunner {
         this.cxScanConfig = this.initiateScanConfig();
         let params: Map<CxParamType,string> = new Map<CxParamType,string>();
         params.set(CxParamType.PROJECT_NAME,taskLib.getInput("projectName"));
-        params.set(CxParamType.SCAN_TYPES,"sast");
-        if(taskLib.getInput("syncMode")) {
-            params.set(CxParamType.ADDITIONAL_PARAMETERS, "--nowait");
-        }
-        params.set(CxParamType.SAST_PRESET_NAME,"Checkmarx Default");
+        params.set(CxParamType.TENANT,taskLib.getInput("tenantName"));
+        params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
+        params.set(CxParamType.FILTER,taskLib.getInput("filter"));
         params.set(CxParamType.S,".");
         const auth = new CxAuthCall(this.cxScanConfig);
-        let result = await auth.scanCreate(params).then(value => {
+        await auth.scanCreate(params).then(value => {
             console.log(value);
         });
-        this.log.info(result + '');
+
     }
     private printHeader() {
         this.log.info(`
