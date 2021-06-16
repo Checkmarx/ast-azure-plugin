@@ -1,20 +1,41 @@
 import {factory} from "./ConfigLog4j";
-import taskLib = require('azure-pipelines-task-lib/task');
 import {CxScanConfigCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall"
 import {CxAuthCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuthCall"
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
+import taskLib = require('azure-pipelines-task-lib/task');
+
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
     private cxScanConfig = new CxScanConfigCall();
     async run() {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
+        let scanners = [];
         let params: Map<CxParamType,string> = new Map<CxParamType,string>();
         params.set(CxParamType.PROJECT_NAME,taskLib.getInput("projectName"));
-        params.set(CxParamType.TENANT,taskLib.getInput("tenantName"));
-        params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
-        params.set(CxParamType.FILTER,taskLib.getInput("filter"));
+        if(taskLib.getInput("tenantName") !== undefined) {
+            params.set(CxParamType.TENANT,taskLib.getInput("tenantName"));
+        }
+        if(taskLib.getInput("additionalParams") !== undefined) {
+            params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
+        }
+        if(taskLib.getInput("zipFileFilter") !== undefined) {
+            params.set(CxParamType.FILTER,taskLib.getInput("zipFileFilter"));
+        }
+        if(taskLib.getBoolInput("enableSastScan")) {
+            scanners.push("sast");
+        }
+        if(taskLib.getBoolInput("enableScaScan")) {
+            scanners.push("sca");
+        }
+        if(taskLib.getBoolInput("enableKicsScan")) {
+            scanners.push("kics");
+        }
+        if(taskLib.getBoolInput("enableContainerScan")) {
+            scanners.push("container");
+        }
         params.set(CxParamType.S,".");
+        params.set(CxParamType.SCAN_TYPES, scanners.join(","));
         const auth = new CxAuthCall(this.cxScanConfig);
         await auth.scanCreate(params).then(value => {
             console.log(value);

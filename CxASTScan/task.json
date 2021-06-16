@@ -18,6 +18,11 @@
   "minimumAgentVersion": "1.0.0",
   "groups": [
     {
+      "name": "scanSettings",
+      "displayName": "Checkmarx AST Scan settings",
+      "isExpanded": "true"
+    },
+    {
       "name": "params",
       "displayName": "Checkmarx AST Scan Parameters",
       "isExpanded": "true"
@@ -47,7 +52,42 @@
       "required": false,
       "helpMarkDown": "Please specify the tenant name"
     },
-
+    {
+      "name": "enableSastScan",
+      "type": "boolean",
+      "label": "Enable SAST scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the SAST scan",
+      "groupName": "scanSettings",
+      "defaultValue": true
+    },
+    {
+      "name": "enableScaScan",
+      "type": "boolean",
+      "label": "Enable SCA scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the SCA scan",
+      "groupName": "scanSettings",
+      "defaultValue": false
+    },
+    {
+      "name": "enableKicsScan",
+      "type": "boolean",
+      "label": "Enable KICS scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the KICS scan",
+      "groupName": "scanSettings",
+      "defaultValue": false
+    },
+    {
+      "name": "enableContainerScan",
+      "type": "boolean",
+      "label": "Enable Container scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the container scan",
+      "groupName": "scanSettings",
+      "defaultValue": false
+    },
     {
       "name": "additionalParams",
       "type": "string",
@@ -57,7 +97,7 @@
       "groupName": "params"
     },
     {
-      "name": "filter",
+      "name": "zipFileFilter",
       "type": "string",
       "label": "Zip File Filters",
       "required": false,

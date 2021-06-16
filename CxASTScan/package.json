@@ -12,7 +12,7 @@
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.8.0",
-    "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.4",
+    "@checkmarxdev/ast-cli-javascript-wrapper": "^1.0.6",
     "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {

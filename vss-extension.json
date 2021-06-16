@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "JayNanduri",
   "name": "Checkmarx AST Test",
-  "version": "0.0.52",
+  "version": "0.0.72",
   "publisher": "JayNanduri",
   "targets": [
     {
