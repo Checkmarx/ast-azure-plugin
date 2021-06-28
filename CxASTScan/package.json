@@ -6,8 +6,8 @@
   "typings": "src/index.d.ts",
   "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
   "scripts": {
-    "build": "tsc",
-    "test": "mocha src/tests/"
+    "build": "tsc CxASTScan/",
+    "test": "mocha CxASTScan/src/tests/"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
