@@ -6,7 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "target": "es6",
+    "target": "es2018",
     "declaration": true,
     "removeComments": false,
     "noImplicitAny": true,

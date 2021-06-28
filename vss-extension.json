@@ -1,8 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "JayNanduri",
+  "id": "CheckmarxAST",
   "name": "Checkmarx AST Test",
-  "version": "0.0.72",
+  "version": "0.0.8",
+  "baseUri": "http://localhost:80",
   "publisher": "JayNanduri",
   "targets": [
     {
@@ -84,8 +85,8 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "Checkmarx-Endpoint",
-        "displayName": "Checkmarx",
+        "name": "CheckmarxAST",
+        "displayName": "Checkmarx AST Service Connection",
         "authenticationSchemes": [
           {
             "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",

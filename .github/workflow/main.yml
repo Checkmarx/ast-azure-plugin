@@ -1,0 +1,37 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ feature/azo-extension-pipeline ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        #node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [ 15.x ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy executable
+        run: cp ./src/main/resources/cx-linux /tmp/
+      - name: Permissions to executable
+        run: sudo chmod 777 /tmp/cx-linux
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - name: Run tests
+        env:
+          CX_CLIENT_ID: ${{ secrets.CLIENT_ID}}
+          CX_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET}}
+          CX_BASE_URI: ${{ secrets.BASE_URI }}
+        run: npm test

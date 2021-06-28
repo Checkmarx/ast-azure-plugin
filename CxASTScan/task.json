@@ -32,9 +32,9 @@
   "inputs": [
     {
       "name": "CheckmarxService",
-      "type": "connectedService:Checkmarx-Endpoint",
-      "label": "Checkmarx AST Endpoint",
-      "required": true,
+      "type": "connectedService:CheckmarxAST",
+      "label": "Checkmarx AST Service Connection",
+      "required": false,
       "defaultValue": "",
       "helpMarkDown": "The CX server endpoint."
     },
@@ -43,6 +43,7 @@
       "type": "string",
       "label": "Project Name",
       "required": true,
+      "defaultValue": "$(Build.Repository.Name)",
       "helpMarkDown": "Either select an existing project name or type a name to create a new scan project"
     },
     {
