@@ -26,10 +26,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Npm login
+      - name: npm login
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm login --registry=https://npm.pkg.github.com
+        run: npm login --registry=https://npm.pkg.github.com:_authToken=${NPM_TOKEN}
       - run: npm ci
       - run: npm run build
       - name: Run tests
