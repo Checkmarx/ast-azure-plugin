@@ -23,5 +23,8 @@
     "@types/tmp": "^0.1.0",
     "chai": "^4.3.4",
     "sync-request": "^6.1.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
