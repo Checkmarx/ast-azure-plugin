@@ -27,10 +27,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: npm login
-        env:
-          Password: ${{ secrets.NPM_TOKEN }}
-          Username: CheckmarxDev
-          Email: jay.nanduri@checkmarx.com
+#        env:
+#          Password: ${{ secrets.NPM_TOKEN }}
+#          Username: CheckmarxDev
+#          Email: jay.nanduri@checkmarx.com
         run: npm login --scope=@OWNER --registry=https://npm.pkg.github.com
       - run: npm ci
       - run: npm run build
