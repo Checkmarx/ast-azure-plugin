@@ -26,9 +26,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm login
-      - env:
+      - name: Npm login
+        env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm login
       - run: npm ci
       - run: npm run build
       - name: Run tests
