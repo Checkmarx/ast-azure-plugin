@@ -29,7 +29,7 @@ jobs:
       - name: Npm login
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm login
+        run: npm login --registry=https://npm.pkg.github.com
       - run: npm ci
       - run: npm run build
       - name: Run tests
