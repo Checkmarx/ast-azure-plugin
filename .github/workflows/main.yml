@@ -27,11 +27,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: npm login
-#        env:
-#          Password: ${{ secrets.NPM_TOKEN }}
-#          Username: CheckmarxDev
-#          Email: jay.nanduri@checkmarx.com
-        run: npm login --scope=@OWNER --registry=https://npm.pkg.github.com
+        env:
+          NPM_PASSWORD: ${{ secrets.NPM_TOKEN }}
+          NPM_USERNAME: CheckmarxDev
+          NPM_EMAIL: jay.nanduri@checkmarx.com
+        run: echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
       - run: npm ci
       - run: npm run build
       - name: Run tests
