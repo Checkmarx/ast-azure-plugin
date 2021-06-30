@@ -27,7 +27,7 @@ jobs:
         env:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          node-version: 10
+          node-version: 12
       - run: npm install
       - run: npm run build
       - name: Run tests
