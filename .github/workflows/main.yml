@@ -28,11 +28,11 @@ jobs:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           node-version: 12
-      - run: npm install
-      - run: npm run build
+      - run: sudo npm install
+      - run: sudo npm run build
       - name: Run tests
         env:
           CX_CLIENT_ID: ${{ secrets.CLIENT_ID}}
           CX_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET}}
           CX_BASE_URI: ${{ secrets.BASE_URI }}
-        run: npm test
+        run: sudo npm test
