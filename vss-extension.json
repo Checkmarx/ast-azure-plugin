@@ -4,7 +4,7 @@
   "name": "Checkmarx AST Test",
   "version": "0.0.8",
   "baseUri": "http://localhost:80",
-  "publisher": "JayNanduri",
+  "publisher": "CheckmarxASTBeta",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
