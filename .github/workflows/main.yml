@@ -28,12 +28,6 @@ jobs:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           node-version: 10
-#      - name: npm login
-#        env:
-#          NPM_PASSWORD: ${{ secrets.NPM_TOKEN }}
-#          NPM_USERNAME: CheckmarxDev
-#          NPM_EMAIL: jay.nanduri@checkmarx.com
-#        run: echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
       - run: npm install
       - run: npm run build
       - name: Run tests
