@@ -32,7 +32,7 @@ jobs:
 #          NPM_USERNAME: CheckmarxDev
 #          NPM_EMAIL: jay.nanduri@checkmarx.com
 #        run: echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
-      - run: npm ci
+      - run: npm config set 'https://npm.pkg.github.com/:_authToken' "${NPM_TOKEN}"
       - run: npm run build
       - name: Run tests
         env:
