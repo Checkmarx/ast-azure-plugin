@@ -21,20 +21,20 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v1
         env:
           INPUT_TOKEN: ''
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 10
 #      - name: npm login
 #        env:
 #          NPM_PASSWORD: ${{ secrets.NPM_TOKEN }}
 #          NPM_USERNAME: CheckmarxDev
 #          NPM_EMAIL: jay.nanduri@checkmarx.com
 #        run: echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
-      - run: npm login && npm ci
+      - run: npm install
       - run: npm run build
       - name: Run tests
         env:
