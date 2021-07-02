@@ -21,6 +21,7 @@ const auth = new CxAuthCall(cxScanConfig);
 
 describe("ScanCreate cases",() => {
     it('ScanCreate Successful case', async () => {
+        jest.setTimeout(1000000)
         const data = await auth.scanCreate(params);
         const cxScanObject: CxScan = JSON.parse(data);
         expect(cxScanObject.Status).toContain("Queued");
