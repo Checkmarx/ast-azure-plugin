@@ -33,14 +33,11 @@ jobs:
       - name: npm install
         run: npm install
       - run: npm run build
-      - name: Copy Executable
-        run: cp node_modules/@checkmarxdev/ast-cli-javascript-wrapper/dist/main/resources/cx-linux /tmp/cx-linux
-      - name: Permissions enabled
-        run: sudo chmod 777 /tmp/cx-linux
+      - name: Permissions for executable
+        run: sudo chmod 777 node_modules/@checkmarxdev/ast-cli-javascript-wrapper/dist/main/resources/cx-linux
       - name: Run tests
         env:
           CX_CLIENT_ID: ${{ secrets.CLIENT_ID}}
           CX_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET}}
           CX_BASE_URI: ${{ secrets.BASE_URI }}
-          PATH_TO_EXECUTABLE: /tmp/cx-linux
         run: npm test
