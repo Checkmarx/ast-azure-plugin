@@ -32,6 +32,8 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: npm install
         run: npm install
+      - name: Permissions set
+        run: sudo chmod 777./CxASTScan/src/main/resources/cx-linux
       - run: npm run build
       - name: Run tests
         env:
