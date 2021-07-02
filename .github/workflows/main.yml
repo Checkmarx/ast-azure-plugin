@@ -32,12 +32,15 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: npm install
         run: npm install
-      - name: Permissions set
-        run: sudo chmod 777 ./CxASTScan/src/main/resources/cx-linux
+      - name: Copy Executable
+        run: cp ./CxASTScan/node_modules/@checkmarxdev/ast-cli-javascript-wrapper/dist/main/resources/cx-linux /tmp/cx-linux
+      -name: Permissions enabled
+        run: sudo chmod 777 /tmp/cx-linux
       - run: npm run build
       - name: Run tests
         env:
           CX_CLIENT_ID: ${{ secrets.CLIENT_ID}}
           CX_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET}}
           CX_BASE_URI: ${{ secrets.BASE_URI }}
+          PATH_TO_EXECUTABLE: /tmp/cx-linux
         run: npm test
