@@ -1,11 +1,28 @@
+import {CxScanConfigCall} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall';
+import {CxAuthCall} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main//CxAuthCall';
+import {CxParamType} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType';
+import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScan";
+import 'babel-polyfill';
 
+let cxScanConfig = new CxScanConfigCall();
+cxScanConfig.baseUri = process.env["CX_BASE_URI"];
+cxScanConfig.clientId = process.env["CX_CLIENT_ID"];
+cxScanConfig.clientSecret = process.env["CX_CLIENT_SECRET"];
+if(process.env["PATH_TO_EXECUTABLE"] !== null && process.env["PATH_TO_EXECUTABLE"] !== undefined ) {
+    cxScanConfig.pathToExecutable = process.env["PATH_TO_EXECUTABLE"];
+}
+let params = new Map();
+params.set(CxParamType.PROJECT_NAME, "JayJavascriptWrapperTest");
+params.set(CxParamType.SCAN_TYPES, "sast");
+params.set(CxParamType.ADDITIONAL_PARAMETERS, "--nowait");
+params.set(CxParamType.SAST_PRESET_NAME, "Checkmarx Default");
+params.set(CxParamType.S, ".");
+const auth = new CxAuthCall(cxScanConfig);
 
-let path = require('path');
-let ttm = require('azure-pipelines-task-lib/mock-test')
-    describe("ScanCreate Test successful case", function () {
-        it("Return scan object", async function () {
-            let tp = path.join(__dirname, 'success.test.js');
-            let tr = new ttm.MockTestRunner(tp);
-            await tr.run();
-        });
-        });
+describe("ScanCreate cases",() => {
+    it('ScanCreate Successful case', async () => {
+        const data = await auth.scanCreate(params);
+        const cxScanObject: CxScan = JSON.parse(data);
+        expect(cxScanObject.Status).toContain("Queued");
+    })
+});
