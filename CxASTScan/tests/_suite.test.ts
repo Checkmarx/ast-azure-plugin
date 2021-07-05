@@ -1,7 +1,6 @@
 import {CxScanConfigCall} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall';
 import {CxAuthCall} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main//CxAuthCall';
 import {CxParamType} from '@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType';
-import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScan";
 import 'babel-polyfill';
 
 let cxScanConfig = new CxScanConfigCall();
@@ -23,7 +22,7 @@ describe("ScanCreate cases",() => {
     it('ScanCreate Successful case', async () => {
         jest.setTimeout(1000000)
         const data = await auth.scanCreate(params);
-        const cxScanObject: CxScan = JSON.parse(data);
+        const cxScanObject = JSON.parse(data);
         expect(cxScanObject.Status).toContain("Queued");
     })
 });
