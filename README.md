@@ -1,11 +1,11 @@
-##Overview
+###### Overview
 
-Checkmarx is a powerful single unified security solution for Static Source Code Analysis (SAST), dependency scanning(SCA), KICS and container scanning analysis designed for identifying, tracking and fixing technical and logical security flaws.
+###### Checkmarx is a powerful single unified security solution for Static Source Code Analysis (SAST), dependency scanning(SCA), KICS and container scanning analysis designed for identifying, tracking and fixing technical and logical security flaws.
 
 Checkmarx is integrated seamlessly into the Microsoft’s Software Development Life Cycle (SDLC), enabling
 the early detection and mitigation of crucial security flaws.
 
-#Checkmarx provides the following key benefits:
+###### Checkmarx provides the following key benefits:
 
 - **Scan source code**
   Integrates smoothly within the SDLC to provide detailed near real- time feedback on code security state
@@ -26,7 +26,7 @@ the early detection and mitigation of crucial security flaws.
   Enhancing your code portfolio risk assessment coverage is merely a few mouse clicks away. With Checkmarx’s Open Source Analysis, there is no need for additional installations or multiple management interfaces. Simply turn it on and within minutes a detailed report is generated with clear results and detailed mitigation instructions. Analysis results are designed with the developer in mind.
   No time is wasted on trying to understand the required actions items to mitigate the detected security or compliance risk.
 
-#Getting Started with Checkmarx:
+###### Getting Started with Checkmarx:
 
 ![image](images/task.png)
 
@@ -34,9 +34,9 @@ the early detection and mitigation of crucial security flaws.
 1.	From the Build menu in the main screen, add Checkmarx build step
 2.	Click Add to configure Checkmarx and configure the properties
 
-#Configure Checkmarx Build Step
+###### Configure Checkmarx Build Step
 
-![image](images/build.png)
+![image](images/build.PNG)
 
 **To complete this step:**
 
@@ -45,7 +45,7 @@ the early detection and mitigation of crucial security flaws.
 3.	Additional Parameters: Please provide any additional parameters for the scan to complete (--sast-preset-type "Checkmarx Default")
 4.  Zip File Filters: Source code directories/Files that get zipped and sent to AST server for scanning
 
-#Configure Checkmarx AST Service Connection Step
+###### Configure Checkmarx AST Service Connection Step
 
 ![image](images/serviceConnection.PNG)
 ![image](images/serviceConnection2.PNG)
