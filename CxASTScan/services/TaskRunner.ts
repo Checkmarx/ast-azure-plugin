@@ -7,6 +7,8 @@ import taskLib = require('azure-pipelines-task-lib/task');
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
     private cxScanConfig = new CxScanConfigCall();
+
+
     async run() {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
@@ -44,6 +46,7 @@ export class TaskRunner {
         await auth.scanCreate(params).then(value => {
             console.log(value);
         });
+        //return auth.scanCreate(params);
         // const data = await auth.scanCreate(params);
         // const cxScanObject: CxScan = JSON.parse(data);
         // console.log("Scan object received: " + JSON.stringify(cxScanObject))
@@ -86,6 +89,15 @@ Starting Checkmarx scan`);
             this.cxScanConfig.clientSecret = astPassword;
         }
         return this.cxScanConfig;
+    }
+
+    async asyncTestRun(params: any) {
+        if(params.size > 0 ) {
+            const auth = new CxAuthCall(this.cxScanConfig);
+            await auth.scanCreate(params).then(value => {
+                console.log(value);
+            });
+        }
     }
 }
 
