@@ -7,7 +7,7 @@
   "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
   "scripts": {
     "build": "tsc",
-    "test": "Mocha src/tests"
+    "test": "Mocha src/tests/TestConfiguration.test.js"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
