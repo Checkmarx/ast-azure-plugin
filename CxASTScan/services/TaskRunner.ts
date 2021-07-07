@@ -8,7 +8,6 @@ export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
     private cxScanConfig = new CxScanConfigCall();
 
-
     async run() {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
@@ -45,7 +44,7 @@ export class TaskRunner {
         const auth = new CxAuthCall(this.cxScanConfig);
         await auth.scanCreate(params).then(value => {
             console.log(value);
-        });
+        }).catch(err => console.log(err)).finally(() => console.log("DONE!"));
         //return auth.scanCreate(params);
         // const data = await auth.scanCreate(params);
         // const cxScanObject: CxScan = JSON.parse(data);
@@ -77,9 +76,10 @@ Starting Checkmarx scan`);
 
     private initiateScanConfig() {
         let endpointId = taskLib.getInput('CheckmarxService', false) !== undefined ? taskLib.getInput('CheckmarxService', false) :"" ;
-        // let astServerUrl = taskLib.getEndpointUrl(endpointId, false) || '';
-        // let astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) || '';
-        // let astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false) || '';
+        this.cxScanConfig.baseUri = "";
+        this.cxScanConfig.clientId = "";
+        this.cxScanConfig.clientSecret = "";
+        this.cxScanConfig.apiKey = "";
         if(endpointId !== null && endpointId !== '' ) {
             let astServerUrl = taskLib.getEndpointUrl(endpointId, false) !== null ? taskLib.getEndpointUrl(endpointId, false) : '';
             let astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) !== null ? taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) : '';
@@ -89,15 +89,6 @@ Starting Checkmarx scan`);
             this.cxScanConfig.clientSecret = astPassword;
         }
         return this.cxScanConfig;
-    }
-
-    async asyncTestRun(params: any) {
-        if(params.size > 0 ) {
-            const auth = new CxAuthCall(this.cxScanConfig);
-            await auth.scanCreate(params).then(value => {
-                console.log(value);
-            });
-        }
     }
 }
 

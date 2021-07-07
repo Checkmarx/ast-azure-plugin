@@ -7,17 +7,15 @@
   "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
   "scripts": {
     "build": "tsc",
-    "test": "mocha src/tests/TestConfiguration.test.js"
+    "test": "tsc && mocha src/test/*.js"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
     "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.11",
     "azure-devops-extension-sdk": "^2.0.11",
-    "azure-pipelines-task-lib": "^2.8.0",
+    "azure-pipelines-task-lib": "^3.1.4",
     "regenerator-runtime": "^0.13.7",
-    "@types/mocha": "^8.2.2",
-    "mocha": "^9.0.2",
     "sync-request": "^6.1.0"
   },
   "devDependencies": {
@@ -25,10 +23,11 @@
     "@babel/preset-env": "^7.14.2",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@types/mocha": "^8.2.2",
+    "@types/mocha": "^8.2.3",
     "@types/node": "^15.6.1",
     "@types/q": "^1.5.4",
     "@types/regenerator-runtime": "^0.13.0",
+    "@types/sinon": "^10.0.2",
     "@types/tmp": "^0.1.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^27.0.1",
@@ -36,8 +35,11 @@
     "babel-polyfill": "^6.26.0",
     "copyfiles": "^2.4.1",
     "mocha": "^9.0.2",
+    "sinon": "^11.1.1",
     "sync-request": "^6.1.0",
-    "ts-jest": "^26.5.6"
+    "ts-jest": "^26.5.6",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
