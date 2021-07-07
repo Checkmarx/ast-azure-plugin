@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Create VSS Extension
-        run: tfx extension create --manifest-globs vss-extension.json
+        run: npx tfx extension create --manifest-globs vss-extension.json
       - name: Create Release
         id: draft_release
         uses: release-drafter/release-drafter@v5
