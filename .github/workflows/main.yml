@@ -2,7 +2,7 @@ name: Integration Tests
 
 on:
   push:
-    branches: [ feature/azo-extension-pipeline ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
