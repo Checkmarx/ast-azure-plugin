@@ -8,13 +8,10 @@ import assert = require("assert");
 
 describe('Task runner test', function () {
 
-    it('should be success', function(done: Mocha.Done) {
+    it('should be success no wait mode', function(done: Mocha.Done) {
         this.timeout(300000);
-
-        let tp = path.join(__dirname, 'success.js');
-
+        let tp = path.join(__dirname, 'success_nowait.js');
        // let val:CxScan;
-
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         console.log(tr.succeeded);
@@ -24,12 +21,18 @@ describe('Task runner test', function () {
             console.log(val);
             assert.strictEqual(val.Status, "Queued");
         }
-
-
-       //assert.equal(tr.stdout.indexOf('Hello human') >= 0, true, "should display Hello human");
         done();
     });
 
+    it('should be success wait mode', async function (done: Mocha.Done) {
+        this.timeout(1000);
+        let tp = path.join(__dirname, 'success_waitmode.js');
+        // let val:CxScan;
+        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        tr.run();
+        console.log(tr.stdout);
+        done();
+    });
 });
 
 function isJsonString(s: string) {
