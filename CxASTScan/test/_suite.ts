@@ -12,11 +12,12 @@ describe('Task runner test', function () {
         this.timeout(300000);
 
         let tp = path.join(__dirname, 'success.js');
-        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+
        // let val:CxScan;
+
+        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         console.log(tr.succeeded);
-        console.log(tr.stdout);
         const temp = tr.stdout.split('\n');
         if(isJsonString(temp[temp.length-2])) {
             const val: CxScan = JSON.parse(temp[temp.length - 2]);
