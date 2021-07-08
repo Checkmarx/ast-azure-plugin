@@ -18,9 +18,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Tfx Install
         run: sudo npm install -g tfx-cli
+      - name: Build step
+        run: npm run build
       - name: Create VSS Extension
-        run: ls
-#        run: npx tfx extension create --manifest-globs vss-extension.json
+        run: npx tfx extension create --manifest-globs vss-extension.json
       - name: Create Release
         id: draft_release
         uses: release-drafter/release-drafter@v5
