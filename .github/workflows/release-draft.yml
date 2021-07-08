@@ -24,6 +24,16 @@ jobs:
         run: cd CxASTScan && npm install && npm run build
       - name: Create VSS Extension
         run: npx tfx extension create --manifest-globs vss-extension.json
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: true
+          release_name: CheckmarxASTBeta-0.0.1
+          tag_name: CheckmarxASTBeta-0.0.1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload binaries to release
         uses: AButler/upload-release-assets@v2.0
         with:
