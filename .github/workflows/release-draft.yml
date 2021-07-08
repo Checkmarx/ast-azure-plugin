@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: .
+        working-directory: ./
 
 
     steps:
@@ -19,7 +19,8 @@ jobs:
       - name: Tfx Install
         run: sudo npm install -g tfx-cli
       - name: Create VSS Extension
-        run: npx tfx extension create --manifest-globs vss-extension.json
+        run: ls
+#        run: npx tfx extension create --manifest-globs vss-extension.json
       - name: Create Release
         id: draft_release
         uses: release-drafter/release-drafter@v5
