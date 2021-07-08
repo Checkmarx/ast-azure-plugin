@@ -19,7 +19,7 @@ jobs:
       - name: Tfx Install
         run: sudo npm install -g tfx-cli
       - name: Build step
-        run: cd CxASTScan && npm run build
+        run: cd CxASTScan && npm install && npm run build
       - name: Create VSS Extension
         run: npx tfx extension create --manifest-globs vss-extension.json
       - name: Create Release
