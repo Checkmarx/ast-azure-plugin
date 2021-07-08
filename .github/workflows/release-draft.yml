@@ -35,6 +35,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: "*.vsix"
           asset_name: Checkmarx AST ADO Extension
-          tag: CheckmarxAST ADO 0.0.1
+          tag: CheckmarxAST_0.0.1
           overwrite: true
           body: "Pre release for Checkmarx AST ADO Extension"
