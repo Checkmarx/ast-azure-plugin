@@ -28,12 +28,12 @@ jobs:
         id: draft_release
         uses: release-drafter/release-drafter@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ steps.draf_release.outputs.body }}
+          file: CheckmarxASTBeta.CheckmarxAST-0.0.1.vsix
           asset_name: Checkmarx AST ADO Extension
           tag: CheckmarxAST_0.0.1
           overwrite: true
