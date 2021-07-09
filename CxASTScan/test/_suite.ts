@@ -12,7 +12,8 @@ function runQueuedCase(tr: MockTestRunner) {
     if(isJsonString(temp[temp.length-2])) {
         const val: CxScan = JSON.parse(temp[temp.length - 2]);
         console.log(val);
-        assert.strictEqual(val.Status, "Queued");
+        return val;
+        //assert.strictEqual(val.Status, "Queued");
     }
     //assert.strictEqual(tr.succeeded, true, 'should have succeeded');
 
@@ -27,7 +28,8 @@ describe('Task runner test', function () {
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         console.log(tr.succeeded);
-        runQueuedCase(tr);
+        const status = runQueuedCase(tr);
+        assert.deepStrictEqual(status.Status,"Queued");
         done();
     });
 
@@ -37,7 +39,9 @@ describe('Task runner test', function () {
         // let val:CxScan;
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
-        runQueuedCase(tr);
+        const status = runQueuedCase(tr);
+        assert.deepStrictEqual(status.Status,"Queued");
+        assert.ok(tr.succeeded);
         done();
 
     });
