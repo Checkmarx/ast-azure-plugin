@@ -1,16 +1,17 @@
 {
   "manifestVersion": 1,
-  "id": "JayNanduri",
+  "id": "CheckmarxAST",
   "name": "Checkmarx AST Test",
-  "version": "0.0.24",
-  "publisher": "JayNanduri",
+  "version": "0.0.1",
+  "baseUri": "http://localhost:80",
+  "publisher": "CheckmarxASTBeta",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
   "public": false,
-  "description": "Add Secure Static Source Code Analysis inside your build process",
+  "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
   },
@@ -72,7 +73,8 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "CxASTScan"
+        "name": "CxASTScan",
+        "icon":"images/extension-icon.png"
       }
     },
     {
@@ -83,16 +85,27 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "Checkmarx-Endpoint",
-        "displayName": "Checkmarx",
+        "name": "CheckmarxAST",
+        "displayName": "Checkmarx AST Service Connection",
         "authenticationSchemes": [
           {
             "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
             "inputDescriptors": [
               {
+                "id": "authURL",
+                "name": "Checkmarx AST Auth URL",
+                "description": "Checkmarx AST portal Auth URL",
+                "inputMode": "textbox",
+                "isConfidential": false,
+                "validation": {
+                  "dataType": "String",
+                  "isRequired": false
+                }
+              },
+              {
                 "id": "username",
-                "name": "CLIENT ID",
-                "description": "AST OAUTH2 client id",
+                "name": "Checkmarx Client ID",
+                "description": "Checkmarx AST portal authorized OAUTH2 client id",
                 "inputMode": "textbox",
                 "isConfidential": false,
                 "validation": {
@@ -102,8 +115,8 @@
               },
               {
                 "id": "password",
-                "name": "CLIENT SECRET",
-                "description": "AST OAUTH2 client secret",
+                "name": "Checkmarx Client Secret",
+                "description": "Checkmarx AST portal authorized OAUTH2 client secret",
                 "inputMode": "passwordbox",
                 "isConfidential": true,
                 "validation": {
@@ -111,6 +124,7 @@
                   "isRequired": true
                 }
               }
+
             ]
           }
         ],

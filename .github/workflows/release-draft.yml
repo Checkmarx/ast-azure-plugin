@@ -1,0 +1,46 @@
+name: Draft Release
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tfx Install
+        run: sudo npm install -g tfx-cli
+      - name: Authenticate with GitHub package registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+      - name: Build step
+        run: cd CxASTScan && npm install && npm run build
+      - name: Create VSS Extension
+        run: npx tfx extension create --manifest-globs vss-extension.json
+      - name:  Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: true
+          release_name: CheckmarxASTBeta-0.0.1
+          tag_name: CheckmarxASTBeta-0.0.1
+          body: ${{steps.github_release.outputs.changelog}}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: upload artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./CheckmarxASTBeta.CheckmarxAST-0.0.1.vsix
+          asset_name: CheckmarxASTBeta.CheckmarxAST-0.0.1.vsix
+          asset_content_type: application/zip
