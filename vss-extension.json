@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "CheckmarxAST",
   "name": "Checkmarx AST Test",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "baseUri": "http://localhost:80",
   "publisher": "CheckmarxASTBeta",
   "targets": [
@@ -10,7 +10,7 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "public": false,
+  "public": true,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
@@ -43,10 +43,10 @@
   },
   "links": {
     "getstarted": {
-      "uri": "https://info.checkmarx.com/cx-microsoft-vs-team-services"
+      "uri": "https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/How+to+use+CxAST+Azure+DevOps+Plugin"
     },
     "learn": {
-      "uri": "https://checkmarx.atlassian.net/wiki/spaces/KC/pages/96731162/CxSAST+MS-VSTS+Plugin+v8.4.1+and+up"
+      "uri": "https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/How+to+use+CxAST+Azure+DevOps+Plugin"
     },
     "support": {
       "uri": "https://support.checkmarx.com/home"
