@@ -1,6 +1,6 @@
 import {factory} from "./ConfigLog4j";
-import {CxScanConfigCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall"
-import {CxAuthCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuthCall"
+import {CxScanConfigCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall";
+import {CxAuthCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuthCall";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
 import taskLib = require('azure-pipelines-task-lib/task');
 
@@ -11,7 +11,6 @@ export class TaskRunner {
     async run() {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
-        let scanners = [];
         let params: Map<CxParamType,string> = new Map<CxParamType,string>();
         params.set(CxParamType.PROJECT_NAME,taskLib.getInput("projectName"));
         console.log("Project name: " + taskLib.getInput("projectName"));
@@ -27,20 +26,7 @@ export class TaskRunner {
             params.set(CxParamType.FILTER,taskLib.getInput("zipFileFilter"));
             console.log(taskLib.getInput("zipFileFilter"));
         }
-        if(taskLib.getBoolInput("enableSastScan")) {
-            scanners.push("sast");
-        }
-        if(taskLib.getBoolInput("enableScaScan")) {
-            scanners.push("sca");
-        }
-        if(taskLib.getBoolInput("enableKicsScan")) {
-            scanners.push("kics");
-        }
-        if(taskLib.getBoolInput("enableContainerScan")) {
-            scanners.push("container");
-        }
         params.set(CxParamType.S,".");
-        params.set(CxParamType.SCAN_TYPES, scanners.join(","));
         const auth = new CxAuthCall(this.cxScanConfig);
         await auth.scanCreate(params).then(value => {
             console.log(value);
