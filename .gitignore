@@ -1,0 +1,64 @@
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
+
+pids
+logs
+results
+tmp
+
+# Build
+public/css/main.css
+
+# Coverage reports
+coverage
+
+# API keys and secrets
+.env
+
+# Dependency directory
+node_modules
+bower_components
+
+# Editors
+.idea
+*.iml
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore built ts files
+dist/**/*
+
+# ignore yarn.lock
+yarn.lock
+CheckmarxASTBeta.CheckmarxAST-0.0.1.vsix
+CheckmarxASTBeta.CheckmarxASTTest-0.0.1.vsix
+CheckmarxASTBeta1.CheckmarxASTTest-0.0.1.vsix
+CxASTScan/package-lock.json
+package-lock.json
+CxASTScan/src/index.d.ts
+CxASTScan/src/index.js
+CxASTScan/src/index.js.map
+CxASTScan/src/services/ConfigLog4j.d.ts
+CxASTScan/src/services/ConfigLog4j.js
+CxASTScan/src/services/ConfigLog4j.js.map
+CxASTScan/src/services/TaskRunner.d.ts
+CxASTScan/src/services/TaskRunner.js
+CxASTScan/src/services/TaskRunner.js.map
+CxASTScan/src/test/_suite.d.ts
+CxASTScan/src/test/_suite.js
+CxASTScan/src/test/_suite.js.map
+CxASTScan/src/test/success_nowait.d.ts
+CxASTScan/src/test/success_nowait.js
+CxASTScan/src/test/success_nowait.js.map
+CxASTScan/src/test/success_waitmode.d.ts
+CxASTScan/src/test/success_waitmode.js
+CxASTScan/src/test/success_waitmode.js.map
