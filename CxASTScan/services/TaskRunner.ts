@@ -1,12 +1,13 @@
 import {factory} from "./ConfigLog4j";
-import {CxScanConfigCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfigCall"
-import {CxAuthCall} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuthCall"
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
 import taskLib = require('azure-pipelines-task-lib/task');
+import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
+import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
+import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
-    private cxScanConfig = new CxScanConfigCall();
+    private cxScanConfig = new CxScanConfig();
 
     async run() {
         this.printHeader();
@@ -27,16 +28,17 @@ export class TaskRunner {
             console.log(taskLib.getInput("zipFileFilter"));
         }
         params.set(CxParamType.S,".");
-        const auth = new CxAuthCall(this.cxScanConfig);
-        await auth.scanCreate(params).then(value => {
-            console.log(value);
-        }).catch(err => console.log(err)).finally(() => console.log("DONE!"));
-        //return auth.scanCreate(params);
-        // const data = await auth.scanCreate(params);
-        // const cxScanObject: CxScan = JSON.parse(data);
-        // console.log("Scan object received: " + JSON.stringify(cxScanObject))
-
+        const auth = new CxAuth(this.cxScanConfig);
+        try {
+            const data = await auth.scanCreate(params);
+            const cxCommandOutput: CxCommandOutput =JSON.parse(JSON.stringify(data));
+            taskLib.setResult(cxCommandOutput.exitCode == 0 ? taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "")
+        }
+        catch (err) {
+            taskLib.setResult(taskLib.TaskResult.Failed, err.message);
+        }
     }
+
     private printHeader() {
         this.log.info(`
          CxCxCxCxCxCxCxCxCxCxCxCx          

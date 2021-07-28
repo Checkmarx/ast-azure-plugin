@@ -4,7 +4,7 @@ import path = require('path');
 
 let taskPath = path.join(__dirname, '..', 'index.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
-tmr.setInput("projectName", 'TestADO_NoWait');
+tmr.setInput("projectName", 'Test_AdditionalParams');
 tmr.setInput("zipFileFilter", '*.ts');
-tmr.setInput("additionalParams", '--nowait');
+tmr.setInput("additionalParams", '--fake-parameter fake');
 tmr.run();
