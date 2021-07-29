@@ -1,28 +1,28 @@
 import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
+import {MockTestRunner} from 'azure-pipelines-task-lib/mock-test';
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScan";
 import assert = require("assert");
-import {MockTestRunner} from "azure-pipelines-task-lib/mock-test";
 
 describe('Task runner test', function () {
 
-    it('should be success no wait mode', function() {
+    it('should be success no wait mode', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'success_nowait.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         console.log(tr.succeeded);
         const scanObject = getScanObject(tr);
-        assert.deepStrictEqual(scanObject.Status,"Queued");
+        assert.deepStrictEqual(scanObject.Status, "Queued");
     });
 
-    it('should be success wait mode',  function () {
+    it('should be success wait mode', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'success_waitmode.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         const scanObject = getScanObject(tr);
-        assert.deepStrictEqual(scanObject.Status,"Queued");
+        assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.succeeded);
 
     });
@@ -41,18 +41,18 @@ describe('Task runner test', function () {
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
         const scanObject = getScanObject(tr);
-        assert.deepStrictEqual(scanObject.Status,"Queued");
+        assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.failed);
     });
 
 });
 
-function getScanObject(tr: MockTestRunner) : CxScan {
+function getScanObject(tr: MockTestRunner): CxScan {
     const logs = tr.stdout.split('\n');
     const jsonString = logs.filter((log) => {
         return log && isJsonString(log);
     });
-    if (jsonString[0])  {
+    if (jsonString[0]) {
         console.log("Scan json: " + jsonString);
         return JSON.parse(jsonString[0]);
     }
