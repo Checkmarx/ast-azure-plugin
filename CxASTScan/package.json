@@ -12,7 +12,7 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.15",
+    "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.16",
     "azure-pipelines-task-lib": "^3.1.4",
     "typescript-logging": "^1.0.0",
     "regenerator-runtime": "^0.13.7",
