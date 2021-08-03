@@ -43,7 +43,6 @@ the early detection and mitigation of crucial security flaws.
 1.	Project Name: Enter a new project name or default to $(Build.Repository.Name). The default name will contain the SCM repository name.
 2.	Tenant Name: Please provide your AST Tenant name
 3.	Additional Parameters: Please provide any additional parameters for the scan to complete (--sast-preset-type "Checkmarx Default")
-4.  Zip File Filters: Source code directories/Files that get zipped and sent to AST server for scanning
 
 ###### Configure Checkmarx AST Service Connection Step
 

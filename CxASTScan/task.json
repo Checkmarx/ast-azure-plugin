@@ -55,15 +55,6 @@
       "required": false,
       "helpMarkDown": "Additional parameters can be provided in cases where the specific configuration is needed",
       "groupName": "params"
-    },
-    {
-      "name": "zipFileFilter",
-      "type": "string",
-      "label": "Zip File Filters",
-      "required": false,
-      "defaultValue": "*",
-      "helpMarkDown": "Source file filtering pattern",
-      "groupName": "params"
     }
   ],
   "execution": {

@@ -23,10 +23,6 @@ export class TaskRunner {
             params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
             console.log(taskLib.getInput("additionalParams"));
         }
-        if(taskLib.getInput("zipFileFilter") !== undefined) {
-            params.set(CxParamType.FILTER,taskLib.getInput("zipFileFilter"));
-            console.log(taskLib.getInput("zipFileFilter"));
-        }
         params.set(CxParamType.S,".");
         const auth = new CxAuth(this.cxScanConfig);
         try {
