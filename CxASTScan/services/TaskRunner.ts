@@ -1,9 +1,9 @@
 import {factory} from "./ConfigLog4j";
-import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
-import taskLib = require('azure-pipelines-task-lib/task');
-import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
-import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
-import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
+import {CxScanConfig} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
+import {CxParamType} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxParamType";
+import {CxCommandOutput} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
+import {CxAuth} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxAuth";
+import * as taskLib from "azure-pipelines-task-lib/task";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
@@ -13,7 +13,7 @@ export class TaskRunner {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
         let params: Map<CxParamType,string> = new Map<CxParamType,string>();
-        params.set(CxParamType.PROJECT_NAME,taskLib.getInput("projectName"));
+        params.set(CxParamType.PROJECT_NAME, taskLib.getInput("projectName"));
         console.log("Project name: " + taskLib.getInput("projectName"));
         if(taskLib.getInput("tenantName") !== undefined) {
             params.set(CxParamType.TENANT,taskLib.getInput("tenantName"));
@@ -22,10 +22,6 @@ export class TaskRunner {
         if(taskLib.getInput("additionalParams") !== undefined) {
             params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
             console.log(taskLib.getInput("additionalParams"));
-        }
-        if(taskLib.getInput("zipFileFilter") !== undefined) {
-            params.set(CxParamType.FILTER,taskLib.getInput("zipFileFilter"));
-            console.log(taskLib.getInput("zipFileFilter"));
         }
         params.set(CxParamType.S,".");
         const auth = new CxAuth(this.cxScanConfig);

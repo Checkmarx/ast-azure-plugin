@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import {MockTestRunner} from 'azure-pipelines-task-lib/mock-test';
-import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScan";
 import assert = require("assert");
+import CxScan from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxScan";
 
 describe('Task runner test', function () {
 
@@ -10,17 +10,19 @@ describe('Task runner test', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'success_nowait.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
-        console.log(tr.succeeded);
+        tr.run(10);
+
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
+        assert.ok(tr.succeeded);
     });
 
     it('should be success wait mode', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'success_waitmode.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
+        tr.run(10);
+
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.succeeded);
@@ -31,7 +33,8 @@ describe('Task runner test', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'failure_additional_params.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
+        tr.run(10);
+
         assert.ok(tr.failed);
     });
 
@@ -39,7 +42,8 @@ describe('Task runner test', function () {
         this.timeout(300000);
         let tp = path.join(__dirname, 'failure_wrong_preset.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
+        tr.run(10);
+
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.failed);
