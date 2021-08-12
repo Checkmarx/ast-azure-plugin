@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import {MockTestRunner} from 'azure-pipelines-task-lib/mock-test';
 import assert = require("assert");
-import CxScan from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxScan";
+import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScan";
 
 describe('Task runner test', function () {
 

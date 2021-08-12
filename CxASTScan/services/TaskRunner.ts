@@ -1,8 +1,8 @@
 import {factory} from "./ConfigLog4j";
-import {CxScanConfig} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
-import {CxParamType} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxParamType";
-import {CxCommandOutput} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
-import {CxAuth} from "@CheckmarxDev/ast-cli-javascript-wrapper/dist/main/CxAuth";
+import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
+import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
+import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
+import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
 import * as taskLib from "azure-pipelines-task-lib/task";
 
 export class TaskRunner {
