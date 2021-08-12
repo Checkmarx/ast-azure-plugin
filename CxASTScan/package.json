@@ -5,6 +5,9 @@
   "main": "index.js",
   "typings": "src/index.d.ts",
   "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "build": "tsc",
     "test": "tsc && mocha src/test/_suite.js --exit"
@@ -12,11 +15,11 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.19",
+    "@CheckmarxDev/ast-cli-javascript-wrapper": "0.0.20",
     "azure-pipelines-task-lib": "^3.1.4",
-    "typescript-logging": "^1.0.0",
     "regenerator-runtime": "^0.13.7",
-    "sync-request": "^6.1.0"
+    "sync-request": "^6.1.0",
+    "typescript-logging": "^1.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^8.2.3",
