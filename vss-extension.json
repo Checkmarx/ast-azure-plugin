@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "CheckmarxAST",
   "name": "Checkmarx AST Test",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "baseUri": "http://localhost:80",
   "publisher": "CheckmarxASTBeta",
   "targets": [
