@@ -2,7 +2,7 @@ name: Integration Tests
 
 on:
   push:
-    branches: [ update-js-wrapper ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
