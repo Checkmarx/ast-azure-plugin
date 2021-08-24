@@ -53,6 +53,7 @@
       "type": "string",
       "label": "Additional Parameters",
       "required": false,
+      "defaultValue": "--branch $(Build.SourceBranchName)",
       "helpMarkDown": "Additional parameters can be provided in cases where the specific configuration is needed",
       "groupName": "params"
     }

@@ -8,6 +8,7 @@ env:
   PUBLISHER: CheckmarxASTBeta
   EXTENSION_ID: CheckmarxAST
   EXTENSION_NAME: 'Checkmarx AST Test'
+  RELEASE_VERSION: 'dev'
 
 jobs:
   build:
@@ -27,6 +28,13 @@ jobs:
 
       - name: Build step
         run: cd CxASTScan && npm install && npm run build
+
+      - name: Set version
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["**/*.json"]'
+        env:
+          VERSION: ${{ env.RELEASE_VERSION }}
 
       - name: Create VSS Extension
         run: npx tfx extension create --manifest-globs vss-extension.json
