@@ -31,8 +31,7 @@ jobs:
 
       - name: New version
         run: |
-          echo "The Current RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
-      - run: npm run build --if-present
+          echo "The new version RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
 
       - name: Set version
         uses: cschleiden/replace-tokens@v1
