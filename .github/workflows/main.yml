@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./CxASTScan
+        working-directory: ./cxAstScan
 
     strategy:
       matrix:

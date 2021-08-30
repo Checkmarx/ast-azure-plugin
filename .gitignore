@@ -26,9 +26,9 @@ coverage
 node_modules
 bower_components
 
-CxASTScan/**/*.js
-CxASTScan/**/*.js.map
-CxASTScan/**/*.d.ts
+cxAstScan/**/*.js
+cxAstScan/**/*.js.map
+cxAstScan/**/*.d.ts
 
 *.vsix
 *.taskkey
@@ -43,6 +43,7 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+scripts/**/*
 
 # ignore yarn.lock
 yarn.lock

@@ -1,10 +1,9 @@
 {
   "manifestVersion": 1,
   "id": "checkmarx-ast-azure-plugin-dev",
-  "name": "Checkmarx AST Test",
-  "version": "0.0.53",
-  "baseUri": "http://localhost:80",
-  "publisher": "checkmarxdevpedro",
+  "name": "Checkmarx AST Test Dev",
+  "version": "0.0.14",
+  "publisher": "checkmarxdev",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -58,21 +57,22 @@
   },
   "files": [
     {
-      "path": "CxASTScan"
+      "path": "cxAstScan"
     },
     {
-      "path": "CxASTScan/",
-      "addressable": true
-    },
-    {
-      "path": "ui/",
-      "addressable": true
-  },                  
-  {
-      "path": "ui/node_modules/vss-web-extension-sdk/lib",
+      "path": "scripts/dist",
       "addressable": true,
-      "packagePath": "lib"
-  }
+      "packagePath": "scripts"
+    },
+    {
+      "path": "ui/cxASTReportTab.html",
+      "addressable": true
+    },
+    {
+        "path": "node_modules/vss-web-extension-sdk/lib",
+        "addressable": true,
+        "packagePath": "lib"
+    }
   ],
   "contributions": [
     {
@@ -82,7 +82,7 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "CxASTScan",
+        "name": "cxAstScan",
         "icon": "images/extension-icon.png"
       }
     },

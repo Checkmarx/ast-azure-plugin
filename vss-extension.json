@@ -4,7 +4,6 @@
   "publisher": "#{PUBLISHER}#",
   "version": "#{VERSION}#",
   "name": "#{EXTENSION_NAME}#",
-  "baseUri": "http://localhost:80",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -58,11 +57,21 @@
   },
   "files": [
     {
-      "path": "CxASTScan"
+      "path": "cxAstScan"
     },
     {
-      "path": "CxASTScan/src/",
+      "path": "scripts/dist",
+      "addressable": true,
+      "packagePath": "scripts"
+    },
+    {
+      "path": "ui/cxASTReportTab.html",
       "addressable": true
+    },
+    {
+      "path": "node_modules/vss-web-extension-sdk/lib",
+      "addressable": true,
+      "packagePath": "lib"
     }
   ],
   "contributions": [
@@ -73,8 +82,25 @@
         "ms.vss-distributed-task.tasks"
       ],
       "properties": {
-        "name": "CxASTScan",
+        "name": "cxAstScan",
         "icon":"images/extension-icon.png"
+      }
+    },
+    {
+      "id": "cxASTResults",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "A tab contributing to Checkmarx AST results report",
+      "targets": [
+        "ms.vss-build-web.build-results-view"
+      ],
+      "properties": {
+        "name": "Checkmarx AST",
+        "uri": "ui/cxASTReportTab.html",
+        "height": "175%",
+        "width": "100%",
+        "supportsTasks": [
+          "ca5dd7c2-5d8f-43cf-b67b-ff4aabd28d03"
+        ]
       }
     },
     {

@@ -8,8 +8,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsc -p CxASTScan/tsconfig.json",
-    "test": "tsc -p CxASTScan/tsconfig.json && mocha CxASTScan/dist/test/_suite.js --exit"
+    "build": "tsc -b cxAstScan/tsconfig.json && tsc -b ui/enhancer/tsconfig.json",
+    "test": "npm run build && mocha cxAstScan/dist/test/_suite.js --exit"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
