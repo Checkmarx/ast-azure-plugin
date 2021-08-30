@@ -1,16 +1,16 @@
 {
   "manifestVersion": 1,
-  "id": "CheckmarxAST",
+  "id": "CheckmarxASTTests",
   "name": "Checkmarx AST Test",
-  "version": "0.0.4",
+  "version": "0.0.53",
   "baseUri": "http://localhost:80",
-  "publisher": "CheckmarxASTBeta",
+  "publisher": "jprannoyn",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "public": true,
+  "public": false,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
@@ -61,9 +61,18 @@
       "path": "CxASTScan"
     },
     {
-      "path": "CxASTScan/src/",
+      "path": "CxASTScan/",
       "addressable": true
-    }
+    },
+    {
+      "path": "ui/",
+      "addressable": true
+  },                  
+  {
+      "path": "ui/node_modules/vss-web-extension-sdk/lib",
+      "addressable": true,
+      "packagePath": "lib"
+  }
   ],
   "contributions": [
     {
@@ -74,7 +83,7 @@
       ],
       "properties": {
         "name": "CxASTScan",
-        "icon":"images/extension-icon.png"
+        "icon": "images/extension-icon.png"
       }
     },
     {
@@ -85,7 +94,7 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "CheckmarxAST",
+        "name": "CheckmarxASTTests",
         "displayName": "Checkmarx AST Service Connection",
         "authenticationSchemes": [
           {
@@ -124,11 +133,27 @@
                   "isRequired": true
                 }
               }
-
             ]
           }
         ],
         "helpMarkDown": "<span style=\"color: #222\"><font size=\"3\"><span style=\"color: #222\"><font size=\"3\">If you don't already have Checkmarx installed, click </font></span><a href=\"https://info.checkmarx.com/cx-microsoft-vs-team-services\" target=\"_blank\"><span style=\"color: #0072c6\"><font size=\"3\">here</font></span></a>   to register for a Checkmarx cloud account</span>"
+      }
+    },
+    {
+      "id": "cxASTResults",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "A tab contributing to Checkmarx AST results report",
+      "targets": [
+        "ms.vss-build-web.build-results-view"
+      ],
+      "properties": {
+        "name": "Checkmarx AST",
+        "uri": "ui/cxASTReportTab.html",
+        "height": "175%",
+        "width": "100%",
+        "supportsTasks": [
+          "ca5dd7c2-5d8f-43cf-b67b-ff4aabd28d03"
+        ]
       }
     }
   ]

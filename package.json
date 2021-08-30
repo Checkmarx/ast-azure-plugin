@@ -1,0 +1,35 @@
+{
+  "name": "checkmarx-ast-azure-plugin",
+  "version": "1.0.0",
+  "description": "Add Secure Static Source Code Analysis inside your build process",
+  "main": "index.js",
+  "typings": "src/index.d.ts",
+  "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && mocha src/test/_suite.js --exit"
+  },
+  "author": "Jay Nanduri",
+  "license": "SEE LICENSE IN checkmarx-license-terms.md",
+  "dependencies": {
+    "regenerator-runtime": "^0.13.7",
+    "sync-request": "^6.1.0",
+    "typescript-logging": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^15.6.1",
+    "@types/q": "^1.5.5",
+    "mocha": "^9.0.2",
+    "typescript": "^4.3.5",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

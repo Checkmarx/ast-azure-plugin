@@ -4,9 +4,9 @@
     "outDir": "./src",
     "sourceMap": true,
     "module": "commonjs",
-    "moduleResolution": "node",
+    "esModuleInterop": true,
     "noEmitOnError": true,
-    "target": "es5",
+    "target": "es6",
     "declaration": true,
     "removeComments": false,
     "noImplicitAny": true,
@@ -14,5 +14,13 @@
     "noUnusedLocals": true,
     "pretty": true
   },
-  "include": ["./**/*"]
+  "include": [
+    "services/**/*",
+    "test/**/*",
+    "index.ts"
+  ],
+  "exclude": [
+    "node_modules/**/*",
+    "ui/**/*"
+  ]
 }

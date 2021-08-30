@@ -1,9 +1,11 @@
 import {factory} from "./ConfigLog4j";
-import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
-import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
-import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
-import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
+import {CxScanConfig} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxScanConfig";
+import {CxParamType} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxParamType";
+import {CxCommandOutput} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxCommandOutput";
+import {CxAuth} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxAuth";
 import * as taskLib from "azure-pipelines-task-lib/task";
+import * as path from "path"
+import * as fs from "fs";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
@@ -25,10 +27,39 @@ export class TaskRunner {
         }
         params.set(CxParamType.S,".");
         const auth = new CxAuth(this.cxScanConfig);
+
+        // function isJsonString(result: string) {
+        //     try {
+        //         JSON.parse(result);
+        //     } catch (e) {
+        //         return false;
+        //     }
+        //     return true;
+        // }
+
         try {
             const data = await auth.scanCreate(params);
             const cxCommandOutput: CxCommandOutput =JSON.parse(JSON.stringify(data));
+            if(cxCommandOutput.exitCode == 0) {
+                console.log("Completed scan. Generating results...")
+                const agentTempDirectory = taskLib.getVariable('Agent.BuildDirectory')
+                console.log("agentBuildDirectory " , agentTempDirectory)
+                const pathname =path.join(agentTempDirectory,'cxASTResults.html')
+                console.log("path : " + pathname)
+                const resultHtml = await auth.getResultsSummary(cxCommandOutput.scanObjectList.pop().ID,"html","")
+                console.log(resultHtml)
+                fs.writeFileSync(pathname, resultHtml)
+                taskLib.addAttachment("HTML_ATTACHMENT_TYPE","cxASTResults",pathname)
+                console.log("Check the attachments")
+                // if(result != null && isJsonString(result)) {
+                //        step to add the result param to display
+                //        await this.writeReportFile("./cxAST-results.json",result)
+                //        taskLib.addAttachment("cxAST-results.json","cxAST-results.json","./cxAST-results.json")
+                // }
+            }
+            //await this.attachJsonReport(scanResults);
             taskLib.setResult(cxCommandOutput.exitCode == 0 ? taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "")
+
         }
         catch (err) {
             taskLib.setResult(taskLib.TaskResult.Failed, err.message);
@@ -58,6 +89,19 @@ export class TaskRunner {
 Starting Checkmarx scan`);
     }
 
+    // private async writeReportFile(jsonReportPath:string,jsonReport:string){
+    //     this.log.info(`Writing report to ${jsonReportPath}`);
+    //     await new Promise((resolve, reject) => {
+    //         fs.writeFile(jsonReportPath, jsonReport, err => {
+    //             if (err) {
+    //                 reject(err);
+    //             } else {
+    //                 resolve(jsonReportPath);
+    //             }
+    //         });
+    //     });
+    // }
+
     private initiateScanConfig() {
         let endpointId = taskLib.getInput('CheckmarxService', false) !== undefined ? taskLib.getInput('CheckmarxService', false) :"" ;
         this.cxScanConfig.baseUri = "";
@@ -74,5 +118,10 @@ Starting Checkmarx scan`);
         }
         return this.cxScanConfig;
     }
+
+    // private async attachJsonReport(scanResults: any) {
+    //
+    //
+    // }
 }
 
