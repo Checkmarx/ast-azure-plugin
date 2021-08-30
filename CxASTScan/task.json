@@ -59,7 +59,7 @@
   ],
   "execution": {
     "Node10": {
-      "target": "src/index.js"
+      "target": "./dist/index.js"
     }
   },
   "messages": {

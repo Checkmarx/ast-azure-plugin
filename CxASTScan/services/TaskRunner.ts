@@ -1,11 +1,11 @@
 import {factory} from "./ConfigLog4j";
-import {CxScanConfig} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxScanConfig";
-import {CxParamType} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxParamType";
-import {CxCommandOutput} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxCommandOutput";
-import {CxAuth} from "@jaypnanduri/ast-cli-javascript-wrapper-jay/dist/main/CxAuth";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
 import * as fs from "fs";
+import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
+import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
+import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
+import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
@@ -15,14 +15,14 @@ export class TaskRunner {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
         let params: Map<CxParamType,string> = new Map<CxParamType,string>();
-        params.set(CxParamType.PROJECT_NAME, taskLib.getInput("projectName"));
+        params.set(CxParamType.PROJECT_NAME, <string> taskLib.getInput('projectName', true));
         console.log("Project name: " + taskLib.getInput("projectName"));
         if(taskLib.getInput("tenantName") !== undefined) {
-            params.set(CxParamType.TENANT,taskLib.getInput("tenantName"));
+            params.set(CxParamType.TENANT,<string>taskLib.getInput("tenantName"));
             console.log(taskLib.getInput("tenantName"));
         }
         if(taskLib.getInput("additionalParams") !== undefined) {
-            params.set(CxParamType.ADDITIONAL_PARAMETERS,taskLib.getInput("additionalParams"));
+            params.set(CxParamType.ADDITIONAL_PARAMETERS,<string>taskLib.getInput("additionalParams"));
             console.log(taskLib.getInput("additionalParams"));
         }
         params.set(CxParamType.S,".");
@@ -44,8 +44,11 @@ export class TaskRunner {
                 console.log("Completed scan. Generating results...")
                 const agentTempDirectory = taskLib.getVariable('Agent.BuildDirectory')
                 console.log("agentBuildDirectory " , agentTempDirectory)
-                const pathname =path.join(agentTempDirectory,'cxASTResults.html')
+                if (agentTempDirectory != null) {
+                    const pathname = path.join(agentTempDirectory, 'cxASTResults.html')
+
                 console.log("path : " + pathname)
+                // @ts-ignore
                 const resultHtml = await auth.getResultsSummary(cxCommandOutput.scanObjectList.pop().ID,"html","")
                 console.log(resultHtml)
                 fs.writeFileSync(pathname, resultHtml)
@@ -56,12 +59,14 @@ export class TaskRunner {
                 //        await this.writeReportFile("./cxAST-results.json",result)
                 //        taskLib.addAttachment("cxAST-results.json","cxAST-results.json","./cxAST-results.json")
                 // }
+                }
             }
             //await this.attachJsonReport(scanResults);
             taskLib.setResult(cxCommandOutput.exitCode == 0 ? taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "")
 
         }
         catch (err) {
+            // @ts-ignore
             taskLib.setResult(taskLib.TaskResult.Failed, err.message);
         }
     }
@@ -86,7 +91,7 @@ export class TaskRunner {
                                            
             C H E C K M A R X              
                                            
-Starting Checkmarx scan`);
+        Starting Checkmarx scan`);
     }
 
     // private async writeReportFile(jsonReportPath:string,jsonReport:string){
@@ -108,13 +113,19 @@ Starting Checkmarx scan`);
         this.cxScanConfig.clientId = "";
         this.cxScanConfig.clientSecret = "";
         this.cxScanConfig.apiKey = "";
-        if(endpointId !== null && endpointId !== '' ) {
+        if(endpointId != null && endpointId !== '' ) {
             let astServerUrl = taskLib.getEndpointUrl(endpointId, false) !== null ? taskLib.getEndpointUrl(endpointId, false) : '';
             let astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) !== null ? taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) : '';
             let astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false) !== null ? taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false) : '';
-            this.cxScanConfig.baseUri = astServerUrl;
-            this.cxScanConfig.clientId = astUsername;
-            this.cxScanConfig.clientSecret = astPassword;
+            if (astServerUrl != null) {
+                this.cxScanConfig.baseUri = astServerUrl;
+            }
+            if (astUsername != null) {
+                this.cxScanConfig.clientId = astUsername;
+            }
+            if (astPassword != null) {
+                this.cxScanConfig.clientSecret = astPassword;
+            }
         }
         return this.cxScanConfig;
     }

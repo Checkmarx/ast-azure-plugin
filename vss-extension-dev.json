@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
-  "id": "CheckmarxASTTests",
+  "id": "checkmarx-ast-azure-plugin-dev",
   "name": "Checkmarx AST Test",
   "version": "0.0.53",
   "baseUri": "http://localhost:80",
-  "publisher": "jprannoyn",
+  "publisher": "checkmarxdevpedro",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -87,20 +87,6 @@
       }
     },
     {
-      "id": "checkmarx-result-tab",
-      "type": "ms.vss-build-web.build-results-tab",
-      "description": "A tab contributing to Checkmarx AST results report",
-      "targets": [
-        "ms.vss-build-web.build-results-view"
-      ],
-      "properties": {
-        "name": "Checkmarx AST",
-        "uri": "ui/cxASTReportTab.html",
-        "height": "175%",
-        "width": "100%"
-      }
-    },
-    {
       "id": "CxEndpoint",
       "description": "Service Endpoint type for all Cx connections",
       "type": "ms.vss-endpoint.service-endpoint-type",
@@ -151,6 +137,23 @@
           }
         ],
         "helpMarkDown": "<span style=\"color: #222\"><font size=\"3\"><span style=\"color: #222\"><font size=\"3\">If you don't already have Checkmarx installed, click </font></span><a href=\"https://info.checkmarx.com/cx-microsoft-vs-team-services\" target=\"_blank\"><span style=\"color: #0072c6\"><font size=\"3\">here</font></span></a>   to register for a Checkmarx cloud account</span>"
+      }
+    },
+    {
+      "id": "cxASTResults",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "A tab contributing to Checkmarx AST results report",
+      "targets": [
+        "ms.vss-build-web.build-results-view"
+      ],
+      "properties": {
+        "name": "Checkmarx AST",
+        "uri": "ui/cxASTReportTab.html",
+        "height": "175%",
+        "width": "100%",
+        "supportsTasks": [
+          "ca5dd7c2-5d8f-43cf-b67b-ff4aabd28d03"
+        ]
       }
     }
   ]
