@@ -1,16 +1,16 @@
 {
   "manifestVersion": 1,
-  "id": "CheckmarxASTTests",
-  "name": "Checkmarx AST Test",
-  "version": "0.0.53",
+  "id": "#{EXTENSION_ID}#",
+  "publisher": "#{PUBLISHER}#",
+  "version": "#{VERSION}#",
+  "name": "#{EXTENSION_NAME}#",
   "baseUri": "http://localhost:80",
-  "publisher": "jprannoyn",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "public": false,
+  "public": true,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
@@ -61,18 +61,9 @@
       "path": "CxASTScan"
     },
     {
-      "path": "CxASTScan/",
+      "path": "CxASTScan/src/",
       "addressable": true
-    },
-    {
-      "path": "ui/",
-      "addressable": true
-  },                  
-  {
-      "path": "ui/node_modules/vss-web-extension-sdk/lib",
-      "addressable": true,
-      "packagePath": "lib"
-  }
+    }
   ],
   "contributions": [
     {
@@ -83,21 +74,7 @@
       ],
       "properties": {
         "name": "CxASTScan",
-        "icon": "images/extension-icon.png"
-      }
-    },
-    {
-      "id": "checkmarx-result-tab",
-      "type": "ms.vss-build-web.build-results-tab",
-      "description": "A tab contributing to Checkmarx AST results report",
-      "targets": [
-        "ms.vss-build-web.build-results-view"
-      ],
-      "properties": {
-        "name": "Checkmarx AST",
-        "uri": "ui/cxASTReportTab.html",
-        "height": "175%",
-        "width": "100%"
+        "icon":"images/extension-icon.png"
       }
     },
     {
@@ -108,7 +85,7 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "CheckmarxASTTests",
+        "name": "CheckmarxAST",
         "displayName": "Checkmarx AST Service Connection",
         "authenticationSchemes": [
           {
@@ -147,6 +124,7 @@
                   "isRequired": true
                 }
               }
+
             ]
           }
         ],

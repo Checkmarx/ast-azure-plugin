@@ -12,7 +12,8 @@ describe('Task runner test', function () {
         let tp = path.join(__dirname, 'success_nowait.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
-
+        console.log(tr.stdout)
+        console.log(tr.stderr)
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.succeeded);
@@ -24,6 +25,8 @@ describe('Task runner test', function () {
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
 
+        console.log(tr.stdout)
+        console.log(tr.stderr)
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.succeeded);
@@ -35,7 +38,8 @@ describe('Task runner test', function () {
         let tp = path.join(__dirname, 'failure_additional_params.js');
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
-
+        console.log(tr.stdout)
+        console.log(tr.stderr)
         assert.ok(tr.failed);
     });
 
@@ -45,6 +49,8 @@ describe('Task runner test', function () {
         let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
 
+        console.log(tr.stdout)
+        console.log(tr.stderr)
         const scanObject = getScanObject(tr);
         assert.deepStrictEqual(scanObject.Status, "Queued");
         assert.ok(tr.failed);

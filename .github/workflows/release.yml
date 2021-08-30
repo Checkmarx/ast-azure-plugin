@@ -1,33 +1,40 @@
-name: Draft Release
+name: Azure AST plugin release
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - "*"
 
 env:
   PUBLISHER: CheckmarxASTBeta
   EXTENSION_ID: CheckmarxAST
   EXTENSION_NAME: 'Checkmarx AST Test'
-  RELEASE_VERSION: 'dev'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Tfx Install
-        run: sudo npm install -g tfx-cli
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - run: sudo npm install -g tfx-cli
 
       - name: Authenticate with GitHub package registry
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: Build step
         run: cd CxASTScan && npm install && npm run build
+
+      - name: Set new version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: New version
+        run: |
+          echo "The new version RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
 
       - name: Set version
         uses: cschleiden/replace-tokens@v1
@@ -36,21 +43,15 @@ jobs:
         env:
           VERSION: ${{ env.RELEASE_VERSION }}
 
-      - name: Create VSS Extension
-        run: npx tfx extension create --manifest-globs vss-extension.json
-
-      - uses: hugo19941994/delete-draft-releases@v0.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create extension
+        run: tfx extension create --manifest-globs vss-extension.json
 
       - name:  Create Release
         uses: actions/create-release@v1
         id: create_release
         with:
-          draft: true
-          prerelease: true
-          release_name: dev
-          tag_name: dev
+          release_name: CheckmarxASTBeta-${{ env.RELEASE_VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -61,6 +62,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
+          asset_path: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
           asset_name: ${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
           asset_content_type: application/zip
+
+      - name: Release to marketplance
+        run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
