@@ -3,7 +3,7 @@
   "id": "checkmarx-ast-azure-plugin-dev",
   "name": "Checkmarx AST Test Dev",
   "version": "0.0.16",
-  "publisher": "checkmarxdevpedro",
+  "publisher": "checkmarxdev",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
