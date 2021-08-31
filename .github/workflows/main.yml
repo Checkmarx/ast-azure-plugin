@@ -21,7 +21,10 @@ jobs:
       - name: Authenticate with GitHub package registry
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: npm install
-        run: npm install
+        run: |
+          npm install
+          cd cxAstScan/
+          npm install
       - run: npm run build
       - name: Run tests
         env:
