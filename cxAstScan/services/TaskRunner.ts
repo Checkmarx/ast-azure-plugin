@@ -13,18 +13,18 @@ export class TaskRunner {
     async run() {
         this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
+
+        const projectName = taskLib.getInput('projectName', true) || '';
+        const additionalParams = taskLib.getInput("additionalParams") || '';
+
         let params: Map<CxParamType, string> = new Map<CxParamType, string>();
-        params.set(CxParamType.PROJECT_NAME, <string>taskLib.getInput('projectName', true));
-        console.log("Project name: " + taskLib.getInput("projectName"));
-        if (taskLib.getInput("tenantName") !== undefined) {
-            params.set(CxParamType.TENANT, <string>taskLib.getInput("tenantName"));
-            console.log(taskLib.getInput("tenantName"));
-        }
-        if (taskLib.getInput("additionalParams") !== undefined) {
-            params.set(CxParamType.ADDITIONAL_PARAMETERS, <string>taskLib.getInput("additionalParams"));
-            console.log(taskLib.getInput("additionalParams"));
-        }
+        params.set(CxParamType.PROJECT_NAME, projectName);
+        params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
         params.set(CxParamType.S, ".");
+
+        console.log("Project name: " + projectName);
+        console.log("Additional Params: " + additionalParams);
+
         const auth = new CxAuth(this.cxScanConfig);
 
         try {
@@ -42,6 +42,7 @@ export class TaskRunner {
                     taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname)
                 }
             }
+
             taskLib.setResult(cxCommandOutput.exitCode == 0 ?
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "")
 
@@ -74,22 +75,28 @@ export class TaskRunner {
     }
 
     private initiateScanConfig() {
-        let endpointId = taskLib.getInput('CheckmarxService', false) !== undefined ? taskLib.getInput('CheckmarxService', false) : "";
         this.cxScanConfig.baseUri = "";
         this.cxScanConfig.clientId = "";
         this.cxScanConfig.clientSecret = "";
         this.cxScanConfig.apiKey = "";
-        if (endpointId != null && endpointId !== '') {
-            let astServerUrl = taskLib.getEndpointUrl(endpointId, false) !== null ? taskLib.getEndpointUrl(endpointId, false) : '';
-            let astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) !== null ? taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false) : '';
-            let astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false) !== null ? taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false) : '';
-            if (astServerUrl != null) {
+        this.cxScanConfig.tenant = "";
+
+        const tenantName = taskLib.getInput("tenantName");
+        if (tenantName) this.cxScanConfig.tenant = tenantName;
+
+        const endpointId = taskLib.getInput('CheckmarxService', false);
+        if (endpointId) {
+            const astServerUrl = taskLib.getEndpointUrl(endpointId, false);
+            const astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
+            const astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);
+
+            if (astServerUrl) {
                 this.cxScanConfig.baseUri = astServerUrl;
             }
-            if (astUsername != null) {
+            if (astUsername) {
                 this.cxScanConfig.clientId = astUsername;
             }
-            if (astPassword != null) {
+            if (astPassword) {
                 this.cxScanConfig.clientSecret = astPassword;
             }
         }

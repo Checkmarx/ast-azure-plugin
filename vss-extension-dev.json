@@ -2,8 +2,8 @@
   "manifestVersion": 1,
   "id": "checkmarx-ast-azure-plugin-dev",
   "name": "Checkmarx AST Test Dev",
-  "version": "0.0.14",
-  "publisher": "checkmarxdev",
+  "version": "0.0.16",
+  "publisher": "checkmarxdevpedro",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -148,12 +148,7 @@
       ],
       "properties": {
         "name": "Checkmarx AST",
-        "uri": "ui/cxASTReportTab.html",
-        "height": "175%",
-        "width": "100%",
-        "supportsTasks": [
-          "ca5dd7c2-5d8f-43cf-b67b-ff4aabd28d03"
-        ]
+        "uri": "ui/cxASTReportTab.html"
       }
     }
   ]
