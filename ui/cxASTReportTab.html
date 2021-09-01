@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <script src="../lib/VSS.SDK.min.js"></script>
+
+    <script type="text/javascript">
+        VSS.init({
+            explicitNotifyLoaded: true,
+            usePlatformScripts: true,
+            usePlatformStyles: true,
+            moduleLoaderConfig: {
+                paths: {
+                    enhancer: 'scripts',
+                },
+            },
+        });
+
+        VSS.ready(function () {
+            VSS.require(['scripts/tab'], function () {
+            });
+        });
+    </script>
+</head>
+
+<body>
+<div id="ast-report">
+</div>
+</body>
+</html>

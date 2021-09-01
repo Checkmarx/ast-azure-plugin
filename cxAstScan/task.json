@@ -12,7 +12,7 @@
   "version": {
     "Major": 0,
     "Minor": 0,
-    "Patch": 1
+    "Patch": 7
   },
   "demands": [],
   "minimumAgentVersion": "1.0.0",
@@ -60,7 +60,7 @@
   ],
   "execution": {
     "Node10": {
-      "target": "src/index.js"
+      "target": "./dist/index.js"
     }
   },
   "messages": {
