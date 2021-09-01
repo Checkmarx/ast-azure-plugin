@@ -27,7 +27,11 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       - name: Build step
-        run: cd cxAstScan && npm install && npm run build
+        run: |
+          npm install
+          cd cxAstScan/
+          npm install
+      - run: npm run build
 
       - name: Set new version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
