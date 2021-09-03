@@ -32,19 +32,19 @@ export class TaskRunner {
             const cxCommandOutput: CxCommandOutput = JSON.parse(JSON.stringify(data));
             if (cxCommandOutput.exitCode == 0) {
                 console.log("Completed scan. Generating results...")
-                const agentTempDirectory = taskLib.getVariable('Agent.BuildDirectory')
+                const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
                 const scan = cxCommandOutput.scanObjectList.pop();
 
                 if (agentTempDirectory && scan && scan.ID) {
-                    const pathname = path.join(agentTempDirectory, 'cxASTResults.html')
+                    const pathname = path.join(agentTempDirectory, 'cxASTResults.html');
 
-                    await auth.getResultsSummary(scan.ID, "html", pathname)
-                    taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname)
+                    await auth.getResults(scan.ID,"summaryHTML", "cxASTResults", agentTempDirectory);
+                    taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
                 }
             }
 
             taskLib.setResult(cxCommandOutput.exitCode == 0 ?
-                taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "")
+                taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
 
         } catch (err) {
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
