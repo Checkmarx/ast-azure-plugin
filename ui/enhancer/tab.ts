@@ -51,14 +51,53 @@ export class CheckmarxReportTab extends Controls.BaseControl {
                                 )
                                 .then((content) => {
                                     const data = new TextDecoder('utf-8').decode(new DataView(content));
-                                    (document.getElementById('ast-report') as HTMLDivElement).innerHTML = data;
-                                    VSS.notifyLoadSucceeded();
+
+                                    const parser = new DOMParser();
+                                    const htmlDoc = parser.parseFromString(data, 'text/html');
+
+                                    // add styles
+                                    this.appendStyles(htmlDoc);
+                                    // add main cx element
+                                    this.appendMainDiv(htmlDoc);
+                                    // clean scripts and upload it
+                                    this.appendScripts(htmlDoc);
                                 });
                         });
+
+                        if (!taskAttachments.length) {
+                            this.appendMainDivNotFound("Result file not found");
+                        }
+
+                        VSS.notifyLoadSucceeded();
                     });
             });
         }
     }
+
+    private appendMainDivNotFound = (text: string): void => {
+        (document.getElementById('ast-report') as HTMLDivElement).innerHTML = "<p>"+text+"</p>";
+
+    }
+    private appendMainDiv = (htmlDoc: Document): void => {
+        const cxElement = htmlDoc.getElementsByClassName('cx-main')[0];
+        (document.getElementById('ast-report') as HTMLDivElement).innerHTML = cxElement.innerHTML;
+
+    }
+
+    private appendStyles = (htmlDoc: Document): void => {
+        const cxStyles = htmlDoc.getElementsByTagName('style')[0];
+        document.head.appendChild(cxStyles);
+    };
+
+    private appendScripts = (htmlDoc: Document): void => {
+        let cxScripts = htmlDoc.getElementsByTagName('script')[0].innerHTML;
+        cxScripts = cxScripts.substring(cxScripts.indexOf("{") + 1, cxScripts.lastIndexOf("}"))
+
+        let script = document.createElement("script");
+        script.type="text/javascript";
+        script.innerHTML = cxScripts;
+        document.head.appendChild(script);
+    };
 }
 
 CheckmarxReportTab.enhance(CheckmarxReportTab, $(".build-info"), {});

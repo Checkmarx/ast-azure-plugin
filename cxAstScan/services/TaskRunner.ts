@@ -32,7 +32,7 @@ export class TaskRunner {
             const cxCommandOutput: CxCommandOutput = JSON.parse(JSON.stringify(data));
             if (cxCommandOutput.exitCode == 0) {
                 console.log("Completed scan. Generating results...")
-                const agentTempDirectory = taskLib.getVariable('Agent.BuildDirectory');
+                const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
                 const scan = cxCommandOutput.scanObjectList.pop();
 
                 if (agentTempDirectory && scan && scan.ID) {
