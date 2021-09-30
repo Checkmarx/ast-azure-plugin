@@ -11,6 +11,12 @@ updates:
       - npm-pkg-checkmarx
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/cxAstScan"
+    registries:
+      - npm-pkg-checkmarx
+    schedule:
+      interval: "daily"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
