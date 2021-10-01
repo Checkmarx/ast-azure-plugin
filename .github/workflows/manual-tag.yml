@@ -1,3 +1,4 @@
+name: Manual Tag Creation
 
 on:
   workflow_dispatch:
@@ -12,18 +13,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Tag
         run: |
           echo ${{ github.event.inputs.tag }}
           echo "NEXT_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
       - name: Create tag
-        uses: actions/github-script@v4.1
+        uses: actions-ecosystem/action-push-tag@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          github-token: ${{ github.token }}
-          script: |
-            github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/tags/${process.env.NEXT_VERSION}`,
-              sha: context.sha
-            })
+          tag: ${{ env.NEXT_VERSION }}
