@@ -6,9 +6,9 @@ on:
       - "*"
 
 env:
-  PUBLISHER: CheckmarxASTBeta
+  PUBLISHER: Checkmarx
   EXTENSION_ID: CheckmarxAST
-  EXTENSION_NAME: 'Checkmarx AST Test'
+  EXTENSION_NAME: 'Checkmarx AST'
 
 jobs:
   build:
