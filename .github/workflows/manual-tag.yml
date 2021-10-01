@@ -1,7 +1,10 @@
-name: Manual Tag Creation
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Next release tag'
+        required: true
 
 jobs:
   tag-creation:
@@ -9,12 +12,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
-        with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-      - name: Update version
+      - name: Tag
         run: |
-          npm version patch
-          git push && git push --tags
+          echo ${{ github.event.inputs.tag }}
+          echo "NEXT_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+      - name: Create tag
+        uses: actions/github-script@v4.1
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${process.env.NEXT_VERSION}`,
+              sha: context.sha
+            })
