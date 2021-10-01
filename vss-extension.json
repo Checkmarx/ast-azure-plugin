@@ -111,7 +111,7 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "CheckmarxAST",
+        "name": "CheckmarxASTService",
         "displayName": "Checkmarx AST Service Connection",
         "authenticationSchemes": [
           {
