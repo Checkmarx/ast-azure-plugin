@@ -7,7 +7,7 @@ on:
 
 env:
   PUBLISHER: Checkmarx
-  EXTENSION_ID: CheckmarxAST
+  EXTENSION_ID: checkmarx-ast-azure-plugin
   EXTENSION_NAME: 'Checkmarx AST'
 
 jobs:
