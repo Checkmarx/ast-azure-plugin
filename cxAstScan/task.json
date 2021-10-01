@@ -27,7 +27,7 @@
   "inputs": [
     {
       "name": "CheckmarxService",
-      "type": "connectedService:CheckmarxAST",
+      "type": "connectedService:CheckmarxASTService",
       "label": "Checkmarx AST Service Connection",
       "required": false,
       "defaultValue": "",
