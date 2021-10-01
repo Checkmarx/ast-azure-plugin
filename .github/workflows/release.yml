@@ -54,7 +54,7 @@ jobs:
         uses: actions/create-release@v1
         id: create_release
         with:
-          release_name: CheckmarxASTBeta-${{ env.RELEASE_VERSION }}
+          release_name: CheckmarxAST-${{ env.RELEASE_VERSION }}
           tag_name: ${{ env.RELEASE_VERSION }}
           body: ${{steps.github_release.outputs.changelog}}
         env:
