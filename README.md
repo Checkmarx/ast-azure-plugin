@@ -13,7 +13,7 @@
     <img src="./logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">AST-AZURE-PLUIGN</h3>
+<h3 align="center">AST-AZURE-PLUGIN</h3>
 
 <p align="center">
     The CxAST Azure DevOps plugin enables you to trigger SAST, SCA, and KICS scans directly from an Azure DevOps pipeline.
