@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report for a bug in the CLI
+about: Create a report for a bug in the AZURE PLUGIN
 title: "[BUG]"
 labels: bug
 assignees: ''
@@ -23,11 +23,11 @@ A clear and concise description of where the behavior differed from the expected
 4. See error
 
 ### Environment
-- CLI version
+- AZURE PLUGIN version
 - Platform (e.g. Windows 10 x64)
 
 ### Additional comments
 Add any other context about the problem here.
 
 ### Logs
-Paste the output from your CLI. Redact if needed.
+Paste the output from your PLUGIN. Redact if needed.

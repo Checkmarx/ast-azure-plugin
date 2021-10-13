@@ -1,13 +1,13 @@
-# Contributing to AST CLI
+# Contributing to AST AZURE PLUGIN
 
-Welcome and thank you for considering contributing to the AST CLI
+Welcome and thank you for considering contributing to the AST AZURE PLUGIN
 
 Reading and following these guidelines will help us make the contribution process easy and effective for everyone involved. It also communicates that you agree to respect the time of the developers managing and developing these open source projects. In return, we will reciprocate that respect by addressing your issue, assessing changes, and helping you finalize your pull requests.
 
 
 ## Quicklinks
 
-- [Contributing to AST CLI](#contributing-to-ast-cli)
+- [Contributing to AST AZURE PLUGIN](#contributing-to-ast-azure-plugin)
     - [Quicklinks](#quicklinks)
     - [Code of Conduct](#code-of-conduct)
     - [Getting Started](#getting-started)

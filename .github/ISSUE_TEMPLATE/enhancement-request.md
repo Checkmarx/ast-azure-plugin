@@ -1,6 +1,6 @@
 ---
 name: Enhancement request
-about: Suggest a new feature for the CLI
+about: Suggest a new feature for the AZURE PLUGIN
 title: "[REQ]"
 labels: enhancement
 assignees: ''

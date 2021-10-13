@@ -73,7 +73,7 @@ To see how you can use our plugin, please refer to the [Documentation](https://c
 
 ## Contribution
 
-We appreciate feedback and contribution to the CLI! Before you get started, please see the following:
+We appreciate feedback and contribution to the AZURE PLUGIN! Before you get started, please see the following:
 
 - [Checkmarx contribution guidelines](docs/contributing.md)
 - [Checkmarx Code of Conduct](docs/code_of_conduct.md)
@@ -82,8 +82,7 @@ We appreciate feedback and contribution to the CLI! Before you get started, plea
 
 <!-- LICENSE -->
 ## License
-
-Not Licenced
+Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
 
 
 
