@@ -14,7 +14,7 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "regenerator-runtime": "0.13.7",
+    "regenerator-runtime": "0.13.9",
     "sync-request": "6.1.0",
     "jquery": "3.4.1",
     "typescript-logging": "1.0.0",
