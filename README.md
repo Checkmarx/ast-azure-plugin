@@ -1,5 +1,9 @@
 
-
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -95,3 +99,14 @@ Project Link: [https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin](https
 
 
 © 2021 Checkmarx Ltd. All Rights Reserved.
+
+[contributors-shield]: https://img.shields.io/github/contributors/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
+[contributors-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
+[forks-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/network/members
+[stars-shield]: https://img.shields.io/github/stars/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
+[stars-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/stargazers
+[issues-shield]: https://img.shields.io/github/issues/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
+[issues-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/issues
+[license-shield]: https://img.shields.io/github/license/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
+[license-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/blob/master/LICENSE
