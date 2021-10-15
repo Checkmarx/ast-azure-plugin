@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "id": "checkmarx-ast-azure-plugin-dev",
-  "name": "Checkmarx AST Test Dev",
-  "version": "0.0.16",
-  "publisher": "checkmarxdev",
+  "name": "Cx Dev",
+  "version": "0.0.22",
+  "publisher": "checkmarxdevpedro",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -72,6 +72,10 @@
         "path": "node_modules/vss-web-extension-sdk/lib",
         "addressable": true,
         "packagePath": "lib"
+    },
+    {
+      "path": "images",
+      "addressable": true
     }
   ],
   "contributions": [

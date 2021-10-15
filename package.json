@@ -14,21 +14,21 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "regenerator-runtime": "^0.13.7",
-    "sync-request": "^6.1.0",
-    "jquery": "^3.4.1",
-    "typescript-logging": "^1.0.0",
-    "vss-web-extension-sdk": "^5.141.0"
+    "regenerator-runtime": "0.13.7",
+    "sync-request": "6.1.0",
+    "jquery": "3.4.1",
+    "typescript-logging": "1.0.0",
+    "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^16.10.3",
-    "@types/q": "^1.5.5",
-    "mocha": "^9.1.2",
-    "typescript": "^4.4.3",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0",
-    "webpack-dev-server": "^4.3.1"
+    "@types/mocha": "9.0.0",
+    "@types/node": "16.10.3",
+    "@types/q": "1.5.5",
+    "mocha": "9.1.2",
+    "typescript": "4.4.3",
+    "webpack": "5.58.1",
+    "webpack-cli": "4.9.0",
+    "webpack-dev-server": "4.3.1"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
