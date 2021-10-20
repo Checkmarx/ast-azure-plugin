@@ -21,9 +21,9 @@
     <a href="https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/issues/new">Report Bug</a>
+    <a href="https://github.com/checkmarx/ast-azure-plugin/issues/new">Report Bug</a>
     ·
-    <a href="https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/issues/new">Request Feature</a>
+    <a href="https://github.com/checkmarx/ast-azure-plugin/issues/new">Request Feature</a>
   </p>
 </p>
 
@@ -95,18 +95,18 @@ Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
 
 Checkmarx - AST Integrations Team
 
-Project Link: [https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin](https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin)
+Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com/checkmarx/ast-azure-plugin)
 
 
 © 2021 Checkmarx Ltd. All Rights Reserved.
 
-[contributors-shield]: https://img.shields.io/github/contributors/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
-[contributors-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
-[forks-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/network/members
-[stars-shield]: https://img.shields.io/github/stars/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
-[stars-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/stargazers
-[issues-shield]: https://img.shields.io/github/issues/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
-[issues-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/issues
-[license-shield]: https://img.shields.io/github/license/CheckmarxDev/checkmarx-ast-azure-plugin.svg?style=flat-square
-[license-url]: https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/checkmarx/ast-azure-plugin.svg?style=flat-square
+[contributors-url]: https://github.com/checkmarx/ast-azure-plugin/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/checkmarx/ast-azure-plugin.svg?style=flat-square
+[forks-url]: https://github.com/checkmarx/ast-azure-plugin/network/members
+[stars-shield]: https://img.shields.io/github/stars/checkmarx/ast-azure-plugin.svg?style=flat-square
+[stars-url]: https://github.com/checkmarx/ast-azure-plugin/stargazers
+[issues-shield]: https://img.shields.io/github/issues/checkmarx-ast-azure-plugin.svg?style=flat-square
+[issues-url]: https://github.com/checkmarx/ast-azure-plugin/issues
+[license-shield]: https://img.shields.io/github/license/checkmarx/ast-azure-plugin.svg?style=flat-square
+[license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/master/LICENSE
