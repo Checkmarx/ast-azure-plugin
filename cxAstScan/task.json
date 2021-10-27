@@ -42,6 +42,14 @@
       "helpMarkDown": "Either select an existing project name or type a name to create a new scan project"
     },
     {
+      "name": "branchName",
+      "type": "string",
+      "label": "Branch Name",
+      "required": true,
+      "defaultValue": "$(Build.SourceBranchName)",
+      "helpMarkDown": "The name of the branch in the triggering repo the build was queued for"
+    },
+    {
       "name": "tenantName",
       "type": "string",
       "label": "Tenant Name",
@@ -53,7 +61,7 @@
       "type": "string",
       "label": "Additional Parameters",
       "required": false,
-      "defaultValue": "--branch $(Build.SourceBranchName)",
+      "defaultValue": "",
       "helpMarkDown": "Additional parameters can be provided in cases where the specific configuration is needed",
       "groupName": "params"
     }
