@@ -15,14 +15,17 @@ export class TaskRunner {
         this.cxScanConfig = this.initiateScanConfig();
 
         const projectName = taskLib.getInput('projectName', true) || '';
+        const branchName = taskLib.getInput('branchName', true) || '';
         const additionalParams = taskLib.getInput("additionalParams") || '';
 
         let params: Map<CxParamType, string> = new Map<CxParamType, string>();
         params.set(CxParamType.PROJECT_NAME, projectName);
+        params.set(CxParamType.BRANCH, branchName);
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
         params.set(CxParamType.S, ".");
 
         console.log("Project name: " + projectName);
+        console.log("Branch name: " + branchName);
         console.log("Additional Params: " + additionalParams);
 
         const auth = new CxAuth(this.cxScanConfig);
