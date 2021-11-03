@@ -16,7 +16,7 @@
   "dependencies": {
     "regenerator-runtime": "0.13.7",
     "sync-request": "6.1.0",
-    "jquery": "3.6.0",
+    "jquery": "3.5.0",
     "typescript-logging": "1.0.0",
     "vss-web-extension-sdk": "5.141.0"
   },
