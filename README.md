@@ -2,7 +2,6 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
@@ -106,7 +105,5 @@ Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com
 [forks-url]: https://github.com/checkmarx/ast-azure-plugin/network/members
 [stars-shield]: https://img.shields.io/github/stars/checkmarx/ast-azure-plugin.svg?style=flat-square
 [stars-url]: https://github.com/checkmarx/ast-azure-plugin/stargazers
-[issues-shield]: https://img.shields.io/github/issues/checkmarx-ast-azure-plugin.svg?style=flat-square
-[issues-url]: https://github.com/checkmarx/ast-azure-plugin/issues
 [license-shield]: https://img.shields.io/github/license/checkmarx/ast-azure-plugin.svg?style=flat-square
 [license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/master/LICENSE
