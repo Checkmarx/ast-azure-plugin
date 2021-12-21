@@ -34,7 +34,7 @@ export class TaskRunner {
         try {
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
             if (cxCommandOutput.exitCode == 0) {
-                console.log("Completed scan. Generating results...")
+                console.log("Completed scan. Generating results... " + JSON.stringify(cxCommandOutput) + " " +  Date.now().toString())
                 const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
                 const scan : CxScan = cxCommandOutput.payload.pop();
 
@@ -47,7 +47,7 @@ export class TaskRunner {
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
 
         } catch (err) {
-            console.log("Error creating scan: " + err)
+            console.log("Error creating scan: " + err + " " + Date.now().toString())
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
         }
     }
