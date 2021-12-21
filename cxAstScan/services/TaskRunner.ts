@@ -55,8 +55,10 @@ export class TaskRunner {
         try {
             const pathname = path.join(directory, 'cxASTResults.html');
 
-            await wrapper.getResults(scanId, "summaryHTML", "cxASTResults", directory);
-            taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+            const cxCommandOutput: CxCommandOutput = await wrapper.getResults(scanId, "summaryHTML", "cxASTResults", directory);
+            if (cxCommandOutput.exitCode == 0) {
+                taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+            }
         } catch (err) {
             console.log("Error generating the results: " + err)
         }
