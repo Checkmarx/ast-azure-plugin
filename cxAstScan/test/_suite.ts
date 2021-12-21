@@ -13,8 +13,7 @@ describe('Task runner test', function () {
         tr.run(10);
         console.log(tr.stdout)
         console.log(tr.stderr)
-        const scanObject = getScanObject(tr);
-        assert.ok(scanObject.Status != null);
+
         assert.ok(tr.succeeded);
     });
 
@@ -26,8 +25,6 @@ describe('Task runner test', function () {
 
         console.log(tr.stdout)
         console.log(tr.stderr)
-        const scanObject = getScanObject(tr);
-        assert.ok(scanObject.Status != null);
         assert.ok(tr.succeeded);
 
     });
@@ -50,8 +47,6 @@ describe('Task runner test', function () {
 
         console.log(tr.stdout)
         console.log(tr.stderr)
-        const scanObject = getScanObject(tr);
-        assert.ok(scanObject.Status != null);
         assert.ok(tr.failed);
     });
 
