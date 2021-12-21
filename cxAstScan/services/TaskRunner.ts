@@ -47,6 +47,7 @@ export class TaskRunner {
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
 
         } catch (err) {
+            console.log("Error creating scan: " + err)
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
         }
     }
