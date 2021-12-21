@@ -5,6 +5,7 @@ import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
 import {CxConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
+import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
@@ -35,13 +36,10 @@ export class TaskRunner {
             if (cxCommandOutput.exitCode == 0) {
                 console.log("Completed scan. Generating results...")
                 const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
-                const scan = cxCommandOutput.payload.pop();
+                const scan : CxScan = cxCommandOutput.payload.pop();
 
                 if (agentTempDirectory && scan && scan.ID) {
-                    const pathname = path.join(agentTempDirectory, 'cxASTResults.html');
-
-                    await wrapper.getResults(scan.ID,"summaryHTML", "cxASTResults", agentTempDirectory);
-                    taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+                    await this.generateResults(wrapper, agentTempDirectory, scan.ID);
                 }
             }
 
@@ -50,6 +48,17 @@ export class TaskRunner {
 
         } catch (err) {
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
+        }
+    }
+
+    async generateResults(wrapper: CxWrapper, directory: string, scanId: string) {
+        try {
+            const pathname = path.join(directory, 'cxASTResults.html');
+
+            await wrapper.getResults(scanId, "summaryHTML", "cxASTResults", directory);
+            taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+        } catch (err) {
+            console.log("Error generating the results: " + err)
         }
     }
 
