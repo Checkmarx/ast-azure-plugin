@@ -4,12 +4,12 @@ import * as process from "process";
 
 let taskPath = path.join(__dirname, '..', 'index.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
-tmr.setInput("tenantName", process.env.TENANT!);
+tmr.setInput("tenantName", process.env.CX_TENANT!);
 tmr.setInput("CheckmarxService", "cxauth");
-tmr.registerMockExport('getEndpointUrl', () => { return  process.env.BASE_URI!; });
+tmr.registerMockExport('getEndpointUrl', () => { return  process.env.CX_BASE_URI!; });
 tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
-    if (key === 'username') return process.env.CLIENT_ID!
-    if (key === 'password') return process.env.CLIENT_SECRET!
+    if (key === 'username') return process.env.CX_CLIENT_ID!
+    if (key === 'password') return process.env.CX_CLIENT_SECRET!
 
     return "";
 });
