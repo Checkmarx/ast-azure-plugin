@@ -5,19 +5,6 @@ import * as assert from 'assert';
 
 describe('Task runner test', function () {
 
-    it('should be success wait mode', function (done) {
-        this.timeout(300000);
-        const tp = path.join(__dirname, 'success_waitmode.js');
-        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
-
-        console.log(tr.stdout)
-        console.log(tr.stderr)
-        console.log(" " + Date.now().toString());
-        assert.ok(tr.succeeded);
-        done();
-    });
-
     it('should be failure additional params', function (done) {
         this.timeout(300000);
         const tp = path.join(__dirname, 'failure_additional_params.js');
@@ -41,4 +28,16 @@ describe('Task runner test', function () {
         done();
     });
 
+    it('should be success wait mode', function (done) {
+        this.timeout(300000);
+        const tp = path.join(__dirname, 'success_waitmode.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        tr.run(10);
+
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        console.log(" " + Date.now().toString());
+        assert.ok(tr.succeeded);
+        done();
+    });
 });
