@@ -16,5 +16,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 
 tmr.setInput("projectName", 'TestADO_WaitMode');
 tmr.setInput("branchName", 'dummy_branch');
-tmr.setInput("additionalParams", '--async --file-filter "*.ts"');
+tmr.setInput("additionalParams", '--file-filter "*.ts"');
 tmr.run();
