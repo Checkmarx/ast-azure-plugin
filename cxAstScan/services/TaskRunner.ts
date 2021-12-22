@@ -1,14 +1,15 @@
 import {factory} from "./ConfigLog4j";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
-import {CxScanConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxScanConfig";
-import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxParamType";
-import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxCommandOutput";
-import {CxAuth} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/CxAuth";
+import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
+import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
+import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
+import {CxConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
+import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
 
 export class TaskRunner {
     private readonly log = factory.getLogger("TaskRunner");
-    private cxScanConfig = new CxScanConfig();
+    private cxScanConfig = new CxConfig();
 
     async run() {
         this.printHeader();
@@ -28,21 +29,19 @@ export class TaskRunner {
         console.log("Branch name: " + branchName);
         console.log("Additional Params: " + additionalParams);
 
-        const auth = new CxAuth(this.cxScanConfig);
+        const wrapper = new CxWrapper(this.cxScanConfig);
 
         try {
-            const data = await auth.scanCreate(params);
-            const cxCommandOutput: CxCommandOutput = JSON.parse(JSON.stringify(data));
+            const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
+            console.log("Completed scan.");
+
             if (cxCommandOutput.exitCode == 0) {
-                console.log("Completed scan. Generating results...")
+                console.log("Generating results.");
                 const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
-                const scan = cxCommandOutput.scanObjectList.pop();
+                const scan : CxScan = cxCommandOutput.payload.pop();
 
-                if (agentTempDirectory && scan && scan.ID) {
-                    const pathname = path.join(agentTempDirectory, 'cxASTResults.html');
-
-                    await auth.getResults(scan.ID,"summaryHTML", "cxASTResults", agentTempDirectory);
-                    taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+                if (agentTempDirectory && scan && scan.id) {
+                    await this.generateResults(wrapper, agentTempDirectory, scan.id);
                 }
             }
 
@@ -50,7 +49,21 @@ export class TaskRunner {
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
 
         } catch (err) {
+            console.log("Error creating scan: " + err + " " + Date.now().toString())
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
+        }
+    }
+
+    async generateResults(wrapper: CxWrapper, directory: string, scanId: string) {
+        try {
+            const pathname = path.join(directory, 'cxASTResults.html');
+
+            const cxCommandOutput: CxCommandOutput = await wrapper.getResults(scanId, "summaryHTML", "cxASTResults", directory);
+            if (cxCommandOutput.exitCode == 0) {
+                taskLib.addAttachment("HTML_ATTACHMENT_TYPE", "cxASTResults", pathname);
+            }
+        } catch (err) {
+            console.log("Error generating the results: " + err)
         }
     }
 
