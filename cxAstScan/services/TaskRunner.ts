@@ -33,10 +33,10 @@ export class TaskRunner {
 
         try {
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
-            console.log("Completed scan. Output " + JSON.stringify(cxCommandOutput) + " " +  Date.now().toString())
+            console.log("Completed scan.");
 
             if (cxCommandOutput.exitCode == 0) {
-                console.log("Completed scan. Generating results...");
+                console.log("Generating results.");
                 const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
                 const scan : CxScan = cxCommandOutput.payload.pop();
 

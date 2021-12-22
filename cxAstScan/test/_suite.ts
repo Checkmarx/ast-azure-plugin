@@ -36,7 +36,6 @@ describe('Task runner test', function () {
 
         console.log(tr.stdout)
         console.log(tr.stderr)
-        console.log(" " + Date.now().toString());
         assert.ok(tr.succeeded);
         done();
     });
@@ -49,7 +48,6 @@ describe('Task runner test', function () {
 
         console.log(tr.stdout)
         console.log(tr.stderr)
-        console.log(" " + Date.now().toString());
         assert.ok(tr.succeeded);
         done();
     });
