@@ -1,6 +1,5 @@
 import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
-import { MockTestRunner } from 'azure-pipelines-task-lib/mock-test';
 import * as assert from 'assert';
 
 
