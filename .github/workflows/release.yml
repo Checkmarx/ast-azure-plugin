@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
 
 env:
   PUBLISHER: Checkmarx
@@ -34,32 +35,37 @@ jobs:
       - run: npm run build
 
       - name: Set new version
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "MAJOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)" >> $GITHUB_ENV
+          echo "MINOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)" >> $GITHUB_ENV
+          echo "PATCH_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)" >> $GITHUB_ENV
 
       - name: New version
         run: |
           echo "The new version RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
 
-      - name: Set version
-        uses: cschleiden/replace-tokens@v1
-        with:
-          files: '["**/*.json"]'
-        env:
-          VERSION: ${{ env.RELEASE_VERSION }}
-      
-      - name: Update task
+      - name: Set versions
         run: |
-          major=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)
-          minor=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)
-          patch=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)
-          sed -i 's/"Major": [^\]*/"Major": '$major',/g' cxAstScan/task.json
-          sed -i 's/"Minor": [^\]*/"Minor": '$minor',/g' cxAstScan/task.json
-          sed -i 's/"Patch": [^\]*/"Patch": '$patch',/g' cxAstScan/task.json
+          sudo apt install jq
+          jq ./vss-extension.json ".version = \"${{ env.RELEASE_VERSION }}\"" > ./vss-extension.json
+          jq ./package.json ".version = \"${{ env.RELEASE_VERSION }}\"" > ./package.json
+          jq ./CxASTScan/task.json ".version.Major = ${{ env.MAJOR_VERSION }}" > ./CxASTScan/task.json
+          jq ./CxASTScan/task.json ".version.Minor = ${{ env.MINOR_VERSION }}" > ./CxASTScan/task.json
+          jq ./CxASTScan/task.json ".version.Patch = ${{ env.PATCH_VERSION }}" > ./CxASTScan/task.json
 
       - name: Create extension
         run: tfx extension create --manifest-globs vss-extension.json
 
+      - name : Cat
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          cat ./vss-extension.json
+          cat ./package.json
+          cat ./CxASTScan/task.json
+
       - name:  Create Release
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -70,6 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: upload artifact
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -80,4 +87,5 @@ jobs:
           asset_content_type: application/zip
 
       - name: Release to marketplance
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
