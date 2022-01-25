@@ -39,7 +39,16 @@ jobs:
           files: '["**/*.json"]'
         env:
           VERSION: ${{ env.RELEASE_VERSION }}
-
+      
+      - name: Update task
+        run: |
+          major=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)
+          minor=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)
+          patch=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)
+          sed -i 's/"Major": [^\]*/"Major": '$major',/g' cxAstScan/task.json
+          sed -i 's/"Minor": [^\]*/"Minor": '$minor',/g' cxAstScan/task.json
+          sed -i 's/"Patch": [^\]*/"Patch": '$patch',/g' cxAstScan/task.json
+      
       - name: Create VSS Extension
         run: npx tfx extension create --manifest-globs vss-extension.json
 
