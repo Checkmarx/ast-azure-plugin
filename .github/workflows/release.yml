@@ -54,11 +54,11 @@ jobs:
 
       - name: Set versions
         run: |
-          jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json > ./vss-extension.json
-          jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json > ./package.json
-          jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
-          jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
-          jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
+          cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
+          cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json) > ./package.json
+          cat <<< $(jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
+          cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
+          cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
 
       - name : Cat
         if: ${{ github.event_name == 'workflow_dispatch' }}
