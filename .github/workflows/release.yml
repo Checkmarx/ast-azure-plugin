@@ -9,7 +9,6 @@ on:
 env:
   PUBLISHER: Checkmarx
   EXTENSION_ID: checkmarx-ast-azure-plugin
-  EXTENSION_NAME: 'Checkmarx AST'
 
 jobs:
   build:
@@ -36,7 +35,7 @@ jobs:
 
       - name: Set new version
         run: |
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=3.0.0" >> $GITHUB_ENV
           echo "MAJOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)" >> $GITHUB_ENV
           echo "PATCH_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)" >> $GITHUB_ENV
