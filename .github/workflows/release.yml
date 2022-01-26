@@ -45,6 +45,13 @@ jobs:
         run: |
           echo "The new version RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
 
+      - name : Cat
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          cat ./vss-extension.json
+          cat ./package.json
+          cat ./cxAstScan/task.json
+
       - name: Set versions
         run: |
           jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json > ./vss-extension.json
