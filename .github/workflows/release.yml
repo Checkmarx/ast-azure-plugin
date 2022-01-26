@@ -35,10 +35,11 @@ jobs:
 
       - name: Set new version
         run: |
+          RELEASE_VERSION=3.0.0
           echo "RELEASE_VERSION=3.0.0" >> $GITHUB_ENV
-          echo "MAJOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)" >> $GITHUB_ENV
-          echo "MINOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)" >> $GITHUB_ENV
-          echo "PATCH_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)" >> $GITHUB_ENV
+          echo "MAJOR_VERSION=$(echo $RELEASE_VERSION | cut -d. -f1)" >> $GITHUB_ENV
+          echo "MINOR_VERSION=$(echo $RELEASE_VERSION | cut -d. -f2)" >> $GITHUB_ENV
+          echo "PATCH_VERSION=$(echo $RELEASE_VERSION | cut -d. -f3)" >> $GITHUB_ENV
 
       - name: New version
         run: |
