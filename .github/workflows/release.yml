@@ -48,11 +48,11 @@ jobs:
       - name: Set versions
         run: |
           sudo apt install jq
-          jq ./vss-extension.json ".version = \"${{ env.RELEASE_VERSION }}\"" > ./vss-extension.json
-          jq ./package.json ".version = \"${{ env.RELEASE_VERSION }}\"" > ./package.json
-          jq ./CxASTScan/task.json ".version.Major = ${{ env.MAJOR_VERSION }}" > ./CxASTScan/task.json
-          jq ./CxASTScan/task.json ".version.Minor = ${{ env.MINOR_VERSION }}" > ./CxASTScan/task.json
-          jq ./CxASTScan/task.json ".version.Patch = ${{ env.PATCH_VERSION }}" > ./CxASTScan/task.json
+          jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json > ./vss-extension.json
+          jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json > ./package.json
+          jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
+          jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
+          jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
 
       - name: Create extension
         run: tfx extension create --manifest-globs vss-extension.json
