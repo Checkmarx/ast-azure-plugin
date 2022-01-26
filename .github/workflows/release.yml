@@ -53,15 +53,15 @@ jobs:
           jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
           jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
 
-      - name: Create extension
-        run: tfx extension create --manifest-globs vss-extension.json
-
       - name : Cat
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           cat ./vss-extension.json
           cat ./package.json
           cat ./cxAstScan/task.json
+
+      - name: Create extension
+        run: tfx extension create --manifest-globs vss-extension.json
 
       - name:  Create Release
         if: ${{ github.event_name != 'workflow_dispatch' }}
