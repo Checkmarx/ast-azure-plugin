@@ -47,12 +47,11 @@ jobs:
 
       - name: Set versions
         run: |
-          sudo apt install jq
           jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json > ./vss-extension.json
           jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json > ./package.json
-          jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
-          jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
-          jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./CxASTScan/task.json > ./CxASTScan/task.json
+          jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
+          jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
+          jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json > ./cxAstScan/task.json
 
       - name: Create extension
         run: tfx extension create --manifest-globs vss-extension.json
@@ -62,7 +61,7 @@ jobs:
         run: |
           cat ./vss-extension.json
           cat ./package.json
-          cat ./CxASTScan/task.json
+          cat ./cxAstScan/task.json
 
       - name:  Create Release
         if: ${{ github.event_name != 'workflow_dispatch' }}
