@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "#{EXTENSION_ID}#",
-  "publisher": "#{PUBLISHER}#",
-  "version": "#{VERSION}#",
-  "name": "#{EXTENSION_NAME}#",
+  "id": "checkmarx-ast-azure-plugin",
+  "publisher": "Checkmarx",
+  "version": "dev",
+  "name": "Checkmarx AST",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"

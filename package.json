@@ -1,6 +1,6 @@
 {
   "name": "checkmarx-ast-azure-plugin",
-  "version": "1.0.1",
+  "version": "0.0.0",
   "description": "Add Secure Static Source Code Analysis inside your build process",
   "main": "index.js",
   "repository": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin",
