@@ -14,7 +14,6 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "@checkmarxdev/ast-cli-javascript-wrapper": "0.0.44",
     "azure-pipelines-task-lib": "^3.1.10",
     "jquery": "3.6.0",
     "regenerator-runtime": "0.13.7",
