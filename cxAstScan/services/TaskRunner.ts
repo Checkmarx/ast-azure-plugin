@@ -22,11 +22,13 @@ export class TaskRunner {
         let params: Map<CxParamType, string> = new Map<CxParamType, string>();
         params.set(CxParamType.PROJECT_NAME, projectName);
         params.set(CxParamType.BRANCH, branchName);
+        params.set(CxParamType.AGENT, "Azure DevOps");
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
         params.set(CxParamType.S, ".");
 
         console.log("Project name: " + projectName);
         console.log("Branch name: " + branchName);
+        console.log("Agent: " + params.get(CxParamType.AGENT));
         console.log("Additional Params: " + additionalParams);
 
         const wrapper = new CxWrapper(this.cxScanConfig);
