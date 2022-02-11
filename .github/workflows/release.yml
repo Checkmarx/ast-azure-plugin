@@ -38,13 +38,19 @@ jobs:
       - name: Set new version
         run: |
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "MAJOR_VERSION=$(echo $RELEASE_VERSION | cut -d. -f1)" >> $GITHUB_ENV
-          echo "MINOR_VERSION=$(echo $RELEASE_VERSION | cut -d. -f2)" >> $GITHUB_ENV
-          echo "PATCH_VERSION=$(echo $RELEASE_VERSION | cut -d. -f3)" >> $GITHUB_ENV
+
+      - name: Set major, minor, patch values
+        run: |
+          echo "MAJOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)" >> $GITHUB_ENV
+          echo "MINOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)" >> $GITHUB_ENV
+          echo "PATCH_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)" >> $GITHUB_ENV
 
       - name: New version
         run: |
-          echo "The new version RELEASE_VERSION is ${{ env.RELEASE_VERSION }}"
+          echo "The new version is ${{ env.RELEASE_VERSION }}"
+          echo "The new major version is ${{ env.MAJOR_VERSION }}"
+          echo "The new minor version is ${{ env.MINOR_VERSION }}"
+          echo "The new patch version is ${{ env.PATCH_VERSION }}"
 
       - name: Set versions in files
         run: |
