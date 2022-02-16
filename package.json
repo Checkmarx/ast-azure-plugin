@@ -14,6 +14,8 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
+    "jquery": "3.6.0",
+    "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
     "@types/mocha": "9.0.0",
