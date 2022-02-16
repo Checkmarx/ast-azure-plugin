@@ -17,9 +17,9 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: npm install
         run: |
-          npm install
+          npm install --ignore-engines
           cd cxAstScan/
-          npm install
+          npm install --ignore-engines
       - run: npm run build
       - name: Run tests
         env:
