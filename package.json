@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/mocha": "9.0.0",
     "mocha": "9.1.2",
-    "typescript": "4.4.3"
+    "typescript": "4.5.5"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
