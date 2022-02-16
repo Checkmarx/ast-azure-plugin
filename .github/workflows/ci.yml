@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 10
         uses: actions/setup-node@v2.4.1
         env:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -17,7 +17,8 @@ jobs:
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
       - name: npm install
         run: |
-          npm install --ignore-engines
+          npm cache clean
+          npm install
           cd cxAstScan/
           npm install --ignore-engines
       - run: npm run build
