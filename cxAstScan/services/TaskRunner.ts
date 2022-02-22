@@ -1,19 +1,16 @@
-import {factory} from "./ConfigLog4j";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
+import {promises as fs} from 'fs';
 import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
-import {CxConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
+import { getConfiguration } from "./Utils";
 
 export class TaskRunner {
-    private readonly log = factory.getLogger("TaskRunner");
-    private cxScanConfig = new CxConfig();
 
     async run() {
-        this.printHeader();
-        this.cxScanConfig = this.initiateScanConfig();
+        const cxScanConfig = getConfiguration();
 
         const projectName = taskLib.getInput('projectName', true) || '';
         const branchName = taskLib.getInput('branchName', true) || '';
@@ -30,9 +27,12 @@ export class TaskRunner {
         console.log("Branch name: " + branchName);
         console.log("Agent: " + params.get(CxParamType.AGENT));
         console.log("Additional Params: " + additionalParams);
-
-        const wrapper = new CxWrapper(this.cxScanConfig);
-
+        
+        //Write to file to test if possible to read from file in cleanup post execution event
+        const wrapper = new CxWrapper(cxScanConfig);
+        const tempa = taskLib.getVariable('Agent.TempDirectory')!;
+        const pathname = path.join(tempa, 'test.txt');
+        await fs.writeFile(pathname, 'My logs');
         try {
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
             console.log("Completed scan.");
@@ -67,58 +67,6 @@ export class TaskRunner {
         } catch (err) {
             console.log("Error generating the results: " + err)
         }
-    }
-
-    private printHeader() {
-        this.log.info(`
-         CxCxCxCxCxCxCxCxCxCxCxCx          
-        CxCxCxCxCxCxCxCxCxCxCxCxCx         
-       CxCxCxCxCxCxCxCxCxCxCxCxCxCx        
-      CxCxCx                CxCxCxCx       
-      CxCxCx                CxCxCxCx       
-      CxCxCx  CxCxCx      CxCxCxCxC        
-      CxCxCx  xCxCxCx  .CxCxCxCxCx         
-      CxCxCx   xCxCxCxCxCxCxCxCx           
-      CxCxCx    xCxCxCxCxCxCx              
-      CxCxCx     CxCxCxCxCx   CxCxCx       
-      CxCxCx       xCxCxC     CxCxCx       
-      CxCxCx                 CxCxCx        
-       CxCxCxCxCxCxCxCxCxCxCxCxCxCx        
-        CxCxCxCxCxCxCxCxCxCxCxCxCx         
-          CxCxCxCxCxCxCxCxCxCxCx           
-                                           
-            C H E C K M A R X              
-                                           
-        Starting Checkmarx scan`);
-    }
-
-    private initiateScanConfig() {
-        this.cxScanConfig.baseUri = "";
-        this.cxScanConfig.clientId = "";
-        this.cxScanConfig.clientSecret = "";
-        this.cxScanConfig.apiKey = "";
-        this.cxScanConfig.tenant = "";
-
-        const tenantName = taskLib.getInput("tenantName");
-        if (tenantName) this.cxScanConfig.tenant = tenantName;
-
-        const endpointId = taskLib.getInput('CheckmarxService', false);
-        if (endpointId) {
-            const astServerUrl = taskLib.getEndpointUrl(endpointId, false);
-            const astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
-            const astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);
-
-            if (astServerUrl) {
-                this.cxScanConfig.baseUri = astServerUrl;
-            }
-            if (astUsername) {
-                this.cxScanConfig.clientId = astUsername;
-            }
-            if (astPassword) {
-                this.cxScanConfig.clientSecret = astPassword;
-            }
-        }
-        return this.cxScanConfig;
     }
 }
 
