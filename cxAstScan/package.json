@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "azure-pipelines-task-lib": "3.1.10",
+    "azure-pipelines-task-lib": "3.2.0",
     "typescript-logging": "1.0.0",
     "@checkmarxdev/ast-cli-javascript-wrapper": "^0.0.47"
   }
