@@ -23,6 +23,8 @@
     <br/>
     <a href="https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin"><strong>Explore the docs »</strong></a>
     <br />
+    <a href="https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin"><strong>Maketplace »</strong></a>
+    <br />
     <br />
     <a href="https://github.com/checkmarx/ast-azure-plugin/issues/new">Report Bug</a>
     ·
