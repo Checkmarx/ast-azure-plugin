@@ -110,6 +110,6 @@ Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com
 [stars-shield]: https://img.shields.io/github/stars/checkmarx/ast-azure-plugin.svg
 [stars-url]: https://github.com/checkmarx/ast-azure-plugin/stargazers
 [license-shield]: https://img.shields.io/github/license/checkmarx/ast-azure-plugin.svg
-[license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/master/LICENSE
+[license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/main/LICENSE
 [install-shield]: https://img.shields.io/visual-studio-marketplace/azure-devops/installs/total/checkmarx.checkmarx-ast-azure-plugin
 [install-url]: https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin
