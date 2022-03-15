@@ -85,12 +85,10 @@ We appreciate feedback and contribution to the AZURE PLUGIN! Before you get star
 - [Checkmarx contribution guidelines](docs/contributing.md)
 - [Checkmarx Code of Conduct](docs/code_of_conduct.md)
 
-** **
 
 <!-- LICENSE -->
 ## License
 Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
-
 
 
 <!-- CONTACT -->
@@ -99,6 +97,8 @@ Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
 Checkmarx - AST Integrations Team
 
 Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com/checkmarx/ast-azure-plugin)
+
+Find more integrations from our team [here](https://github.com/Checkmarx/ci-cd-integrations#checkmarx-ast-integrations)
 
 
 © 2022 Checkmarx Ltd. All Rights Reserved.
