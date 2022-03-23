@@ -9,24 +9,26 @@ export class CleanUpRunner {
     async run() {;
         const cxScanConfig = getConfiguration();
         const wrapper = new CxWrapper(cxScanConfig);
-        const status: string = taskLib.getVariable('agent.jobstatus') || ''
-        if (status != 'Canceled') {
-            return;
-        }
+
         const tempa = taskLib.getVariable('Agent.TempDirectory')!;
-        const pathname = path.join(tempa, 'test.txt');
-
+        const pathname = path.join(tempa, 'logfile.txt');
         const data = await fs.readFile(pathname, 'utf8');
-        console.log(data)
-
+        
+        //Regex to get the scanID ofthe logs
+        var reg = new RegExp(/"(ID)":"((\\"|[^"])*)"/i);
+        var m: RegExpExecArray | null
+        
+        m = reg.exec(data);
+        
         try {
-            const cxCommandOutput: CxCommandOutput = await wrapper.authValidate();
-
-            taskLib.setResult(cxCommandOutput.exitCode == 0 ?
+            if (m) {
+                //m2 is the scanID
+                const cxCommandOutput: CxCommandOutput = await wrapper.scanCancel(m[2]);
+                taskLib.setResult(cxCommandOutput.exitCode == 0 ?
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
-
+            }
         } catch (err) {
-            console.log("Error creating scan: " + err + " " + Date.now().toString())
+            console.log("Error canceling scan: " + err + " " + Date.now().toString())
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
         }
     }

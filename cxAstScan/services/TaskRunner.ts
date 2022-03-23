@@ -1,6 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
-import {promises as fs} from 'fs';
 import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
@@ -27,13 +26,14 @@ export class TaskRunner {
         console.log("Branch name: " + branchName);
         console.log("Agent: " + params.get(CxParamType.AGENT));
         console.log("Additional Params: " + additionalParams);
-        
-        //Write to file to test if possible to read from file in cleanup post execution event
-        const wrapper = new CxWrapper(cxScanConfig);
-        const tempa = taskLib.getVariable('Agent.TempDirectory')!;
-        const pathname = path.join(tempa, 'test.txt');
-        await fs.writeFile(pathname, 'My logs');
-        try {
+
+
+        try {        
+            //Write to file to test if possible to read from file in cleanup post execution event
+            const tempa = taskLib.getVariable('Agent.TempDirectory')!;
+            const pathname = path.join(tempa, 'logfile.txt');
+            const wrapper = new CxWrapper(cxScanConfig, pathname);
+
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
             console.log("Completed scan.");
 
