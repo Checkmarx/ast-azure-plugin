@@ -4,7 +4,7 @@ import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
-import { getConfiguration } from "./Utils";
+import { getConfiguration, getLogFilename } from "./Utils";
 
 export class TaskRunner {
 
@@ -30,9 +30,8 @@ export class TaskRunner {
 
         try {        
             //Write to file to test if possible to read from file in cleanup post execution event
-            const tempa = taskLib.getVariable('Agent.TempDirectory')!;
-            const pathname = path.join(tempa, 'logfile.txt');
-            const wrapper = new CxWrapper(cxScanConfig, pathname);
+            
+            const wrapper = new CxWrapper(cxScanConfig, getLogFilename());
 
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
             console.log("Completed scan.");

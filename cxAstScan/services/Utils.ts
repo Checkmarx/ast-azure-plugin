@@ -1,5 +1,14 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import { CxConfig } from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
+import * as path from "path"
+
+export function getLogFilename() {
+    const tempa = taskLib.getVariable('Agent.TempDirectory')!;
+    const buildId = taskLib.getVariable('Build.BuildId')!;
+    const pathname = path.join(tempa, "CxLog_" + buildId + ".txt");
+
+    return pathname;
+}
 
 export function getConfiguration() {
     const cxScanConfig = new CxConfig();
