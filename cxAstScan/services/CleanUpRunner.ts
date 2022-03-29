@@ -25,6 +25,9 @@ export class CleanUpRunner {
                 taskLib.setResult(cxCommandOutput.exitCode == 0 ?
                 taskLib.TaskResult.Succeeded : taskLib.TaskResult.Failed, "");
             }
+            else {
+                console.log("Scan not created. Terminating job.")
+            }
         } catch (err) {
             console.log("Error canceling scan: " + err + " " + Date.now().toString())
             taskLib.setResult(taskLib.TaskResult.Failed, JSON.stringify(err));
