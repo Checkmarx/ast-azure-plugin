@@ -71,6 +71,11 @@
       "target": "./dist/index.js"
     }
   },
+  "postjobexecution": {
+    "Node10": {
+      "target": "./dist/cleanup.js"
+    }
+  },
   "messages": {
   }
 }

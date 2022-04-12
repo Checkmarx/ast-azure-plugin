@@ -3,14 +3,13 @@ import * as path from "path"
 import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
-import {CxConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
+import { getConfiguration, getLogFilename } from "./Utils";
 
 export class TaskRunner {
-    private cxScanConfig = new CxConfig();
 
     async run() {
-        this.cxScanConfig = this.initiateScanConfig();
+        const cxScanConfig = getConfiguration();
 
         const projectName = taskLib.getInput('projectName', true) || '';
         const branchName = taskLib.getInput('branchName', true) || '';
@@ -28,9 +27,12 @@ export class TaskRunner {
         console.log("Agent: " + params.get(CxParamType.AGENT));
         console.log("Additional Params: " + additionalParams);
 
-        const wrapper = new CxWrapper(this.cxScanConfig);
 
-        try {
+        try {        
+            //Write to file to test if possible to read from file in cleanup post execution event
+            
+            const wrapper = new CxWrapper(cxScanConfig, getLogFilename());
+
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
             console.log("Completed scan.");
 
@@ -64,35 +66,6 @@ export class TaskRunner {
         } catch (err) {
             console.log("Error generating the results: " + err)
         }
-    }
-
-    private initiateScanConfig() {
-        this.cxScanConfig.baseUri = "";
-        this.cxScanConfig.clientId = "";
-        this.cxScanConfig.clientSecret = "";
-        this.cxScanConfig.apiKey = "";
-        this.cxScanConfig.tenant = "";
-
-        const tenantName = taskLib.getInput("tenantName");
-        if (tenantName) this.cxScanConfig.tenant = tenantName;
-
-        const endpointId = taskLib.getInput('CheckmarxService', false);
-        if (endpointId) {
-            const astServerUrl = taskLib.getEndpointUrl(endpointId, false);
-            const astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
-            const astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);
-
-            if (astServerUrl) {
-                this.cxScanConfig.baseUri = astServerUrl;
-            }
-            if (astUsername) {
-                this.cxScanConfig.clientId = astUsername;
-            }
-            if (astPassword) {
-                this.cxScanConfig.clientSecret = astPassword;
-            }
-        }
-        return this.cxScanConfig;
     }
 }
 
