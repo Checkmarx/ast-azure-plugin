@@ -1,4 +1,3 @@
-import {factory} from "./ConfigLog4j";
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
 import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
@@ -8,11 +7,9 @@ import {CxConfig} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapp
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
 
 export class TaskRunner {
-    private readonly log = factory.getLogger("TaskRunner");
     private cxScanConfig = new CxConfig();
 
     async run() {
-        this.printHeader();
         this.cxScanConfig = this.initiateScanConfig();
 
         const projectName = taskLib.getInput('projectName', true) || '';
@@ -67,29 +64,6 @@ export class TaskRunner {
         } catch (err) {
             console.log("Error generating the results: " + err)
         }
-    }
-
-    private printHeader() {
-        this.log.info(`
-         CxCxCxCxCxCxCxCxCxCxCxCx          
-        CxCxCxCxCxCxCxCxCxCxCxCxCx         
-       CxCxCxCxCxCxCxCxCxCxCxCxCxCx        
-      CxCxCx                CxCxCxCx       
-      CxCxCx                CxCxCxCx       
-      CxCxCx  CxCxCx      CxCxCxCxC        
-      CxCxCx  xCxCxCx  .CxCxCxCxCx         
-      CxCxCx   xCxCxCxCxCxCxCxCx           
-      CxCxCx    xCxCxCxCxCxCx              
-      CxCxCx     CxCxCxCxCx   CxCxCx       
-      CxCxCx       xCxCxC     CxCxCx       
-      CxCxCx                 CxCxCx        
-       CxCxCxCxCxCxCxCxCxCxCxCxCxCx        
-        CxCxCxCxCxCxCxCxCxCxCxCxCx         
-          CxCxCxCxCxCxCxCxCxCxCx           
-                                           
-            C H E C K M A R X              
-                                           
-        Starting Checkmarx scan`);
     }
 
     private initiateScanConfig() {
