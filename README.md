@@ -1,23 +1,29 @@
 
+<img src="https://raw.githubusercontent.com/Checkmarx/ci-cd-integrations/main/.images/banner.png">
+<br />
+<div align="center">
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![Instlals][install-shield]][install-url]
 [![MIT License][license-shield]][license-url]
 
-<!-- PROJECT LOGO -->
+</div>
 <br />
 <p align="center">
-  <a href="">
-    <img src="./logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/Checkmarx/ast-azure-plugin">
+    <img src="https://raw.githubusercontent.com/Checkmarx/ci-cd-integrations/main/.images/logo.png" alt="Logo" width="80" height="80" />
   </a>
 
-<h3 align="center">AST-AZURE-PLUGIN</h3>
+<h3 align="center">AST AZURE PLUGIN</h3>
 
-<p align="center">
+  <p align="center">
     The CxAST Azure DevOps plugin enables you to trigger SAST, SCA, and KICS scans directly from an Azure DevOps pipeline.
-
-<br />
+    <br/>
     <a href="https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin"><strong>Explore the docs »</strong></a>
+    <br />
+    <a href="https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin"><strong>Maketplace »</strong></a>
     <br />
     <br />
     <a href="https://github.com/checkmarx/ast-azure-plugin/issues/new">Report Bug</a>
@@ -29,7 +35,7 @@
 
 
 <!-- TABLE OF CONTENTS -->
-<details open="open">
+<details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
@@ -81,12 +87,10 @@ We appreciate feedback and contribution to the AZURE PLUGIN! Before you get star
 - [Checkmarx contribution guidelines](docs/contributing.md)
 - [Checkmarx Code of Conduct](docs/code_of_conduct.md)
 
-** **
 
 <!-- LICENSE -->
 ## License
 Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
-
 
 
 <!-- CONTACT -->
@@ -96,14 +100,18 @@ Checkmarx - AST Integrations Team
 
 Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com/checkmarx/ast-azure-plugin)
 
+Find more integrations from our team [here](https://github.com/Checkmarx/ci-cd-integrations#checkmarx-ast-integrations)
 
-© 2021 Checkmarx Ltd. All Rights Reserved.
 
-[contributors-shield]: https://img.shields.io/github/contributors/checkmarx/ast-azure-plugin.svg?style=flat-square
+© 2022 Checkmarx Ltd. All Rights Reserved.
+
+[contributors-shield]: https://img.shields.io/github/contributors/checkmarx/ast-azure-plugin.svg
 [contributors-url]: https://github.com/checkmarx/ast-azure-plugin/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/checkmarx/ast-azure-plugin.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/checkmarx/ast-azure-plugin.svg
 [forks-url]: https://github.com/checkmarx/ast-azure-plugin/network/members
-[stars-shield]: https://img.shields.io/github/stars/checkmarx/ast-azure-plugin.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/checkmarx/ast-azure-plugin.svg
 [stars-url]: https://github.com/checkmarx/ast-azure-plugin/stargazers
-[license-shield]: https://img.shields.io/github/license/checkmarx/ast-azure-plugin.svg?style=flat-square
-[license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/master/LICENSE
+[license-shield]: https://img.shields.io/github/license/checkmarx/ast-azure-plugin.svg
+[license-url]: https://github.com/checkmarx/ast-azure-plugin/blob/main/LICENSE
+[install-shield]: https://img.shields.io/visual-studio-marketplace/azure-devops/installs/total/checkmarx.checkmarx-ast-azure-plugin
+[install-url]: https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin
