@@ -34,7 +34,7 @@ export class CheckmarxReportTab extends Controls.BaseControl {
                         HTML_ATTACHMENT_TYPE,
                     )
                     .then((taskAttachments) => {
-                        $.each(taskAttachments, (index, taskAttachment) => {
+                        taskAttachments.array.forEach(taskAttachment => {
                             const attachmentName = taskAttachment.name;
                             const timelineId = taskAttachment.timelineId;
                             const recordId = taskAttachment.recordId;
@@ -100,4 +100,4 @@ export class CheckmarxReportTab extends Controls.BaseControl {
     };
 }
 
-CheckmarxReportTab.enhance(CheckmarxReportTab, $(".build-info"), {});
+CheckmarxReportTab.enhance(CheckmarxReportTab, document.getElementsByClassName("build-info")[0]!, {});
