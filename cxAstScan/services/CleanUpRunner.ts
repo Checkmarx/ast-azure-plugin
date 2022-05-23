@@ -17,7 +17,16 @@ export class CleanUpRunner {
         const cxScanConfig = getConfiguration();
         const wrapper = new CxWrapper(cxScanConfig);
 
-        const data = await fs.readFile(getLogFilename(), 'utf8');
+        const logFileName = getLogFilename()
+        let data = ""
+        
+        if(logFileName === undefined) {
+            console.log("Log file not created. Terminating job.")
+            taskLib.setResult(taskLib.TaskResult.Succeeded, "");
+        } else {
+            data = await fs.readFile(logFileName, 'utf8');
+        }
+
 
         //Regex to get the scanID ofthe logs
         const regexScanId = new RegExp(/"(ID)":"((\\"|[^"])*)"/i);
@@ -35,6 +44,7 @@ export class CleanUpRunner {
             }
         } catch (err) {
             console.log("Error canceling scan: " + err + " " + Date.now().toString())
+            taskLib.setResult(taskLib.TaskResult.Failed, "");
         }
         taskLib.setResult(taskLib.TaskResult.Succeeded, "");
     }

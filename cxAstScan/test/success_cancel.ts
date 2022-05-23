@@ -1,12 +1,14 @@
-// import tmt = require('azure-pipelines-task-lib/task');
+import tmt = require('azure-pipelines-task-lib/task');
 import tmrm = require('azure-pipelines-task-lib/mock-run');
 import path = require('path');
 import process from "process";
 
 process.env['Build_BuildId'] = 'test_build_id';
+process.env["AGENT_JOBSTATUS"] = 'Canceled';
 
-let taskPath = path.join(__dirname, '..', 'index.js');
+let taskPath = path.join(__dirname, '..', 'cleanup.js');
 let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
+
 tmr.setInput("tenantName", process.env.CX_TENANT!);
 tmr.setInput("CheckmarxService", "cxauth");
 tmr.registerMockExport('getEndpointUrl', () => { return  process.env.CX_BASE_URI!; });
@@ -16,8 +18,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 
     return "";
 });
-tmr.setInput("projectName", 'TestADO_NoWait');
-tmr.setInput("branchName", 'dummy_branch');
-tmr.setInput("additionalParams", '--async --file-filter "*.ts"');
-tmr.run();
 
+tmr.run();
