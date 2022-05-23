@@ -17,16 +17,12 @@ export class CleanUpRunner {
         const cxScanConfig = getConfiguration();
         const wrapper = new CxWrapper(cxScanConfig);
 
-        const logFileName = getLogFilename()
-        let data = ""
-        
-        if(logFileName === undefined) {
-            console.log("Log file not created. Terminating job.")
-            taskLib.setResult(taskLib.TaskResult.Succeeded, "");
-        } else {
-            data = await fs.readFile(logFileName, 'utf8');
-        }
+        const data = await fs.readFile(getLogFilename(), 'utf8');
 
+        if(data == "" || data === undefined) {
+            console.log("Log file not created.")
+            taskLib.setResult(taskLib.TaskResult.Succeeded, "");
+        }
 
         //Regex to get the scanID ofthe logs
         const regexScanId = new RegExp(/"(ID)":"((\\"|[^"])*)"/i);

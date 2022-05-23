@@ -2,16 +2,11 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import { CxConfig } from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
 import * as path from "path"
 
-export function getLogFilename(): string | undefined {
+export function getLogFilename(): string {
     const tempAgentDir = taskLib.getVariable('Agent.TempDirectory');
     const buildId = taskLib.getVariable('Build.BuildId');
-    let pathname: string | undefined
-    if (tempAgentDir === undefined) {
-        return undefined
-    } else {
-        pathname = path.join(tempAgentDir, "CxLog_" + buildId + ".txt");
-    }
-  
+    const pathname = path.join(tempAgentDir !== undefined ? tempAgentDir : "", "CxLog_" + buildId + ".txt");
+
     return pathname;
 }
 

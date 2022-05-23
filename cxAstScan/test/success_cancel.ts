@@ -4,6 +4,7 @@ import path = require('path');
 import process from "process";
 
 process.env['Build_BuildId'] = 'test_build_id';
+process.env["Agent_TempDirectory"] = "."
 process.env["AGENT_JOBSTATUS"] = 'Canceled';
 
 let taskPath = path.join(__dirname, '..', 'cleanup.js');
