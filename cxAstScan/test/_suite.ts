@@ -87,7 +87,7 @@ describe('Task runner test', function () {
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
         console.log(tr.stdout);
-        assert.strictEqual(tr.stdout.indexOf('Log file not created. Terminating job.') >= 0, true, "should display cleanup message: Log file not created. Terminating job.");
+        assert.strictEqual(tr.stdout.indexOf('Log file not created. Task ended successfully') >= 0, true, "should display cleanup message: Log file not created. Terminating job.");
         done();
     });
 });
