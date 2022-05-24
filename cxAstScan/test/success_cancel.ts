@@ -1,4 +1,3 @@
-import tmt = require('azure-pipelines-task-lib/task');
 import tmrm = require('azure-pipelines-task-lib/mock-run');
 import path = require('path');
 import process from "process";
