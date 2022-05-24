@@ -41,6 +41,15 @@ export class CleanUpRunner {
             console.log("Error canceling scan: " + err + " " + Date.now().toString())
             taskLib.setResult(taskLib.TaskResult.Failed, "");
         }
+
+        try {
+            fs.unlink(getLogFilename())
+            //file removed
+          } catch(err) {
+            console.log("Unable to delete log file.", err)
+          }
+
         taskLib.setResult(taskLib.TaskResult.Succeeded, "");
     }
+
 }
