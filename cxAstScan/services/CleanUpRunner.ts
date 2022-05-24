@@ -23,13 +23,12 @@ export class CleanUpRunner {
         } catch (err: any) {
             if(err.code === 'ENOENT') {
                 console.log("Log file not created. Task ended successfully")
-                console.log("Changing task result 1")
                 taskLib.setResult(taskLib.TaskResult.Succeeded, "");
-                return
             } else if ( err.code === 'EACCES') {
                 console.log('No permissions to read log file')
+                taskLib.setResult(taskLib.TaskResult.Failed, "")
             } else {
-                console.log(err)
+                throw err
             }
             return
         }
@@ -55,14 +54,14 @@ export class CleanUpRunner {
             return
         }
 
+        taskLib.setResult(taskLib.TaskResult.Succeeded, "");
+
         try {
             fs.unlink(getLogFilename())
             //file removed
           } catch(err) {
             console.log("Unable to delete log file.", err)
           }
-
-        taskLib.setResult(taskLib.TaskResult.Succeeded, "");
 
     }
 
