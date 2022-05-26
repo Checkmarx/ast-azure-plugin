@@ -6,7 +6,7 @@ import * as assert from 'assert';
 describe('Task runner test', function () {
 
     it('should be success wait mode', function (done) {
-       // this.timeout(3000000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'success_waitmode.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
@@ -18,7 +18,7 @@ describe('Task runner test', function () {
     });
 
     it('should be success no wait mode', function (done) {
-        //this.timeout(300000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'success_nowait.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
@@ -30,7 +30,7 @@ describe('Task runner test', function () {
     });
 
     it('should be failure additional params', function (done) {
-       // this.timeout(300000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'failure_additional_params.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
@@ -41,7 +41,7 @@ describe('Task runner test', function () {
     });
 
     it('should be failure preset', function (done) {
-       // this.timeout(300000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'failure_wrong_preset.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
@@ -53,7 +53,7 @@ describe('Task runner test', function () {
     });
 
     it('should be success no cancel scan', function (done) {
-       // this.timeout(300000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'success_no_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run();
@@ -67,7 +67,7 @@ describe('Task runner test', function () {
     });
 
     it('should be success cancel scan', function (done) {
-       // this.timeout(300000);
+        this.timeout(3000000);
         const scan = path.join(__dirname, 'success_nowait.js');
         const scanTestRunner: ttm.MockTestRunner = new ttm.MockTestRunner(scan);
         scanTestRunner.run(10);
@@ -86,7 +86,7 @@ describe('Task runner test', function () {
     });
 
     it('should be success cancel before scan start', function (done) {
-       // this.timeout(300000);
+        this.timeout(3000000);
         const tp = path.join(__dirname, 'success_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(10);
