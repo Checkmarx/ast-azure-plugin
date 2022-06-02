@@ -34,7 +34,7 @@ export class CheckmarxReportTab extends Controls.BaseControl {
                         HTML_ATTACHMENT_TYPE,
                     )
                     .then((taskAttachments) => {
-                        taskAttachments.array.forEach(taskAttachment => {
+                        taskAttachments.forEach(taskAttachment => {
                             const attachmentName = taskAttachment.name;
                             const timelineId = taskAttachment.timelineId;
                             const recordId = taskAttachment.recordId;
