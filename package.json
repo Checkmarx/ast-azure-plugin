@@ -9,11 +9,13 @@
   },
   "scripts": {
     "build": "tsc -b cxAstScan/tsconfig.json && tsc -b ui/enhancer/tsconfig.json",
-    "test": "npm run build && mocha cxAstScan/dist/test/_suite.js --exit"
+    "test": "npm run build && mocha cxAstScan/dist/test/_suite.js --exit",
+    "coverage": "nyc npm run test"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
+    "nyc": "^15.1.0",
     "typescript-logging": "2.0.1",
     "vss-web-extension-sdk": "5.141.0"
   },
