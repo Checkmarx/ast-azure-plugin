@@ -35,10 +35,8 @@ export class CleanUpRunner {
 
         //Regex to get the scanID ofthe logs
         const regexScanId = new RegExp(/"(ID)":"((\\"|[^"])*)"/i);
-        let regexArray: RegExpExecArray | null;
 
-
-        regexArray = regexScanId.exec(data!);
+        const regexArray = regexScanId.exec(data!);
 
         try {
             if (regexArray) {

@@ -11,7 +11,8 @@
     "build": "tsc -b cxAstScan/tsconfig.json && tsc -b ui/enhancer/tsconfig.json",
     "test": "npm run build && mocha cxAstScan/dist/test/_suite.js --exit",
     "coverage": "nyc npm run test",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix"
   },
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",

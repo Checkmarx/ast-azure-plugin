@@ -15,7 +15,7 @@ export class TaskRunner {
         const branchName = taskLib.getInput('branchName', true) || '';
         const additionalParams = taskLib.getInput("additionalParams") || '';
 
-        let params: Map<CxParamType, string> = new Map<CxParamType, string>();
+        const params: Map<CxParamType, string> = new Map<CxParamType, string>();
         params.set(CxParamType.PROJECT_NAME, projectName);
         params.set(CxParamType.BRANCH, branchName);
         params.set(CxParamType.AGENT, "Azure DevOps");

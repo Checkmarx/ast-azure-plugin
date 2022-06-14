@@ -5,8 +5,8 @@ import process from "process";
 process.env['Build_BuildId'] = 'test_build_id';
 process.env["AGENT_JOBSTATUS"] = 'Canceled';
 
-let taskPath = path.join(__dirname, '..', 'cleanup.js');
-let tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
+const taskPath = path.join(__dirname, '..', 'cleanup.js');
+const tmr: tmrm.TaskMockRunner = new tmrm.TaskMockRunner(taskPath);
 
 tmr.setInput("tenantName", process.env.CX_TENANT!);
 tmr.setInput("CheckmarxService", "cxauth");
