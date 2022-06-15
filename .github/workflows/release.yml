@@ -87,7 +87,7 @@ jobs:
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URI }}
           custom-facts: |
             - name: Release :
-              value: "${{BODY_RELEASE}}"
+              value: "${{ env.BODY_RELEASE }}"
           custom-actions: |
             - name: Details
               value: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ env.RELEASE_VERSION }}
