@@ -11,13 +11,19 @@ updates:
       - npm-pkg-checkmarx
     schedule:
       interval: "daily"
+    reviewers:
+      - "Checkmarx/ast-galactica-team"
   - package-ecosystem: "npm"
     directory: "/cxAstScan"
     registries:
       - npm-pkg-checkmarx
     schedule:
       interval: "daily"
+    reviewers:
+      - "Checkmarx/ast-galactica-team"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"  
+      interval: "daily"
+    reviewers:
+      - "Checkmarx/ast-galactica-team"
