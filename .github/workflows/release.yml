@@ -81,13 +81,13 @@ jobs:
           echo 'BODY_RELEASE='$body_release >> $GITHUB_ENV
 
       - name: Teams notification
-          uses: toko-bifrost/ms-teams-deploy-card@master
-          with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URI }}
-            custom-facts: |
-              - name: Release :
-                value: "${{BODY_RELEASE}}"
-            custom-actions: |
-              - name: Details
-                value: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ env.RELEASE_VERSION }}
+        uses: toko-bifrost/ms-teams-deploy-card@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URI }}
+          custom-facts: |
+            - name: Release :
+              value: "${{BODY_RELEASE}}"
+          custom-actions: |
+            - name: Details
+              value: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ env.RELEASE_VERSION }}
