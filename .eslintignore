@@ -1,0 +1,4 @@
+node_modules
+./cxAstScan/dist
+./scripts
+.github

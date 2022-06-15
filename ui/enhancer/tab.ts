@@ -7,8 +7,8 @@ const BUILD_PHASE = 'build';
 const HTML_ATTACHMENT_TYPE = 'HTML_ATTACHMENT_TYPE';
 
 export class CheckmarxReportTab extends Controls.BaseControl {
-    private projectId: string = '';
-    private planId: string = '';
+    private projectId = '';
+    private planId = '';
     private taskClient;
 
     constructor() {
@@ -93,7 +93,7 @@ export class CheckmarxReportTab extends Controls.BaseControl {
         let cxScripts = htmlDoc.getElementsByTagName('script')[0].innerHTML;
         cxScripts = cxScripts.substring(cxScripts.indexOf("{") + 1, cxScripts.lastIndexOf("}"))
 
-        let script = document.createElement("script");
+        const script = document.createElement("script");
         script.type="text/javascript";
         script.innerHTML = cxScripts;
         document.head.appendChild(script);
