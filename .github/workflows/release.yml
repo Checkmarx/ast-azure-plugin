@@ -76,18 +76,29 @@ jobs:
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
       - name: Get latest relase notes
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          body_release="$(gh api -H "Accept: application/vnd.github.v3+json" /repos/ast-azure-plugin/releases/releases/latest | jq -r '.body' )"
-          echo 'BODY_RELEASE='$body_release >> $GITHUB_ENV
-
-      - name: Teams notification
-        uses: toko-bifrost/ms-teams-deploy-card@master
+          body_release="$(gh api -H "Accept: application/vnd.github.v3+json" /repos/Checkmarx/ast-azure-plugin/releases/latest | jq -r '.body' )"
+          body_release="${body_release//$'\n'/'%0A'}"
+          echo "::set-output name=body_release::$body_release"
+      - name: Converts Markdown to HTML
+        id: convert
+        uses: lifepal/markdown-to-html@v1.2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URI }}
-          custom-facts: |
-            - name: Release :
-              value: "${{ env.BODY_RELEASE }}"
-          custom-actions: |
-            - name: Details
-              value: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ env.RELEASE_VERSION }}
+          text: "${{ steps.release.outputs.body_release }}"
+
+      - name: Clean html
+        id: clean
+        run: |
+          clean="$(echo "${{ steps.convert.outputs.html }}" | awk '{gsub(/id=.[a-z]+/,"");print}' | tr -d '\n')"
+          echo "$clean"
+          echo "::set-output name=clean::$clean"
+          
+      - name: Send a Notification
+        id: notify
+        uses: thechetantalwar/teams-notify@v2
+        with:
+          teams_webhook_url: ${{ secrets.TEAMS_WEBHOOK_URI }}
+          message: "<h1>Checkmarx Azure Plugin ${{ env.RELEASE_VERSION }}</h1>${{ steps.clean.outputs.clean }}"
