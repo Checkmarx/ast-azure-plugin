@@ -34,14 +34,16 @@ export class TaskRunner {
             const wrapper = new CxWrapper(cxScanConfig, getLogFilename());
 
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
-            console.log("Completed scan.");
 
-            console.log("Generating results.");
-            const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
-            const scan : CxScan = cxCommandOutput.payload.pop();
+            if (cxCommandOutput.payload) {
+                console.log("Completed scan.");
+                console.log("Generating results.");
+                const agentTempDirectory = taskLib.getVariable('Agent.TempDirectory');
+                const scan: CxScan = cxCommandOutput.payload.pop();
 
-            if (agentTempDirectory && scan && scan.id) {
-                await this.generateResults(wrapper, agentTempDirectory, scan.id);
+                if (agentTempDirectory && scan && scan.id) {
+                    await this.generateResults(wrapper, agentTempDirectory, scan.id);
+                }
             }
 
             taskLib.setResult(cxCommandOutput.exitCode == 0 ?
