@@ -18,7 +18,7 @@
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
     "nyc": "^15.1.0",
-    "typescript-logging": "2.0.1",
+    "typescript-logging": "2.0.2",
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
