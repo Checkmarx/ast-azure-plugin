@@ -21,7 +21,7 @@
   <p align="center">
     The CxAST Azure DevOps plugin enables you to trigger SAST, SCA, and KICS scans directly from an Azure DevOps pipeline.
     <br/>
-    <a href="https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin"><strong>Explore the docs »</strong></a>
+    <a href="https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin"><strong>Maketplace »</strong></a>
     <br />
@@ -72,12 +72,12 @@ It provides a wrapper around the CxAST CLI Tool which creates a zip archive from
 
 ### Setting Up
 
-To see how you can set up our plugin, please refer to the [Documentation](https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin)
+To see how you can set up our plugin, please refer to the [Documentation](https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html)
 
 
 ## Usage
 
-To see how you can use our plugin, please refer to the [Documentation](https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/Quick+Start+Guide+-+CxAST+Azure+DevOps+Plugin)
+To see how you can use our plugin, please refer to the [Documentation](https://checkmarx.com/resource/documents/en/34965-68709-checkmarx-one-azure-devops-plugin.html)
 
 
 ## Contribution

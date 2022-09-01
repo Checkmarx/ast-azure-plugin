@@ -11,11 +11,11 @@ The CxAST Azure DevOps plugin enables you to trigger SAST, SCA, and KICS scans d
 
 ### Quick Start Guide:
 
-Please find a quick start guide [here](https://checkmarx.atlassian.net/wiki/x/-gD3YQE).
+Please find a quick start guide [here](https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html).
 
 ### Documentation
 
-Please find the full documentation [here](https://checkmarx.atlassian.net/wiki/x/nYD7YQE).
+Please find the full documentation [here](https://checkmarx.com/resource/documents/en/34965-68709-checkmarx-one-azure-devops-plugin.html).
 
 
   
