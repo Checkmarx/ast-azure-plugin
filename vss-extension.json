@@ -42,10 +42,10 @@
   },
   "links": {
     "getstarted": {
-      "uri": "https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/How+to+use+CxAST+Azure+DevOps+Plugin"
+      "uri": "https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html"
     },
     "learn": {
-      "uri": "https://checkmarx.atlassian.net/wiki/spaces/AST/pages/5938544894/How+to+use+CxAST+Azure+DevOps+Plugin"
+      "uri": "https://checkmarx.com/resource/documents/en/34965-68709-checkmarx-one-azure-devops-plugin.html"
     },
     "support": {
       "uri": "https://support.checkmarx.com/home"
