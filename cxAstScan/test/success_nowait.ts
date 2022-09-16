@@ -17,6 +17,6 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 });
 tmr.setInput("projectName", 'TestADO_NoWait');
 tmr.setInput("branchName", 'dummy_branch');
-tmr.setInput("additionalParams", '--async --file-filter "*.ts"');
+tmr.setInput("additionalParams", '--async --file-filter "*.ts" --debug');
 tmr.run();
 
