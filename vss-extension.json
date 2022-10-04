@@ -1,15 +1,15 @@
 {
   "manifestVersion": 1,
-  "id": "tiago-checkmarx-ast-azure-plugin",
+  "id": "checkmarx-ast-azure-plugin",
   "publisher": "Checkmarx",
-  "version": "0.18",
+  "version": "dev",
   "name": "Checkmarx AST",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "public": false,
+  "public": true,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
