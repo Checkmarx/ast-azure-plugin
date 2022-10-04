@@ -19,7 +19,7 @@
   "groups": [
     {
       "name": "params",
-      "displayName": "Checkmarx AST Scan Parameters",
+      "displayName": "Checkmarx One Scan Parameters",
       "isExpanded": "true"
     }
   ],
@@ -28,7 +28,7 @@
     {
       "name": "CheckmarxService",
       "type": "connectedService:CheckmarxASTService",
-      "label": "Checkmarx AST Service Connection",
+      "label": "Checkmarx One Service Connection",
       "required": false,
       "defaultValue": "",
       "helpMarkDown": "The CX server endpoint."

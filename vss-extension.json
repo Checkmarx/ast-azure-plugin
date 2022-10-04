@@ -1,15 +1,15 @@
 {
   "manifestVersion": 1,
-  "id": "checkmarx-ast-azure-plugin",
+  "id": "tiago-checkmarx-ast-azure-plugin",
   "publisher": "Checkmarx",
-  "version": "dev",
+  "version": "0.18",
   "name": "Checkmarx AST",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "public": true,
+  "public": false,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
     "default": "images/extension-icon.png"
@@ -89,7 +89,7 @@
     {
       "id": "cxASTResults",
       "type": "ms.vss-build-web.build-results-tab",
-      "description": "A tab contributing to Checkmarx AST results report",
+      "description": "A tab contributing to Checkmarx One results report",
       "targets": [
         "ms.vss-build-web.build-results-view"
       ],
@@ -112,15 +112,16 @@
       ],
       "properties": {
         "name": "CheckmarxASTService",
-        "displayName": "Checkmarx AST Service Connection",
+        "displayName": "Checkmarx One Service Connection",
         "authenticationSchemes": [
           {
             "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+            "displayName": "Client ID & Secret Authentication",
             "inputDescriptors": [
               {
                 "id": "authURL",
-                "name": "Checkmarx AST Auth URL",
-                "description": "Checkmarx AST portal Auth URL",
+                "name": "Checkmarx One Auth URL",
+                "description": "Checkmarx One Auth URL",
                 "inputMode": "textbox",
                 "isConfidential": false,
                 "validation": {
@@ -131,7 +132,7 @@
               {
                 "id": "username",
                 "name": "Checkmarx Client ID",
-                "description": "Checkmarx AST portal authorized OAUTH2 client id",
+                "description": "Checkmarx One authorized OAUTH2 client id",
                 "inputMode": "textbox",
                 "isConfidential": false,
                 "validation": {
@@ -142,7 +143,7 @@
               {
                 "id": "password",
                 "name": "Checkmarx Client Secret",
-                "description": "Checkmarx AST portal authorized OAUTH2 client secret",
+                "description": "Checkmarx One authorized OAUTH2 client secret",
                 "inputMode": "passwordbox",
                 "isConfidential": true,
                 "validation": {
@@ -150,7 +151,25 @@
                   "isRequired": true
                 }
               }
-
+            ]
+          },
+          {
+            "displayName": "API Key Authentication",
+            "name":"CheckmarxASTApiKey",
+            "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+            "inputDescriptors": [
+              {
+                "id": "apitoken",
+                "name": "i18n:API Key",
+                "description": "i18n:Checkmarx One API Key",
+                "inputMode": "textbox",
+                "isConfidential": true,
+                "validation": {
+                  "isRequired": true,
+                  "dataType": "string",
+                  "maxLength": 1000
+                }
+              }
             ]
           }
         ],

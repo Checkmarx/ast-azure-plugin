@@ -5,6 +5,19 @@ import * as assert from 'assert';
 
 describe('Task runner test', function () {
 
+    
+    it('should be success with api key', function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_api_key.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        tr.run(10);
+
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.succeeded);
+        done();
+    });
+    
     it('should be success wait mode', function (done) {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_waitmode.js');
