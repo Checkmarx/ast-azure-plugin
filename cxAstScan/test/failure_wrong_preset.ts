@@ -16,5 +16,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 });
 tmr.setInput("projectName", 'Test_Wrong_Preset');
 tmr.setInput("branchName", 'dummy_branch');
-tmr.setInput("additionalParams", '--sast-preset-name fake');
+tmr.setInput("additionalParams", '--wrong-value');
 tmr.run();
