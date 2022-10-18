@@ -29,5 +29,6 @@ jobs:
           CX_CLIENT_SECRET: ${{ secrets.CX_CLIENT_SECRET }}
           CX_BASE_URI: ${{ secrets.CX_BASE_URI }}
           CX_TENANT: ${{ secrets.CX_TENANT }}
+          CX_API_KEY: ${{ secrets.CX_API_KEY }}
         run: npm run coverage
 

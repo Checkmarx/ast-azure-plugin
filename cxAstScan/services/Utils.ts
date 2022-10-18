@@ -18,15 +18,26 @@ export function getConfiguration() {
     cxScanConfig.apiKey = "";
     cxScanConfig.tenant = "";
 
-    const tenantName = taskLib.getInput("tenantName");
-    if (tenantName) cxScanConfig.tenant = tenantName;
-
     const endpointId = taskLib.getInput('CheckmarxService', false);
+    let astServerUrl;
+    let astUsername;
+    let astPassword;
+    let apiKey;
     if (endpointId) {
-        const astServerUrl = taskLib.getEndpointUrl(endpointId, false);
-        const astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
-        const astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);
-
+        const tenantName = taskLib.getInput("tenantName");
+        if (tenantName) cxScanConfig.tenant = tenantName;
+        try {
+            astServerUrl = taskLib.getEndpointUrl(endpointId, false);
+            astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
+            astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);    
+        } catch (error) {
+            console.log("No client ID and secret configured");
+        }
+        try {
+            apiKey = taskLib.getEndpointAuthorizationParameter(endpointId, 'apitoken', false);
+        } catch (error) {
+            console.log("No API Key configured");
+        }
         if (astServerUrl) {
             cxScanConfig.baseUri = astServerUrl;
         }
@@ -35,6 +46,9 @@ export function getConfiguration() {
         }
         if (astPassword) {
             cxScanConfig.clientSecret = astPassword;
+        }
+        if (apiKey) {
+            cxScanConfig.apiKey = apiKey;
         }
     }
     return cxScanConfig;
