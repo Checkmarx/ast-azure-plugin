@@ -3,7 +3,7 @@
   "id": "checkmarx-ast-azure-plugin",
   "publisher": "Checkmarx",
   "version": "dev",
-  "name": "Checkmarx AST",
+  "name": "Checkmarx",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -94,7 +94,7 @@
         "ms.vss-build-web.build-results-view"
       ],
       "properties": {
-        "name": "Checkmarx AST",
+        "name": "Checkmarx One",
         "uri": "ui/cxASTReportTab.html",
         "height": "175%",
         "width": "100%",
