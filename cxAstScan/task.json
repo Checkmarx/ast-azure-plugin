@@ -1,14 +1,14 @@
 {
   "id": "dd862edc-5d88-4d2c-b83b-fff2a695e5c0",
-  "name": "Checkmarx AST",
-  "friendlyName": "Checkmarx AST",
+  "name": "Checkmarx",
+  "friendlyName": "Checkmarx One",
   "description": "Add Secure Source Code Analysis inside your build process",
   "helpMarkDown": "https://github.com/CheckmarxDev/checkmarx-ast-azure-plugin#readme",
   "category": "Build",
   "visibility": [
     "Build"
   ],
-  "author": "Checkmarx AST",
+  "author": "Checkmarx",
   "version": {
     "Major": 0,
     "Minor": 0,
@@ -23,7 +23,7 @@
       "isExpanded": "true"
     }
   ],
-  "instanceNameFormat": "Checkmarx AST",
+  "instanceNameFormat": "Checkmarx One",
   "inputs": [
     {
       "name": "CheckmarxService",
