@@ -4,7 +4,7 @@ import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
 import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
 import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
-import { getConfiguration, getLogFilename } from "./Utils";
+import {getConfiguration, getLogFilename} from "./Utils";
 
 export class TaskRunner {
 
@@ -28,9 +28,9 @@ export class TaskRunner {
         console.log("Additional Params: " + additionalParams);
 
 
-        try {        
+        try {
             //Write to file to test if possible to read from file in cleanup post execution event
-            
+
             const wrapper = new CxWrapper(cxScanConfig, getLogFilename());
 
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
@@ -42,6 +42,7 @@ export class TaskRunner {
                 const scan: CxScan = cxCommandOutput.payload.pop();
 
                 if (agentTempDirectory && scan && scan.id) {
+                    taskLib.setVariable("CxOneScanId", scan.id);
                     await this.generateResults(wrapper, agentTempDirectory, scan.id);
                 }
             }
