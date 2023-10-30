@@ -77,5 +77,11 @@
     }
   },
   "messages": {
-  }
+  },
+  "OutputVariables": [
+    {
+      "name": "CxOneScanId",
+      "description": "Checkmarx One scan ID from created scan"
+    }
+  ]
 }
