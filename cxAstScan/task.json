@@ -81,7 +81,7 @@
   "OutputVariables": [
     {
       "name": "CxOneScanId",
-      "description": "Checkmarx One scan ID from created scan",
+      "description": "Checkmarx One scan ID from created scan"
     }
   ]
 }
