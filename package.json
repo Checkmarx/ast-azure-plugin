@@ -22,7 +22,7 @@
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
-    "@types/mocha": "10.0.3",
+    "@types/mocha": "10.0.6",
     "mocha": "10.2.0",
     "typescript": "5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
