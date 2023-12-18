@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 14
-        uses: actions/setup-node@v4.0.0
+        uses: actions/setup-node@v4.0.1
         env:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
