@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "azure-pipelines-task-lib": "4.5.0",
-    "@checkmarxdev/ast-cli-javascript-wrapper": "0.0.83"
+    "@checkmarxdev/ast-cli-javascript-wrapper": "0.0.84"
   }
 }
