@@ -17,7 +17,6 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "nyc": "^15.1.0",
     "typescript-logging": "2.1.0",
     "vss-web-extension-sdk": "5.141.0"
   },
@@ -25,8 +24,8 @@
     "@types/mocha": "10.0.6",
     "mocha": "10.3.0",
     "typescript": "5.3.3",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0"
   },
   "publishConfig": {
