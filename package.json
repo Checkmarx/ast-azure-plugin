@@ -21,7 +21,6 @@
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.23.10",
     "@types/mocha": "10.0.6",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
