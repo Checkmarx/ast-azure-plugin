@@ -32,7 +32,6 @@
     "registry": "https://npm.pkg.github.com"
   },
   "overrides": {
-    "globby": "14.0.1",
     "glob": "9.3.5"
   }
 }
