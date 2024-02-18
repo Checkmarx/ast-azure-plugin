@@ -21,12 +21,13 @@
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.10",
     "@types/mocha": "10.0.6",
-    "mocha": "10.3.0",
-    "typescript": "5.3.3",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "mocha": "10.3.0",
+    "typescript": "5.3.3"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
