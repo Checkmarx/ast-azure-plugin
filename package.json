@@ -17,17 +17,17 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "nyc": "^15.1.0",
+    "nyc": "^17.0.0",
     "typescript-logging": "2.1.0",
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
     "@types/mocha": "10.0.7",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.0",
-    "mocha": "10.5.0",
+    "mocha": "10.5.2",
     "typescript": "5.5.2"
   },
   "publishConfig": {
