@@ -96,7 +96,7 @@ Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Checkmarx - AST Integrations Team
+Checkmarx - AST Integrations Team.
 
 Project Link: [https://github.com/checkmarx/ast-azure-plugin](https://github.com/checkmarx/ast-azure-plugin)
 
