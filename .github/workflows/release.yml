@@ -65,7 +65,7 @@ jobs:
 
       # Create the release
       - name: Create Release
-        uses: softprops/action-gh-release@master
+        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 #v2.0.8
         with:
           release_name: Checkmarx Azure ${{ env.RELEASE_VERSION }}
           tag_name: ${{ env.RELEASE_VERSION }}
@@ -85,7 +85,7 @@ jobs:
           echo "::set-output name=body_release::$body_release"
       - name: Converts Markdown to HTML
         id: convert
-        uses: lifepal/markdown-to-html@v1.2
+        uses: lifepal/markdown-to-html@253bbd85fbdeafe2d1f18c1b9289be24e5cf8f8f #v1.2
         with:
           text: "${{ steps.release.outputs.body_release }}"
 
@@ -98,7 +98,7 @@ jobs:
           
       - name: Send a Notification
         id: notify
-        uses: thechetantalwar/teams-notify@v2
+        uses: thechetantalwar/teams-notify@8a78811f5e8f58cdd204efebd79158006428c46b #v2
         with:
           teams_webhook_url: ${{ secrets.TEAMS_WEBHOOK_URI }}
           message: "<h1>Checkmarx Azure Plugin ${{ env.RELEASE_VERSION }}</h1>${{ steps.clean.outputs.clean }}"
