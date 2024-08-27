@@ -73,7 +73,7 @@ jobs:
           generate_release_notes: true
 
       - name: Release to marketplance
-        run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
+        run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }} --trace-level debug
 
       - name: Get latest relase notes
         id: release
