@@ -1,6 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import {promises as fs} from 'fs';
-import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli";
 import { getConfiguration, getLogFilename } from "./Utils";
 import CxWrapperFactory from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
