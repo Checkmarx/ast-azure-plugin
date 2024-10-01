@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "azure-pipelines-task-lib": "4.10.1",
     "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli": "v0.0.114"
