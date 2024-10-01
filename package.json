@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/checkmarx/ast-azure-plugin",
   "engines": {
-    "node": ">=16"
+    "node": ">=10"
   },
   "scripts": {
     "build": "tsc -b cxAstScan/tsconfig.json && tsc -b ui/enhancer/tsconfig.json",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/mocha": "10.0.7",
-    "@types/node": "^16.0.0",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.0",
