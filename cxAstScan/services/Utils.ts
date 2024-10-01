@@ -1,5 +1,5 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
-import { CxConfig } from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxConfig";
+import { CxConfig } from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxConfig";
 import * as path from "path"
 
 export function getLogFilename(): string {
