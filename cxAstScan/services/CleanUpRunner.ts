@@ -2,8 +2,10 @@ import * as taskLib from "azure-pipelines-task-lib/task";
 import {promises as fs} from 'fs';
 import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
 import { getConfiguration, getLogFilename } from "./Utils";
+import CxWrapperFactory from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
 export class CleanUpRunner {
+    cxWrapperFactory = new CxWrapperFactory();
     async run() {
         console.log("Getting job status");
         const jobStatus = taskLib.getVariable('AGENT_JOBSTATUS');
@@ -15,7 +17,7 @@ export class CleanUpRunner {
         }
 
         const cxScanConfig = getConfiguration();
-        const wrapper = new CxWrapper(cxScanConfig);
+        const wrapper = await this.cxWrapperFactory.createWrapper(cxScanConfig);
         let data: string;
 
         try {
