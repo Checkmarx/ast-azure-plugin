@@ -32,5 +32,5 @@ jobs:
           CX_API_KEY: ${{ secrets.CX_API_KEY }}
         run: npm run coverage
         with: 
-          node-version: 18
+          node-version: 14
 
