@@ -1,14 +1,12 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path"
-import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli";
-import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxCommandOutput";
-import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxParamType";
-import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/scan/CxScan";
+import {CxWrapper} from "@checkmarxdev/ast-cli-javascript-wrapper";
+import {CxCommandOutput} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxCommandOutput";
+import {CxParamType} from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/wrapper/CxParamType";
+import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper/dist/main/scan/CxScan";
 import {getConfiguration, getLogFilename} from "./Utils";
-import CxWrapperFactory from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
 export class TaskRunner {
-    cxWrapperFactory = new CxWrapperFactory();
 
     async run() {
         const cxScanConfig = getConfiguration();
@@ -32,8 +30,8 @@ export class TaskRunner {
 
         try {
             //Write to file to test if possible to read from file in cleanup post execution event
-            
-            const wrapper = await this.cxWrapperFactory.createWrapper(cxScanConfig, getLogFilename());
+
+            const wrapper = new CxWrapper(cxScanConfig, getLogFilename());
 
             const cxCommandOutput: CxCommandOutput = await wrapper.scanCreate(params);
 
