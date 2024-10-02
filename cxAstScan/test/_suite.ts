@@ -69,7 +69,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_no_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
+        tr.run(nodeVersion);
         console.log(tr.succeeded);
         assert.strictEqual(tr.succeeded, true, 'should have succeeded');
         console.log(tr.stdout);
