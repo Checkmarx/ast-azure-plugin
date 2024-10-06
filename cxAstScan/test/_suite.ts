@@ -90,7 +90,7 @@ describe('Task runner test', function () {
         
         const tp = path.join(__dirname, 'success_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(16);
+        tr.run(nodeVersion);
         console.log(tr.stdout);
         assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0, 
         true, 
