@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2015",
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     "outDir": "./dist" /* Redirect output structure to the directory. */,
 
@@ -14,6 +14,12 @@
 
     /* Source Map Options */
     "inlineSourceMap": true /* Emit a single file with source maps instead of having a separate file. */,
-    "inlineSources": true /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */
+    "inlineSources": true, /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */
+    "declaration": true,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "pretty": true,
+    "allowSyntheticDefaultImports": true
   }
 }

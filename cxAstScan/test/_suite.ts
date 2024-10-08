@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import * as assert from 'assert';
 
-
+const nodeVersion = 16;
 describe('Task runner test', function () {
 
     
@@ -10,7 +10,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_api_key.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
 
         console.log(tr.stdout)
         console.log(tr.stderr)
@@ -22,7 +22,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_waitmode.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
 
         console.log(tr.stdout)
         console.log(tr.stderr)
@@ -34,7 +34,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_nowait.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
 
         console.log(tr.stdout)
         console.log(tr.stderr)
@@ -46,7 +46,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'failure_additional_params.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
         console.log(tr.stdout)
         console.log(tr.stderr)
         assert.ok(tr.failed);
@@ -57,7 +57,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'failure_wrong_preset.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
 
         console.log(tr.stdout)
         console.log(tr.stderr)
@@ -69,7 +69,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_no_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run();
+        tr.run(nodeVersion);
         console.log(tr.succeeded);
         assert.strictEqual(tr.succeeded, true, 'should have succeeded');
         console.log(tr.stdout);
@@ -83,14 +83,14 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const scan = path.join(__dirname, 'success_nowait.js');
         const scanTestRunner: ttm.MockTestRunner = new ttm.MockTestRunner(scan);
-        scanTestRunner.run(10);
+        scanTestRunner.run(nodeVersion);
         console.log(scanTestRunner.stdout)
         console.log(scanTestRunner.stderr)
         assert.ok(scanTestRunner.succeeded);
         
         const tp = path.join(__dirname, 'success_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
         console.log(tr.stdout);
         assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0, 
         true, 
@@ -102,7 +102,7 @@ describe('Task runner test', function () {
         this.timeout(3000000);
         const tp = path.join(__dirname, 'success_cancel.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-        tr.run(10);
+        tr.run(nodeVersion);
         console.log(tr.stdout);
         assert.strictEqual(tr.stdout.indexOf('Log file not created. Task ended successfully') >= 0,
         true, 
