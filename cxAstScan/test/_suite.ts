@@ -73,9 +73,12 @@ describe('Task runner test', function () {
         console.log(tr.succeeded);
         assert.strictEqual(tr.succeeded, true, 'should have succeeded');
         console.log(tr.stdout);
-        assert.strictEqual(tr.stdout.indexOf('Pipeline not cancelled, nothing to do.') >= 0, 
-        true, 
+        assert.strictEqual(tr.stdout.indexOf('Pipeline not cancelled, nothing to do.') >= 0,
+        true,
         "should display cleanup message: Pipeline not cancelled, nothing to do.");
+        assert.strictEqual(tr.stdout.indexOf('Deleted zip file') >= 0 || tr.stdout.indexOf('Zip file already deleted.') >= 0,
+            true,
+            "should display cleanup message: Deleted zip file or Zip file already deleted.");
         done();
     });
 
@@ -92,9 +95,12 @@ describe('Task runner test', function () {
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         tr.run(nodeVersion);
         console.log(tr.stdout);
-        assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0, 
-        true, 
+        assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0,
+        true,
         "should display cleanup message: Canceling scan with ID");
+        assert.strictEqual(tr.stdout.indexOf('Deleted zip file') >= 0 || tr.stdout.indexOf('Zip file already deleted.') >= 0,
+            true,
+            "should display cleanup message: Deleted zip file or Zip file already deleted.");
         done();
     });
 
@@ -105,7 +111,7 @@ describe('Task runner test', function () {
         tr.run(nodeVersion);
         console.log(tr.stdout);
         assert.strictEqual(tr.stdout.indexOf('Log file not created. Task ended successfully') >= 0,
-        true, 
+        true,
         "should display cleanup message: Log file not created. Task ended successfully.");
         done();
     });
