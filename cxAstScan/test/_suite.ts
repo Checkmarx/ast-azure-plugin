@@ -12,6 +12,8 @@ describe('Task runner test', function () {
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         await tr.runAsync(nodeVersion);
 
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        
         console.log(tr.stdout);
         console.log(tr.stderr);
         assert.strictEqual(tr.succeeded, expectedSuccess, `Test ${testFile} ${expectedSuccess ? 'should succeed' : 'should fail'}`);
