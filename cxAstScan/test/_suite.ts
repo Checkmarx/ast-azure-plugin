@@ -3,30 +3,110 @@ import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import * as assert from 'assert';
 
 const nodeVersion = 20;
-
 describe('Task runner test', function () {
-    this.timeout(3000000);
 
-    const runTest = async (testFile: string, expectedSuccess: boolean, checkMessage?: string) => {
-        const tp = path.join(__dirname, testFile);
+    
+    it('should be success with api key', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_api_key.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         await tr.runAsync(nodeVersion);
 
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.succeeded);
+        done();
+    });
+    
+    it('should be success wait mode', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_waitmode.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.succeeded);
+        done();
+    });
+
+    it('should be success no wait mode', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_nowait.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.succeeded);
+        done();
+    });
+
+    it('should be failure additional params', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_additional_params.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.failed);
+        done();
+    });
+
+    it('should be failure preset', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_wrong_preset.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout)
+        console.log(tr.stderr)
+        assert.ok(tr.failed);
+        done();
+    });
+
+    it('should be success no cancel scan', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_no_cancel.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+        console.log(tr.succeeded);
+        assert.strictEqual(tr.succeeded, true, 'should have succeeded');
         console.log(tr.stdout);
-        console.log(tr.stderr);
-        assert.strictEqual(tr.succeeded, expectedSuccess, `Test ${testFile} ${expectedSuccess ? 'should succeed' : 'should fail'}`);
+        assert.strictEqual(tr.stdout.indexOf('Pipeline not cancelled, nothing to do.') >= 0,
+            true,
+            "should display cleanup message: Pipeline not cancelled, nothing to do.");
+        done();
+    });
 
-        if (checkMessage) {
-            assert.strictEqual(tr.stdout.indexOf(checkMessage) >= 0, true, `Expected message: "${checkMessage}"`);
-        }
-    };
+    it('should be success cancel scan', async function (done) {
+        this.timeout(3000000);
+        const scan = path.join(__dirname, 'success_nowait.js');
+        const scanTestRunner: ttm.MockTestRunner = new ttm.MockTestRunner(scan);
+        await scanTestRunner.runAsync(nodeVersion);
+        console.log(scanTestRunner.stdout)
+        console.log(scanTestRunner.stderr)
+        assert.ok(scanTestRunner.succeeded);
 
-    it('should be success with api key', async () => await runTest('success_api_key.js', true));
-    it('should be success wait mode', async () => await runTest('success_waitmode.js', true));
-    it('should be success no wait mode', async () => await runTest('success_nowait.js', true));
-    it('should be failure additional params', async () => await runTest('failure_additional_params.js', false));
-    it('should be failure preset', async () => await runTest('failure_wrong_preset.js', false));
-    it('should be success no cancel scan', async () => await runTest('success_no_cancel.js', true, 'Pipeline not cancelled, nothing to do.'));
-    it('should be success cancel scan', async () => await runTest('success_cancel.js', true, 'Canceling scan with ID'));
-    it('should be success cancel before scan start', async () => await runTest('success_cancel.js', true, 'Log file not created. Task ended successfully.'));
+        const tp = path.join(__dirname, 'success_cancel.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+        console.log(tr.stdout);
+        assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0,
+            true,
+            "should display cleanup message: Canceling scan with ID");
+        done();
+    });
+
+    it('should be success cancel before scan start', async function (done) {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_cancel.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+        console.log(tr.stdout);
+        assert.strictEqual(tr.stdout.indexOf('Log file not created. Task ended successfully') >= 0,
+            true,
+            "should display cleanup message: Log file not created. Task ended successfully.");
+        done();
+    });
 });
