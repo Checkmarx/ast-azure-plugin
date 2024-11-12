@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import * as assert from 'assert';
 
-const nodeVersion = 22;
+const nodeVersion = 16;
 describe('Task runner test', function () {
 
     
