@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/checkmarx/ast-azure-plugin",
   "engines": {
-    "node": ">=22"
+    "node": ">=16"
   },
   "scripts": {
     "build": "tsc -b cxAstScan/tsconfig.json && tsc -b ui/enhancer/tsconfig.json",
