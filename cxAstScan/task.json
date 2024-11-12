@@ -67,12 +67,12 @@
     }
   ],
   "execution": {
-    "Node16": {
+    "Node22": {
       "target": "./dist/index.js"
     }
   },
   "postjobexecution": {
-    "Node16": {
+    "Node22": {
       "target": "./dist/cleanup.js"
     }
   },
