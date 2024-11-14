@@ -1,18 +1,25 @@
 name: Checkmarx One Scan
-
-on: [ pull_request, workflow_dispatch ]
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '00 7 * * *' # Every day at 07:00
 
 jobs:
   cx-scan:
+    name: Checkmarx One Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Checkmarx One CLI Action
-        uses: checkmarx/ast-github-action@1fe318de2993222574e6249750ba9000a4e2a6cd #v2.0.33 - Check for the latest version and updated here if there is a new one
+        uses: checkmarx/ast-github-action@03a90e7253dadd7e2fff55f5dfbce647b39040a1 # v.2.0.37
         with:
           base_uri: ${{ secrets.AST_RND_SCANS_BASE_URI }}
           cx_tenant: ${{ secrets.AST_RND_SCANS_TENANT }}
           cx_client_id: ${{ secrets.AST_RND_SCANS_CLIENT_ID }}
           cx_client_secret: ${{ secrets.AST_RND_SCANS_CLIENT_SECRET }}
-          additional_params: --tags phoenix --threshold "sast-critical=1;sast-high=1;sast-medium=1;sast-low=1;sca-critical=1;sca-high=1;sca-medium=2;sca-low=1;iac-security-critical=1;iac-security-high=1;iac-security-medium=1;iac-security-low=1" --debug
+          additional_params: --tags phoenix --threshold "sca-critical=1;sca-high=1;sca-medium=1;sca-low=1;sast-critical=1;sast-high=1;sast-medium=1;sast-low=1;iac-security-critical=1;iac-security-high=1;iac-security-medium=1;iac-security-low=1"
