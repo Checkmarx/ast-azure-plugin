@@ -97,8 +97,8 @@ export class CleanUpRunner {
     }
 
     extractZipFilePath(data: string): string | null {
-        const zipFilePattern = /Temporary zip file path:\s*(.+)$/;
+        const zipFilePattern = /Temporary zip file path:\s*(.*)$/m;
         const match = data.match(zipFilePattern);
-        return match ? match[1] : null;
+        return match ? match[1].trim() : null;
     }
 }
