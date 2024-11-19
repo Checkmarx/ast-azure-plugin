@@ -72,6 +72,9 @@ describe('Task runner test', function () {
         assert.strictEqual(tr.stdout.indexOf('Pipeline not cancelled, nothing to do.') >= 0,
             true,
             "should display cleanup message: Pipeline not cancelled, nothing to do.");
+        assert.strictEqual(tr.stdout.indexOf('Deleted zip file') >= 0 || tr.stdout.indexOf('Zip file already deleted.') >= 0,
+            true,
+            "should display cleanup message: Deleted zip file or Zip file already deleted.");
     });
 
     it('should be success cancel scan', async function () {
@@ -92,6 +95,9 @@ describe('Task runner test', function () {
         assert.strictEqual(tr.stdout.indexOf('Canceling scan with ID') >= 0,
             true,
             "should display cleanup message: Canceling scan with ID");
+        assert.strictEqual(tr.stdout.indexOf('Deleted zip file') >= 0 || tr.stdout.indexOf('Zip file already deleted.') >= 0,
+            true,
+            "should display cleanup message: Deleted zip file or Zip file already deleted.");
     });
 
     it('should be success cancel before scan start', async function () {
