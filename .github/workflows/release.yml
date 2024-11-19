@@ -60,6 +60,9 @@ jobs:
           cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
 
+      - name: Remove node_modules
+        run: rm -rf node_modules cxAstScan/node_modules
+
       - name: Create extension
         run: tfx extension create --manifest-globs vss-extension.json
 
@@ -72,10 +75,10 @@ jobs:
           files: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
           generate_release_notes: true
 
-      - name: Release to marketplance
+      - name: Release to marketplace
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
-      - name: Get latest relase notes
+      - name: Get latest release notes
         id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,6 +86,7 @@ jobs:
           body_release="$(gh api -H "Accept: application/vnd.github.v3+json" /repos/Checkmarx/ast-azure-plugin/releases/latest | jq -r '.body' )"
           body_release="${body_release//$'\n'/'%0A'}"
           echo "::set-output name=body_release::$body_release"
+          
       - name: Converts Markdown to HTML
         id: convert
         uses: lifepal/markdown-to-html@253bbd85fbdeafe2d1f18c1b9289be24e5cf8f8f #v1.2
