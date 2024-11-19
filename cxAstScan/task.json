@@ -15,7 +15,7 @@
     "Patch": 0
   },
   "demands": [],
-  "minimumAgentVersion": "1.0.0",
+  "minimumAgentVersion": "3.232.1",
   "groups": [
     {
       "name": "params",
@@ -67,12 +67,12 @@
     }
   ],
   "execution": {
-    "Node16": {
+    "Node20_1": {
       "target": "./dist/index.js"
     }
   },
   "postjobexecution": {
-    "Node16": {
+    "Node20_1": {
       "target": "./dist/cleanup.js"
     }
   },
