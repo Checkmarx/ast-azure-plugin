@@ -1,3 +1,7 @@
+⚠️ <u>**Important notice for version 3.0.0 and above**</u>:
+To make the Checkmarx One plugin for ADO more lightweight, the CLI tool has been removed and now needs to be downloaded separately during use. This change may affect customers who restrict access to whitelisted domains, requiring them to add download.checkmarx.com to their whitelist.
+Customers who are unable to whitelist this domain, can use an older version of the plugin, which is available for download [here](https://github.com/Checkmarx/ast-azure-plugin/releases).
+
 ### Overview
 
 The CxAST Azure DevOps plugin enables you to trigger SAST, SCA, and KICS scans directly from an Azure DevOps pipeline. It provides a wrapper around the CxAST CLI Tool which creates a zip archive from your source code repository and uploads it to CxAST for scanning. This plugin provides easy integration with Azure while enabling scan customization using the full functionality and flexibility of the CLI tool.
