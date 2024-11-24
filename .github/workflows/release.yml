@@ -72,10 +72,10 @@ jobs:
           files: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
           generate_release_notes: true
 
-      - name: Release to marketplance
+      - name: Release to marketplace
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
-      - name: Get latest relase notes
+      - name: Get latest release notes
         id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
