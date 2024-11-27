@@ -92,7 +92,7 @@ export class CleanUpRunner {
             await fs.unlink(getLogFilename());
             console.log('Log file deleted successfully.');
         } catch (err) {
-            //console.log("Unable to delete log file.", err);
+            console.log("Unable to delete log file.", err);
         }
     }
 
