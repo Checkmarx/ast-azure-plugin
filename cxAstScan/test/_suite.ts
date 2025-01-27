@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as ttm from 'azure-pipelines-task-lib/mock-test';
 import * as assert from 'assert';
+import './cleanup/_suite';
 
 const nodeVersion = 20;
 describe('Task runner test', function () {
@@ -110,5 +111,24 @@ describe('Task runner test', function () {
         assert.strictEqual(tr.stdout.indexOf('Log file not created. Task ended successfully') >= 0,
             true,
             "should display cleanup message: Log file not created. Task ended successfully.");
+    });
+
+    it('should handle cleanup error cases', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_cleanup_cases.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+
+        // Verify error handling for file permissions
+        assert.strictEqual(tr.stdout.indexOf('No permissions to read log file') >= 0, true);
+
+        // Verify error handling for file deletion
+        assert.strictEqual(tr.stdout.indexOf('Unable to delete log file.') >= 0, true);
+
+        // Verify error handling for authentication
+        assert.strictEqual(tr.stdout.indexOf('Error creating scan:') >= 0, true);
     });
 });
