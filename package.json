@@ -17,7 +17,6 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "azure-pipelines-task-lib": "^4.17.3",
     "nyc": "^17.0.0",
     "typescript-logging": "2.2.0",
     "vss-web-extension-sdk": "5.141.0"
