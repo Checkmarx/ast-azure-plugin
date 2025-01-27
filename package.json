@@ -36,7 +36,6 @@
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
-    "include": ["cxAstScan/services/**"],
     "exclude": ["**/node_modules/**"],
     "reporter": ["text-summary", "html"],
     "report-dir": "./coverage",
