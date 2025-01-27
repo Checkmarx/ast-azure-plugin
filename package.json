@@ -22,7 +22,6 @@
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/mocha": "10.0.7",
     "@types/node": "^22.9.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
@@ -34,32 +33,5 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  },
-  "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "include": [
-      "cxAstScan/services/*.ts"
-    ],
-    "exclude": [
-      "**/node_modules/**",
-      "cxAstScan/test/**",
-      "cxAstScan/dist/**",
-      "coverage/**"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
-    "report-dir": "./coverage",
-    "sourceMap": true,
-    "instrument": true,
-    "all": true,
-    "check-coverage": false,
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
   }
 }
