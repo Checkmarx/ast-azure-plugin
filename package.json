@@ -17,6 +17,8 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
+    "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli": "npm:@CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli@^1.0.12",
+    "azure-pipelines-task-lib": "^4.17.3",
     "nyc": "^17.0.0",
     "typescript-logging": "2.2.0",
     "vss-web-extension-sdk": "5.141.0"
@@ -34,18 +36,13 @@
     "registry": "https://npm.pkg.github.com"
   },
   "nyc": {
-    "exclude": [
-      "**/test/**",
-      "coverage/**",
-      "**/*.test.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "include": ["cxAstScan/services/**"],
+    "exclude": ["**/node_modules/**"],
+    "reporter": ["text-summary", "html"],
+    "report-dir": "./coverage",
+    "sourceMap": true,
+    "instrument": true,
     "all": true
   }
 }
