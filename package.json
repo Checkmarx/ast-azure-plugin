@@ -22,13 +22,14 @@
     "vss-web-extension-sdk": "5.141.0"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/mocha": "10.0.7",
     "@types/node": "^22.9.0",
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.0",
     "mocha": "10.7.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },
   "publishConfig": {
@@ -36,11 +37,29 @@
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
-    "exclude": ["**/node_modules/**"],
-    "reporter": ["text-summary", "html"],
+    "include": [
+      "cxAstScan/services/*.ts"
+    ],
+    "exclude": [
+      "**/node_modules/**",
+      "cxAstScan/test/**",
+      "cxAstScan/dist/**",
+      "coverage/**"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
     "report-dir": "./coverage",
     "sourceMap": true,
     "instrument": true,
-    "all": true
+    "all": true,
+    "check-coverage": false,
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   }
 }
