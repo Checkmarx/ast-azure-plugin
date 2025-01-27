@@ -23,14 +23,32 @@
   },
   "devDependencies": {
     "@types/mocha": "10.0.7",
-    "@types/node": "^22.9.0",
+    "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.0",
     "mocha": "10.7.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.0.0",
+    "azure-pipelines-task-lib": "^4.0.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
+  },
+  "nyc": {
+    "exclude": [
+      "cxAstScan/index.ts",
+      "cxAstScan/cleanup.ts",
+      "**/test/**",
+      "**/*.test.ts",
+      "coverage/**"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "all": true
   }
 }

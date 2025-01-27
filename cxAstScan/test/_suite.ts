@@ -111,4 +111,41 @@ describe('Task runner test', function () {
             true,
             "should display cleanup message: Log file not created. Task ended successfully.");
     });
+
+    it('should handle results generation failure gracefully', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_generate_results.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        assert.ok(tr.failed);
+        assert.strictEqual(tr.stdout.indexOf('Error generating the results:') >= 0, true);
+    });
+
+    it('should handle cleanup errors gracefully', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_cleanup.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        // Even with errors, cleanup should complete successfully
+        assert.ok(tr.succeeded);
+        assert.strictEqual(tr.stdout.indexOf('Unable to delete log file.') >= 0, true);
+    });
+
+    it('should handle missing authentication parameters', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_auth.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        assert.ok(tr.failed);
+        assert.strictEqual(tr.stdout.indexOf('No client ID and secret configured') >= 0, true);
+    });
 });
