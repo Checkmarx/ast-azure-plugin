@@ -99,7 +99,7 @@ jobs:
       - name: Set public false if dev
         run: |
           if [ "${{ inputs.dev }}" == "true" ]; then
-            jq ".public = false" ./vss-extension.json > tmp.json && mv tmp.json ./vss-extension.json
+            cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
           fi
           
       - name: Create extension
