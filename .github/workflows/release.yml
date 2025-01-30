@@ -1,10 +1,18 @@
 name: Azure AST plugin release
 
 on:
-  push:
-    tags:
-      - "*"
-
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Dev release tag'
+        required: true
+        type: string
+      dev:
+        description: 'Is dev build'
+        required: false
+        default: true
+        type: boolean
+      
 env:
   PUBLISHER: Checkmarx
   EXTENSION_ID: checkmarx-ast-azure-plugin
@@ -12,9 +20,25 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
+      TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
 
     steps:
       - uses: actions/checkout@v4
+        
+      - name: Tag
+        id: set_tag_name
+        run: |
+          echo ${{ inputs.tag }}
+          tag=${{ inputs.tag }}
+          echo "RELEASE_VERSION=${{ inputs.tag }}" >> $GITHUB_ENV
+          message='${{ inputs.tag }}'
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git tag -a "${tag}" -m "${message}"
+          git push origin "${tag}"
+          echo "::set-output name=TAG_NAME::${{ inputs.tag }}"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.3
@@ -41,17 +65,29 @@ jobs:
 
       - name: Set major, minor, patch values
         run: |
-          echo "MAJOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f1)" >> $GITHUB_ENV
-          echo "MINOR_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f2)" >> $GITHUB_ENV
-          echo "PATCH_VERSION=$(echo ${{ env.RELEASE_VERSION }} | cut -d. -f3)" >> $GITHUB_ENV
+          CLEAN_VERSION=$(echo ${{ env.RELEASE_VERSION }} | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
 
+          echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
+          echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
+          echo "PATCH_VERSION=$(echo $CLEAN_VERSION | cut -d. -f3)" >> $GITHUB_ENV
+      
       - name: New version
+        id: set_tag_name
         run: |
           echo "The new version is ${{ env.RELEASE_VERSION }}"
           echo "The new major version is ${{ env.MAJOR_VERSION }}"
           echo "The new minor version is ${{ env.MINOR_VERSION }}"
           echo "The new patch version is ${{ env.PATCH_VERSION }}"
+          echo "::set-output name=TAG_NAME::${{ env.RELEASE_VERSION }}"
 
+      - name: Extract CLI version
+        id: extract_cli_version
+        run: |
+          CLI_VERSION=$(cat cxAstScan/node_modules/@CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
+          echo "CLI version being packed is $CLI_VERSION"
+          echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
+          echo "::set-output name=CLI_VERSION::$CLI_VERSION"
+      
       - name: Set versions in files
         run: |
           cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
@@ -71,34 +107,21 @@ jobs:
           tag_name: ${{ env.RELEASE_VERSION }}
           files: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
           generate_release_notes: true
+          prerelease: ${{ inputs.dev }}
 
       - name: Release to marketplace
+        if: inputs.dev == 'false'
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
-      - name: Get latest release notes
-        id: release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          body_release="$(gh api -H "Accept: application/vnd.github.v3+json" /repos/Checkmarx/ast-azure-plugin/releases/latest | jq -r '.body' )"
-          body_release="${body_release//$'\n'/'%0A'}"
-          echo "::set-output name=body_release::$body_release"
-      - name: Converts Markdown to HTML
-        id: convert
-        uses: lifepal/markdown-to-html@253bbd85fbdeafe2d1f18c1b9289be24e5cf8f8f #v1.2
-        with:
-          text: "${{ steps.release.outputs.body_release }}"
-
-      - name: Clean html
-        id: clean
-        run: |
-          clean="$(echo "${{ steps.convert.outputs.html }}" | awk '{gsub(/id=.[a-z]+/,"");print}' | tr -d '\n')"
-          echo "$clean"
-          echo "::set-output name=clean::$clean"
-          
-      - name: Send a Notification
-        id: notify
-        uses: thechetantalwar/teams-notify@8a78811f5e8f58cdd204efebd79158006428c46b #v2
-        with:
-          teams_webhook_url: ${{ secrets.TEAMS_WEBHOOK_URI }}
-          message: "<h1>Checkmarx Azure Plugin ${{ env.RELEASE_VERSION }}</h1>${{ steps.clean.outputs.clean }}"
+    notify:
+      if: inputs.dev == false || inputs.tag == 'test-notify'
+      needs: release
+      uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
+      with:
+        product_name: Azure Plugin
+        release_version: ${{ needs.release.outputs.TAG_NAME }}
+        cli_release_version: ${{ needs.release.outputs.CLI_VERSION }}
+        release_author: "Phoenix Team"
+        release_url: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ needs.release.outputs.TAG_NAME }}
+        jira_product_name: ADO
+      secrets: inherit
