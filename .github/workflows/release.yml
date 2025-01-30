@@ -35,7 +35,8 @@ jobs:
           if [ "${{ inputs.dev }}" == "true" ]; then
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin-dev" >> $GITHUB_ENV
             if [ -n "${{ inputs.publisherID }}" ]; then
-            echo "PUBLISHER_ID=${{ inputs.publisherID }}" >> $GITHUB_ENV
+              echo "PUBLISHER_ID=${{ inputs.publisherID }}" >> $GITHUB_ENV
+            fi
           else
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
           fi
