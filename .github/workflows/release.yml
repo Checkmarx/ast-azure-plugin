@@ -18,7 +18,7 @@ env:
   EXTENSION_ID: checkmarx-ast-azure-plugin
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
@@ -113,15 +113,15 @@ jobs:
         if: inputs.dev == 'false'
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
-    notify:
-      if: inputs.dev == false || inputs.tag == 'test-notify'
-      needs: release
-      uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
-      with:
-        product_name: Azure Plugin
-        release_version: ${{ needs.release.outputs.TAG_NAME }}
-        cli_release_version: ${{ needs.release.outputs.CLI_VERSION }}
-        release_author: "Phoenix Team"
-        release_url: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ needs.release.outputs.TAG_NAME }}
-        jira_product_name: ADO
-      secrets: inherit
+  notify:
+    if: inputs.dev == false || inputs.tag == 'test-notify'
+    needs: release
+    uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
+    with:
+      product_name: Azure Plugin
+      release_version: ${{ needs.release.outputs.TAG_NAME }}
+      cli_release_version: ${{ needs.release.outputs.CLI_VERSION }}
+      release_author: "Phoenix Team"
+      release_url: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ needs.release.outputs.TAG_NAME }}
+      jira_product_name: ADO
+    secrets: inherit  
