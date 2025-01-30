@@ -72,13 +72,11 @@ jobs:
           echo "PATCH_VERSION=$(echo $CLEAN_VERSION | cut -d. -f3)" >> $GITHUB_ENV
       
       - name: New version
-        id: set_tag_name
         run: |
           echo "The new version is ${{ env.RELEASE_VERSION }}"
           echo "The new major version is ${{ env.MAJOR_VERSION }}"
           echo "The new minor version is ${{ env.MINOR_VERSION }}"
           echo "The new patch version is ${{ env.PATCH_VERSION }}"
-          echo "::set-output name=TAG_NAME::${{ env.RELEASE_VERSION }}"
 
       - name: Extract CLI version
         id: extract_cli_version
