@@ -15,7 +15,6 @@ on:
       
 env:
   PUBLISHER: Checkmarx
-  EXTENSION_ID: checkmarx-ast-azure-plugin
 
 jobs:
   release:
@@ -26,6 +25,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set Extension ID
+        run: |
+          if [ "${{ inputs.dev }}" == "true" ]; then
+            echo "EXTENSION_ID=checkmarx-ast-azure-plugin-dev" >> $GITHUB_ENV
+          else
+            echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
+          fi
         
       - name: Tag
         id: set_tag_name
@@ -105,7 +112,7 @@ jobs:
           fi
           
       - name: Create extension
-        run: tfx extension create --manifest-globs vss-extension.json
+        run: tfx extension create --manifest-globs vss-extension.json        
 
       # Create the release
       - name: Create Release
