@@ -104,11 +104,10 @@ jobs:
           cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
       
-      - name: Set ID field to dev and public to false if dev release
+      - name: Set public to false if dev release
         run: |
           if [ "${{ inputs.dev }}" == "true" ]; then
             cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}-dev\"" vss-extension.json) > vss-extension.json
           fi
           
       - name: Create extension
