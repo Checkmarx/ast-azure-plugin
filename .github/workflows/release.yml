@@ -120,7 +120,7 @@ jobs:
         with:
           release_name: Checkmarx Azure ${{ env.RELEASE_VERSION }}
           tag_name: ${{ env.RELEASE_VERSION }}
-          files: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.RELEASE_VERSION }}.vsix
+          files: ./${{ env.PUBLISHER }}.${{ env.EXTENSION_ID }}-${{ env.CLEAN_VERSION }}.vsix
           generate_release_notes: true
           prerelease: ${{ inputs.dev }}
 
