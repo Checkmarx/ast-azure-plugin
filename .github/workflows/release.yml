@@ -81,6 +81,8 @@ jobs:
       - name: Extract CLI version
         id: extract_cli_version
         run: |
+          ls -la
+          pwd
           CLI_VERSION=$(cat cxAstScan/node_modules/@CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "CLI version being packed is $CLI_VERSION"
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
