@@ -66,6 +66,7 @@ jobs:
       - name: Set major, minor, patch values
         run: |
           CLEAN_VERSION=$(echo ${{ env.RELEASE_VERSION }} | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
+          echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
 
           echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
@@ -90,16 +91,17 @@ jobs:
       
       - name: Set versions in files
         run: |
-          cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
+          cat <<< $(jq ".version = \"${{ env.CLEAN_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
           cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json) > ./package.json
           cat <<< $(jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
       
-      - name: Set public false if dev
+      - name: Set ID field to dev and public to false if dev release
         run: |
           if [ "${{ inputs.dev }}" == "true" ]; then
             cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
+            cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}-dev\"" vss-extension.json) > vss-extension.json
           fi
           
       - name: Create extension
