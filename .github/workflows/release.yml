@@ -83,7 +83,7 @@ jobs:
         run: |
           ls -la
           pwd
-          CLI_VERSION=$(cat cxAstScan/node_modules/@CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
+          CLI_VERSION=$(cat ./cxAstScan/node_modules/@CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "CLI version being packed is $CLI_VERSION"
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
           echo "::set-output name=CLI_VERSION::$CLI_VERSION"
@@ -95,7 +95,13 @@ jobs:
           cat <<< $(jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
-
+      
+      - name: Set public false if dev
+        run: |
+          if [ "${{ inputs.dev }}" == "true" ]; then
+            cat <<< $(jq ".public = false" ./vss-extension.json) > ./vss-extension.json
+          fi
+          
       - name: Create extension
         run: tfx extension create --manifest-globs vss-extension.json
 
