@@ -65,9 +65,8 @@ jobs:
               MINOR="${BASH_REMATCH[2]}"
               PATCH="${BASH_REMATCH[3]}"
             else
-              MAJOR=0
-              MINOR=0
-              PATCH=0
+              echo "Invalid tag format: $LATEST_TAG"
+              exit 1
             fi
 
             # Bump patch version
