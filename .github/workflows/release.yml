@@ -109,13 +109,14 @@ jobs:
       
       - name: Set major, minor, patch values
         run: |
-          CLEAN_VERSION=$(echo ${{ env.RELEASE_VERSION }} | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
+          CLEAN_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | sed 's/^v//')
+  
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
-
           echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
           echo "PATCH_VERSION=$(echo $CLEAN_VERSION | cut -d. -f3)" >> $GITHUB_ENV
-      
+
+
       - name: New version
         run: |
           echo "The new version is ${{ env.RELEASE_VERSION }}"
