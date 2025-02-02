@@ -5,7 +5,7 @@ on:
     inputs:
       tag:
         description: 'Release tag'
-        required: true
+        required: false
         type: string
       publisherID:
         description: 'Enter Publisher ID (ignore if not dev build)'
@@ -41,18 +41,53 @@ jobs:
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
           fi
         
-      - name: Tag
+      - name: Determine Release Version
         id: set_tag_name
         run: |
-          echo ${{ inputs.tag }}
-          tag=${{ inputs.tag }}
-          echo "RELEASE_VERSION=${{ inputs.tag }}" >> $GITHUB_ENV
-          message='${{ inputs.tag }}'
+          if [[ -z "${{ inputs.tag }}" ]]; then
+            # Fetch the latest GitHub release tag
+            LATEST_TAG=$(curl -sL \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
+
+            # If no release is found, fallback to default
+            if [[ "$LATEST_TAG" == "null" || -z "$LATEST_TAG" ]]; then
+              echo "No release found, should provide a tag"
+              exit 1
+            fi
+
+            echo "Latest GitHub release tag: $LATEST_TAG"
+
+            # Extract numeric parts safely
+            if [[ $LATEST_TAG =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+            else
+              MAJOR=0
+              MINOR=0
+              PATCH=0
+            fi
+
+            # Bump patch version
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+          else
+            NEW_VERSION="${{ inputs.tag }}"
+          fi
+
+          echo "RELEASE_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "TAG_NAME=$NEW_VERSION" >> $GITHUB_ENV
+          echo "TAG_NAME=$NEW_VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Tag and Push New Version
+        run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a "${tag}" -m "${message}"
-          git push origin "${tag}"
-          echo "::set-output name=TAG_NAME::${{ inputs.tag }}"
+          git tag -a "${{ env.RELEASE_VERSION }}" -m "Release ${{ env.RELEASE_VERSION }}"
+          git push origin "${{ env.RELEASE_VERSION }}"
+
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.3
@@ -72,11 +107,7 @@ jobs:
           cd cxAstScan/
           npm install
       - run: npm run build
-
-      - name: Set new version
-        run: |
-          echo "RELEASE_VERSION=${{inputs.tag}}" >> $GITHUB_ENV
-
+      
       - name: Set major, minor, patch values
         run: |
           CLEAN_VERSION=$(echo ${{ env.RELEASE_VERSION }} | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
