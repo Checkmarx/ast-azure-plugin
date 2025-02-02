@@ -168,7 +168,7 @@ jobs:
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
   notify:
-    if: inputs.dev == false
+    if: inputs.dev == true
     needs: release
     uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
     with:
