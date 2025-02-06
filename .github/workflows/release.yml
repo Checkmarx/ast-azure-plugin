@@ -164,7 +164,7 @@ jobs:
           prerelease: ${{ inputs.dev }}
 
       - name: Release to marketplace
-        if: inputs.dev == 'false'
+        if: inputs.dev == false
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
   notify:
