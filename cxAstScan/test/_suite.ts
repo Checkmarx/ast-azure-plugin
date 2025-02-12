@@ -125,7 +125,7 @@ describe('Task runner test', function () {
 
     it('should be success custom source file 2', async function () {
         this.timeout(3000000);
-        const tp = path.join(__dirname, 'success_custom_source_file_2.js');
+        const tp = path.join(__dirname, 'success_custom_source_file_with_whitespaces.js');
         const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
         await tr.runAsync(nodeVersion);
 
