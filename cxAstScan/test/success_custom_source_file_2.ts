@@ -16,5 +16,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 
 tmr.setInput("projectName", 'TestADO_CustomSourceFile');
 tmr.setInput("branchName", 'main');
-tmr.setInput("additionalParams", '-s "https://github.com/Checkmarx/Phoenix-WebGoat.git" --scan-types sca');
+tmr.setInput("additionalParams", '-s "data/WebGoat name with spaces.zip" --scan-types iac-security');
 tmr.run();

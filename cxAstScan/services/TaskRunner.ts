@@ -88,9 +88,17 @@ export class TaskRunner {
             console.log("Error generating the results: " + err);
         }
     }
-
+    
     tokenize(input: string): string[] {
-        return input.trim().split(/\s+/);
+        const regex = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
+        const tokens: string[] = [];
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(input)) !== null) {
+            tokens.push(match[1] || match[2] || match[0]);
+        }
+
+        return tokens;
     }
 
     extractFlagValue(
