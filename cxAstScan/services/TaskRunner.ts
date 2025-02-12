@@ -23,7 +23,7 @@ export class TaskRunner {
         params.set(CxParamType.AGENT, "Azure DevOps");
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
         
-        if (!additionalParams.includes(" --file-source ") && !additionalParams.includes(" -s ")) {
+        if (!additionalParams.includes("--file-source ") && !additionalParams.includes("-s ")) {
             params.set(CxParamType.S, ".");
         }
 
