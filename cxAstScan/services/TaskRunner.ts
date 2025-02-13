@@ -22,11 +22,10 @@ export class TaskRunner {
         params.set(CxParamType.BRANCH, branchName);
         params.set(CxParamType.AGENT, "Azure DevOps");
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
-        
-        if (!additionalParams.includes("--file-source ") && !additionalParams.includes("-s ")) {
+
+        if (!/(?:^|\s)(--file-source|-s)(?=\s|$)/.test(additionalParams)) {
             params.set(CxParamType.S, ".");
         }
-
 
         console.log("Project name: " + projectName);
         console.log("Branch name: " + branchName);
