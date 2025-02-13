@@ -16,5 +16,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 
 tmr.setInput("projectName", 'TestADO_CustomSourceFile');
 tmr.setInput("branchName", 'main');
-tmr.setInput("additionalParams", '--file-source cxAstScan/test/data/test-repo.zip --scan-types iac-security --debug');
+tmr.setInput("additionalParams", '--file-source cxAstScan/test/data/test-repo.zip --scan-types iac-security');
 tmr.run();

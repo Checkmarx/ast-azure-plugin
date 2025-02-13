@@ -16,5 +16,5 @@ tmr.registerMockExport('getEndpointAuthorizationParameter', (endpoint, key) => {
 
 tmr.setInput("projectName", 'TestADO_CustomSourceFile');
 tmr.setInput("branchName", 'main');
-tmr.setInput("additionalParams", '-s "cxAstScan/test/data/WebGoat name with spaces.zip" --scan-types iac-security --debug');
+tmr.setInput("additionalParams", '-s "cxAstScan/test/data/WebGoat name with spaces.zip" --scan-types iac-security');
 tmr.run();
