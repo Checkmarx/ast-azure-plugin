@@ -111,4 +111,37 @@ describe('Task runner test', function () {
             true,
             "should display cleanup message: Log file not created. Task ended successfully.");
     });
+
+    it('should be success custom source file', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_custom_source_file.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        assert.ok(tr.succeeded);
+    });
+
+    it('should be success custom source file with whitespaces', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'success_custom_source_file_with_whitespaces.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        assert.ok(tr.succeeded);
+    });
+    
+    it('should be failure custom source file not exist file', async function () {
+        this.timeout(3000000);
+        const tp = path.join(__dirname, 'failure_custom_source_file_not_exist_file.js');
+        const tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
+        await tr.runAsync(nodeVersion);
+
+        console.log(tr.stdout);
+        console.log(tr.stderr);
+        assert.ok(tr.failed);
+    });
 });
