@@ -40,6 +40,18 @@ jobs:
         run: |
           sed -i "s|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"v[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
 
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: npm install
+
+      - run: sudo npm install -g tfx-cli
+
+      - name: Authenticate with GitHub package registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+
       - name: Install Dependencies and Update package-lock.json
         run: |
           cd cxAstScan
