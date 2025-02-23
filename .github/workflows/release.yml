@@ -48,7 +48,7 @@ jobs:
             # Fetch the latest GitHub release tag
             LATEST_TAG=$(curl -sL \
               -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
 
             # If no release is found, fallback to default
@@ -98,7 +98,7 @@ jobs:
       - run: sudo npm install -g tfx-cli
 
       - name: Authenticate with GitHub package registry
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" > ~/.npmrc
 
       - name: Build step
         run: |
