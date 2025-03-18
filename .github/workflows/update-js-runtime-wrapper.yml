@@ -44,7 +44,7 @@ jobs:
 
       - name: Update package.json
         run: |
-          sed -i "s|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"v[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
+          sed -i "s|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.3
