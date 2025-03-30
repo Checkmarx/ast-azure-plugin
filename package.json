@@ -17,9 +17,10 @@
   "author": "Jay Nanduri",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "nyc": "^17.0.0",
+    "nyc": "^17.1.0",
     "typescript-logging": "2.2.0",
-    "vss-web-extension-sdk": "5.141.0"
+    "vss-web-extension-sdk": "5.141.0",
+    "@babel/helpers": "^7.27.0"
   },
   "devDependencies": {
     "@types/mocha": "10.0.7",
