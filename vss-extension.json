@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "id": "checkmarx-ast-azure-plugin",
-  "publisher": "Checkmarx",
-  "version": "dev",
+  "publisher": "checkmarx-elchanan",
+  "version": "1.3.4",
   "name": "Checkmarx AST",
   "targets": [
     {
@@ -99,7 +99,7 @@
         "height": "175%",
         "width": "100%",
         "supportsTasks": [
-          "dd862edc-5d88-4d2c-b83b-fff2a695e5c0"
+          "36163054-f6de-4009-a427-db24681e56b6"
         ]
       }
     },
@@ -111,7 +111,7 @@
         "ms.vss-endpoint.endpoint-types"
       ],
       "properties": {
-        "name": "CheckmarxASTService",
+        "name": "checkmarx-elchanan",
         "displayName": "Checkmarx One Service Connection",
         "authenticationSchemes": [
           {
