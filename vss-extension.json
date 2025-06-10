@@ -12,7 +12,7 @@
   "public": true,
   "description": "Add Secure Source Code Analysis inside your build process",
   "icons": {
-    "default": "images/extension-icon.png"
+    "default": "images/extension-icon.jpg"
   },
   "categories": [
     "Azure Pipelines"
@@ -83,7 +83,7 @@
       ],
       "properties": {
         "name": "cxAstScan",
-        "icon":"images/extension-icon.png"
+        "icon":"images/extension-icon.jpg"
       }
     },
     {
