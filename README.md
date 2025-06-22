@@ -45,6 +45,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contribution">Contribution</a></li>
     <li><a href="#license">License</a></li>
+     <li><a href="#feedback">Feedback</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -121,6 +122,9 @@ We appreciate feedback and contribution to the AZURE PLUGIN! Before you get star
 ## License
 Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
 
+<!-- FEEDBACK -->
+## Feedback
+We’d love to hear your feedback! If you come across a bug or have a feature request, please let us know by submitting an issue in [GitHub Issues](https://github.com/Checkmarx/ast-azure-plugin/issues).
 
 <!-- CONTACT -->
 ## Contact
