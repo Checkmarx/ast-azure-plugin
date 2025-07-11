@@ -19,8 +19,6 @@
 <h3 align="center">AST AZURE PLUGIN</h3>
 
   <p align="center">
-    The Checkmarx One (AST) Azure DevOps plugin enables you to integrate the full functionality of the Checkmarx One platform into your ADO pipelines. You can use this plugin to trigger Checkmarx One scans as part of your CI/CD integration.
-    <br/>
     <a href="https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin"><strong>Maketplace »</strong></a>
@@ -55,6 +53,8 @@
 > To make the Checkmarx One plugin for ADO more lightweight, the CLI tool has been removed and now needs to be downloaded separately during use. This change may affect customers who restrict access to whitelisted domains, requiring them to add download.checkmarx.com to their whitelist. Customers who are unable to whitelist this domain, can use an older version of the plugin, which is available for download [here](https://github.com/Checkmarx/ast-azure-plugin/releases).
 
 # Overview
+
+ The Checkmarx One (AST) Azure DevOps plugin enables you to integrate the full functionality of the Checkmarx One platform into your ADO pipelines. You can use this plugin to trigger Checkmarx One scans as part of your CI/CD integration.
 
 This plugin provides a wrapper around the [Checkmarx One CLI
 Tool](https://checkmarx.com/resource/documents/en/34965-68620-checkmarx-one-cli-tool.html) which creates a zip archive from your source code repository and uploads it to Checkmarx One for scanning. This provides easy integration with ADO while enabling scan customization using the full functionality and flexibility of the CLI tool.
