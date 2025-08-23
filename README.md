@@ -120,7 +120,7 @@ We appreciate feedback and contribution to the AZURE PLUGIN! Before you get star
 
 <!-- LICENSE -->
 ## License
-Distributed under the [Apache 2.0](LICENSE). See `LICENSE` for more information.
+Distributed under the [Apache 2.0](LICENSE). See `LICENSE`  for more information.
 
 <!-- FEEDBACK -->
 ## Feedback
