@@ -45,7 +45,7 @@ export class TaskRunner {
                 const scan: CxScan = cxCommandOutput.payload.pop();
 
                 if (agentTempDirectory && scan && scan.id) {
-                    taskLib.setVariable("CxOneScanId", scan.id);
+                    taskLib.setVariable("CxOneScanId", scan.id ,false, true); // For backward compatibility
                     await this.generateResults(wrapper, agentTempDirectory, scan.id);
                 }
             }
