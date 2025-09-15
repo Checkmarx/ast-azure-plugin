@@ -45,7 +45,9 @@ export class TaskRunner {
                 const scan: CxScan = cxCommandOutput.payload.pop();
 
                 if (agentTempDirectory && scan && scan.id) {
-                    taskLib.setVariable("CxOneScanId", scan.id ,false, true); // For backward compatibility
+                    taskLib.setVariable("CxOneScanId", scan.id);
+                    //Add new variables due to AST-113124
+                    taskLib.setVariable("CxOneCurrentScanId", scan.id, false, false);
                     await this.generateResults(wrapper, agentTempDirectory, scan.id);
                 }
             }
