@@ -46,6 +46,7 @@ export class TaskRunner {
 
                 if (agentTempDirectory && scan && scan.id) {
                     taskLib.setVariable("CxOneScanId", scan.id);
+                    taskLib.setVariable("CxOneCurrentScanId", scan.id, false, false);
                     await this.generateResults(wrapper, agentTempDirectory, scan.id);
                 }
             }
