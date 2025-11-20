@@ -27,7 +27,7 @@ jobs:
           if [[ -n "${{ github.event.inputs.version }}" ]]; then
             VERSION="${{ github.event.inputs.version }}"
           else
-            VERSION=$(curl -s "https://api.github.com/repos/CheckmarxDev/ast-cli-javascript-wrapper-runtime-cli/releases" | jq -r '[.[] | select(.prerelease == false) | .tag_name | select(test("^v?[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("v")] | sort_by(split(".") | map(tonumber)) | .[-1]')
+            VERSION=$(curl -s "https://api.github.com/repos/Checkmarx/ast-cli-javascript-wrapper-runtime-cli/releases" | jq -r '[.[] | select(.prerelease == false) | .tag_name | select(test("^v?[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("v")] | sort_by(split(".") | map(tonumber)) | .[-1]')
           fi
 
           # Remove leading 'v' if present
@@ -44,7 +44,7 @@ jobs:
 
       - name: Update package.json
         run: |
-          sed -i "s|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
+          sed -i "s|\"@checkmarx/ast-cli-javascript-wrapper-runtime-cli\": \"[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@checkmarx/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4.0.3
