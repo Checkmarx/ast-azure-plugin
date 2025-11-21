@@ -1,11 +1,11 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path";
-import { CxWrapper } from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli";
-import { CxCommandOutput } from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxCommandOutput";
-import { CxParamType } from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxParamType";
-import CxScan from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/scan/CxScan";
+import { CxWrapper } from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli";
+import { CxCommandOutput } from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxCommandOutput";
+import { CxParamType } from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxParamType";
+import CxScan from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/scan/CxScan";
 import { getConfiguration, getLogFilename } from "./Utils";
-import CxWrapperFactory from "@checkmarxdev/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
+import CxWrapperFactory from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
 export class TaskRunner {
     cxWrapperFactory = new CxWrapperFactory();
