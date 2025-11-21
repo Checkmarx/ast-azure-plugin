@@ -1,7 +1,7 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import {promises as fs} from 'fs';
 import {getConfiguration, getLogFilename} from "./Utils";
-import CxWrapperFactory from "@checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
+import CxWrapperFactory from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
 export class CleanUpRunner {
     cxWrapperFactory= new CxWrapperFactory();
