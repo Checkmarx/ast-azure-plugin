@@ -16,7 +16,6 @@ jobs:
       - name: Authenticate with GitHub package registry
         run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" > ~/.npmrc
       - name: npm install
-        continue-on-error: false
         run: |
           npm install
           cd cxAstScan/
