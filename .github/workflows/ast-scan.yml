@@ -24,42 +24,85 @@ jobs:
           cx_client_secret: ${{ secrets.AST_RND_SCANS_CLIENT_SECRET }}
           additional_params: --tags phoenix --threshold "sca-critical=1;sca-high=1;sca-medium=1;sca-low=1;sast-critical=1;sast-high=1;sast-medium=1;sast-low=1;iac-security-critical=1;iac-security-high=1;iac-security-medium=1;iac-security-low=1"
   notify-teams:
-      name: Notify Teams
-      runs-on: ubuntu-latest
-      needs: cx-scan
-      if: always()
-      steps:
-        - name: Notify Microsoft Teams
-          run: |
-            if [[ "${{ needs.cx-scan.result }}" == "success" ]]; then
-              COLOR="00FF00"
-              TITLE="Checkmarx One Scan Succeeded - AST-AZURE Plugin"
-              SUMMARY="Checkmarx scan completed successfully"
-              TEXT="The Checkmarx One Scan job completed successfully."
-            else
-              COLOR="FF0000"
-              TITLE="Checkmarx One Scan Failed"
-              SUMMARY="Checkmarx scan failed"
-              TEXT="The Checkmarx One Scan job failed. Review the run for details."
-            fi
-
-            curl -f -H 'Content-Type: application/json' -d "{
-              \"@type\":\"MessageCard\",
-              \"@context\":\"http://schema.org/extensions\",
-              \"summary\":\"$SUMMARY\",
-              \"themeColor\":\"$COLOR\",
-              \"title\":\"$TITLE\",
-              \"sections\":[
-                {
-                  \"facts\":[
-                    {\"name\":\"Repository\",\"value\":\"${{ github.repository }}\"},
-                    {\"name\":\"Branch\",\"value\":\"${{ github.ref_name }}\"},
-                    {\"name\":\"Triggered By\",\"value\":\"${{ github.actor }}\"},
-                    {\"name\":\"PR Number\",\"value\":\"$PR_NUMBER\"},
-                    {\"name\":\"Event\",\"value\":\"${{ github.event_name }}\"},
-                    {\"name\":\"Run\",\"value\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}
-                  ],
-                  \"text\":\"$TEXT\"
-                }
-              ]
-            }" "${{ secrets.CXONE_SCAN_WEBHOOK_URL }}" 
+     name: Notify Teams
+     runs-on: ubuntu-latest
+     needs: cx-scan
+     if: always()
+     steps:
+       - name: Notify Microsoft Teams
+         run: |
+           # Extract repository name only (without owner)
+           REPO_NAME="${GITHUB_REPOSITORY#*/}"
+  
+           # Determine PR number and URL (only for pull_request events)
+           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+             PR_NUMBER="${{ github.event.pull_request.number }}"
+             PR_URL="${{ github.event.pull_request.html_url }}"
+             PR_SECTION=",
+                     {
+                       \"type\": \"TextBlock\",
+                       \"text\": \"**Pull Request:** [#${PR_NUMBER}](${PR_URL})\",
+                       \"wrap\": true
+                     }"
+           else
+             PR_SECTION=""
+           fi
+  
+           if [[ "${{ needs.cx-scan.result }}" == "success" ]]; then
+             COLOR="Good"
+             TITLE="✅ ${REPO_NAME} - Checkmarx One Scan Succeeded"
+             STATUS_TEXT="The Checkmarx One Scan job completed successfully."
+           else
+             COLOR="Attention"
+             TITLE="❌ ${REPO_NAME} - Checkmarx One Scan Failed"
+             STATUS_TEXT="The Checkmarx One Scan job failed. Review the run for details."
+           fi
+  
+           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  
+           curl -f -H 'Content-Type: application/json' -d "{
+             \"type\": \"message\",
+             \"attachments\": [
+               {
+                 \"contentType\": \"application/vnd.microsoft.card.adaptive\",
+                 \"content\": {
+                   \"\$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",
+                   \"type\": \"AdaptiveCard\",
+                   \"version\": \"1.4\",
+                   \"body\": [
+                     {
+                       \"type\": \"TextBlock\",
+                       \"text\": \"$TITLE\",
+                       \"weight\": \"Bolder\",
+                       \"size\": \"Medium\",
+                       \"color\": \"$COLOR\"
+                     },
+                     {
+                       \"type\": \"TextBlock\",
+                       \"text\": \"$STATUS_TEXT\",
+                       \"wrap\": true
+                     },
+                     {
+                       \"type\": \"FactSet\",
+                       \"facts\": [
+                         {\"title\": \"Repository:\", \"value\": \"${{ github.repository }}\"},
+                         {\"title\": \"Branch:\", \"value\": \"${{ github.ref_name }}\"},
+                         {\"title\": \"Triggered By:\", \"value\": \"${{ github.actor }}\"},
+                         {\"title\": \"Event:\", \"value\": \"${{ github.event_name }}\"}
+                       ]
+                     }
+                     $PR_SECTION
+                   ],
+                   \"actions\": [
+                     {
+                       \"type\": \"Action.OpenUrl\",
+                       \"title\": \"View Workflow Run\",
+                       \"url\": \"$RUN_URL\"
+                     }
+                   ]
+                 }
+               }
+             ]
+           }" "${{ secrets.CXONE_SCAN_WEBHOOK_URL }}"
+  
+  
