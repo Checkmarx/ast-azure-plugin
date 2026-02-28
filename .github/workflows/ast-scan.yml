@@ -33,7 +33,7 @@ jobs:
           run: |
             if [[ "${{ needs.cx-scan.result }}" == "success" ]]; then
               COLOR="00FF00"
-              TITLE="Checkmarx One Scan Succeeded"
+              TITLE="Checkmarx One Scan Succeeded - AST-AZURE Plugin"
               SUMMARY="Checkmarx scan completed successfully"
               TEXT="The Checkmarx One Scan job completed successfully."
             else
@@ -54,6 +54,9 @@ jobs:
                   \"facts\":[
                     {\"name\":\"Repository\",\"value\":\"${{ github.repository }}\"},
                     {\"name\":\"Branch\",\"value\":\"${{ github.ref_name }}\"},
+                    {\"name\":\"Triggered By\",\"value\":\"${{ github.actor }}\"},
+                    {\"name\":\"PR Number\",\"value\":\"$PR_NUMBER\"},
+                    {\"name\":\"Event\",\"value\":\"${{ github.event_name }}\"},
                     {\"name\":\"Run\",\"value\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}
                   ],
                   \"text\":\"$TEXT\"
