@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - other/scan-notification
   schedule:
     - cron: '00 7 * * *' # Every day at 07:00
 
@@ -23,3 +23,40 @@ jobs:
           cx_client_id: ${{ secrets.AST_RND_SCANS_CLIENT_ID }}
           cx_client_secret: ${{ secrets.AST_RND_SCANS_CLIENT_SECRET }}
           additional_params: --tags phoenix --threshold "sca-critical=1;sca-high=1;sca-medium=1;sca-low=1;sast-critical=1;sast-high=1;sast-medium=1;sast-low=1;iac-security-critical=1;iac-security-high=1;iac-security-medium=1;iac-security-low=1"
+  notify-teams:
+      name: Notify Teams
+      runs-on: ubuntu-latest
+      needs: cx-scan
+      if: always()
+      steps:
+        - name: Notify Microsoft Teams
+          run: |
+            if [[ "${{ needs.cx-scan.result }}" == "success" ]]; then
+              COLOR="00FF00"
+              TITLE="Checkmarx One Scan Succeeded"
+              SUMMARY="Checkmarx scan completed successfully"
+              TEXT="The Checkmarx One Scan job completed successfully."
+            else
+              COLOR="FF0000"
+              TITLE="Checkmarx One Scan Failed"
+              SUMMARY="Checkmarx scan failed"
+              TEXT="The Checkmarx One Scan job failed. Review the run for details."
+            fi
+
+            curl -f -H 'Content-Type: application/json' -d "{
+              \"@type\":\"MessageCard\",
+              \"@context\":\"http://schema.org/extensions\",
+              \"summary\":\"$SUMMARY\",
+              \"themeColor\":\"$COLOR\",
+              \"title\":\"$TITLE\",
+              \"sections\":[
+                {
+                  \"facts\":[
+                    {\"name\":\"Repository\",\"value\":\"${{ github.repository }}\"},
+                    {\"name\":\"Branch\",\"value\":\"${{ github.ref_name }}\"},
+                    {\"name\":\"Run\",\"value\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}
+                  ],
+                  \"text\":\"$TEXT\"
+                }
+              ]
+            }" "${{ secrets.CXONE_SCAN_WEBHOOK_URL }}" 
