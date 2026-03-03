@@ -34,6 +34,12 @@
   "overrides": {
      "codecov": {
       "js-yaml": "4.1.1"
+    },
+    "@humanwhocodes/config-array": {
+      "minimatch": "3.1.4"
+    },
+    "@eslint/eslintrc": {
+      "minimatch": "3.1.4"
     }
   },
   "publishConfig": {
