@@ -1,9 +1,12 @@
 {
   "dependencies": {
     "azure-pipelines-task-lib": "4.17.3",
-    "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli": "1.0.29"
+    "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli": "1.0.34"
   },
   "overrides": {
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+     "azure-pipelines-task-lib": {
+      "minimatch": "3.1.4"
+    }
   }
 }
