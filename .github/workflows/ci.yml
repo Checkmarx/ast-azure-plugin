@@ -2,13 +2,16 @@ name: AST Azure wrapper CI
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   integration-tests:
-    runs-on: ubuntu-latest
+    runs-on: cx-public-ubuntu-x64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Use Node.js 20
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         env:
           INPUT_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
@@ -32,7 +35,7 @@ jobs:
           CX_API_KEY: ${{ secrets.CX_API_KEY }}
         run: npm run coverage
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: coverage-report
           path: ./coverage

@@ -22,13 +22,13 @@ env:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: cx-public-ubuntu-x64
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set Extension and Publisher ID
         run: |
@@ -89,7 +89,7 @@ jobs:
 
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{ matrix.node-version }}
 

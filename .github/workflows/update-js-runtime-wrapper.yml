@@ -10,16 +10,19 @@ on:
   repository_dispatch:
     types: [js-runtime-wrapper-version-update]
 
+permissions:
+  contents: read
+
 jobs:
   update-js-wrapper:
-    runs-on: ubuntu-latest
+    runs-on: cx-public-ubuntu-x64
     permissions:
       contents: write
       pull-requests: write
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Determine Version
         id: get_version
@@ -47,7 +50,7 @@ jobs:
           sed -i "s|\"@Checkmarx/ast-cli-javascript-wrapper-runtime-cli\": \"[0-9]*\\.[0-9]*\\.[0-9]*\"|\"@Checkmarx/ast-cli-javascript-wrapper-runtime-cli\": \"${VERSION}\"|" cxAstScan/package.json
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4.0.3
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{ matrix.node-version }}
 
