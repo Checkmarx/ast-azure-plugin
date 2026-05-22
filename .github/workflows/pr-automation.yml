@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   add-assignee-and-reviewers:
-    runs-on: ubuntu-latest
+    runs-on: cx-public-ubuntu-x64
     if: ${{ github.event.pull_request.user.type != 'Bot' }}
     steps:
       - name: Request reviewers
