@@ -1,924 +1,829 @@
-# AST CLI JavaScript Wrapper Runtime CLI - Development Guide
+# CLAUDE.md - AST Azure Plugin
 
 ## Project Overview
 
-The **AST CLI JavaScript Wrapper Runtime CLI** is a Node.js/TypeScript library that provides a wrapper layer for the Checkmarx AST (Application Security Testing) CLI. It enables JavaScript developers to interact with the AST CLI programmatically, abstracting the CLI interface and providing a type-safe, well-structured API.
+**Purpose:** The Checkmarx AST Azure DevOps plugin enables integration of the full functionality of the Checkmarx One platform into Azure DevOps (ADO) pipelines. It provides a wrapper around the Checkmarx One CLI Tool to trigger scans as part of CI/CD integration.
 
-**Status**: Active development and maintenance
-**Package**: `@Checkmarx/ast-cli-javascript-wrapper-runtime-cli`
-**Repository**: https://github.com/Checkmarx/ast-cli-javascript-wrapper-runtime-cli
+**Status:** Active - Production Release (Current version: v3.0.14+)
 
-### Key Purpose
+**Repository:** https://github.com/Checkmarx/ast-azure-plugin
 
-This wrapper serves as a bridge between JavaScript/Node.js applications and the AST CLI binary, handling:
-- AST CLI binary installation and version management
-- Configuration management (credentials, endpoints, proxy settings)
-- Execution and output parsing
-- Error handling and logging
-- Support for multiple security scanning features (SAST, SCA, KICS, ASCA, etc.)
+**Description:** The plugin enables developers to run comprehensive source code analysis within ADO pipelines, supporting multiple scanners (SAST, SCA, IaC, Container Security, API Security, Secret Detection, and Repository Health via OSSF Scorecard). It creates a zip archive from the source repository and uploads it to Checkmarx One for scanning.
 
 ---
 
 ## Architecture
 
-### System Design
+### High-Level Design
 
-The project follows a modular architecture with clear separation of concerns:
+The plugin follows a task-based architecture within the Azure DevOps ecosystem:
+
+1. **Task Layer** - Azure DevOps task entry points (defined in `vss-extension.json`)
+2. **Service Layer** - Core scanning and cleanup logic
+3. **Wrapper Layer** - TypeScript wrapper around the Checkmarx One CLI
+4. **CLI Layer** - External Checkmarx CLI tool (downloaded at runtime from download.checkmarx.com)
+
+### Core Components
+
+- **TaskRunner** (`cxAstScan/services/TaskRunner.ts`) - Orchestrates the scan execution, handles CLI wrapper invocation, and generates scan results
+- **CleanUpRunner** (`cxAstScan/services/CleanUpRunner.ts`) - Manages post-execution cleanup and resource cleanup from completed scans
+- **Utils** (`cxAstScan/services/Utils.ts`) - Utility functions for configuration retrieval and logging
+
+### Data Flow
 
 ```
-CxWrapper (Main Entry Point)
-├── CxConfig (Configuration Management)
-├── CxInstaller (Binary Installation & Management)
-├── ExecutionService (CLI Execution)
-├── AstClient (HTTP Client for Downloads)
-└── Feature Modules
-    ├── Scan (CxScan)
-    ├── Project (CxProject)
-    ├── Results (CxResult, CxData, etc.)
-    ├── SAST (via CxResult)
-    ├── SCA (CxScaRealTime, CxScaPackageData)
-    ├── KICS (CxKicsRealTime, CxKicsRemediation)
-    ├── ASCA (CxAsca)
-    ├── BFL (CxBFL)
-    ├── Mask (CxMask, CxMaskedSecret)
-    ├── Chat (CxChat)
-    └── Other Features (CodeBashing, LearnMore, Predicates)
+ADO Pipeline Task Input
+         ↓
+    TaskRunner (reads config)
+         ↓
+    CxWrapperFactory (creates wrapper)
+         ↓
+    CxScan (executes scan via CLI)
+         ↓
+    Generate Results (HTML/JSON reports)
+         ↓
+    Return to ADO Pipeline
 ```
 
-### Design Patterns
+### Key Integration Points
 
-- **Multiton Pattern**: `CxWrapper` uses instance pooling to manage multiple wrapper instances
-- **Semaphore Pattern**: Thread-safe execution with async-mutex for concurrent operations
-- **Configuration Pattern**: Centralized configuration through `CxConfig`
-- **Service Locator**: Feature modules accessed through the main wrapper instance
+- **Azure DevOps SDK** - `azure-pipelines-task-lib` for task configuration and result handling
+- **Checkmarx CLI Wrapper** - `@Checkmarx/ast-cli-javascript-wrapper-runtime-cli` for scan operations
+- **Extension Manifest** - `vss-extension.json` defines task configuration, scopes, and marketplace metadata
 
 ---
 
 ## Repository Structure
 
 ```
-.
-├── src/
-│   ├── main/                    # Main source code
-│   │   ├── wrapper/            # Core wrapper and execution engine
-│   │   │   ├── CxWrapper.ts    # Main wrapper class
-│   │   │   ├── CxWrapperFactory.ts # Wrapper instance factory
-│   │   │   ├── CxConfig.ts     # Configuration management
-│   │   │   ├── CxConstants.ts  # Constants
-│   │   │   ├── ExecutionService.ts
-│   │   │   ├── CxCommandOutput.ts
-│   │   │   ├── CxParamType.ts
-│   │   │   └── loggerConfig.ts
-│   │   ├── client/             # HTTP client
-│   │   │   └── AstClient.ts    # Download and HTTP utilities
-│   │   ├── osinstaller/        # Binary installation
-│   │   │   └── CxInstaller.ts
-│   │   ├── errors/             # Custom error types
-│   │   │   └── CxError.ts
-│   │   ├── scan/               # Scan operations
-│   │   │   └── CxScan.ts
-│   │   ├── project/            # Project management
-│   │   │   └── CxProject.ts
-│   │   ├── results/            # Scan results handling
-│   │   │   ├── CxResult.ts
-│   │   │   ├── CxData.ts
-│   │   │   ├── CxCvss.ts
-│   │   │   ├── CxNode.ts
-│   │   │   ├── CxDependencyPaths.ts
-│   │   │   ├── CxPackageData.ts
-│   │   │   ├── CxScaPackageData.ts
-│   │   │   ├── CxResultType.ts
-│   │   │   └── CxVulnerabilityDetails.ts
-│   │   ├── scaRealtime/        # Software Composition Analysis
-│   │   │   ├── CxScaRealTime.ts
-│   │   │   └── CxScaRealTimeErrors.ts
-│   │   ├── kicsRealtime/       # KICS (Infrastructure as Code Scanning)
-│   │   │   └── CxKicsRealTime.ts
-│   │   ├── asca/               # Application Security Code Analysis
-│   │   │   ├── CxAsca.ts
-│   │   │   └── AscaScanDetail.ts
-│   │   ├── remediation/        # Remediation suggestions
-│   │   │   └── CxKicsRemediation.ts
-│   │   ├── bfl/                # Business Flow Language
-│   │   │   └── CxBFL.ts
-│   │   ├── mask/               # Secret masking
-│   │   │   ├── CxMask.ts
-│   │   │   └── CxMaskedSecret.ts
-│   │   ├── chat/               # Chat integration
-│   │   │   └── CxChat.ts
-│   │   ├── codebashing/        # CodeBashing integration
-│   │   │   └── CxCodeBashing.ts
-│   │   ├── learnmore/          # Learning resources
-│   │   │   ├── CxLearnMoreDescriptions.ts
-│   │   │   └── CxLearnMoreSamples.ts
-│   │   └── predicates/         # Predicate operations
-│   │       └── CxPredicate.ts
-│   └── tests/
-│       ├── *.test.ts           # Test files (AuthTest, ChatTest, MaskTest, etc.)
-│       ├── unit/               # Additional unit tests
-│       └── data/               # Test fixtures and data
-├── dist/                       # Compiled JavaScript output
-├── coverage/                   # Code coverage reports
-├── .github/workflows/          # GitHub Actions CI/CD
-├── tsconfig.json              # TypeScript configuration
-├── jest.config.js             # Jest test configuration
-├── package.json               # NPM package configuration
-├── README.md                  # User-facing documentation
-└── CLAUDE.md                  # This file
+ast-azure-plugin/
+├── cxAstScan/                          # Main plugin source code
+│   ├── index.ts                        # Entry point for the ADO task
+│   ├── cleanup.ts                      # Cleanup entry point
+│   ├── task.json                       # ADO task definition manifest
+│   ├── services/
+│   │   ├── TaskRunner.ts              # Scan execution logic
+│   │   ├── CleanUpRunner.ts           # Post-scan cleanup
+│   │   └── Utils.ts                   # Shared utilities
+│   ├── test/                          # Test suite
+│   │   ├── _suite.ts                  # Mocha entry point
+│   │   ├── success_*.ts               # Positive test cases
+│   │   ├── failure_*.ts               # Negative test cases
+│   │   └── data/                      # Test fixtures (zip files)
+│   ├── dist/                          # Compiled TypeScript output
+│   └── tsconfig.json                  # TypeScript configuration
+│
+├── ui/                                # Azure DevOps UI enhancements
+│   ├── cxASTReportTab.html            # Report tab UI
+│   ├── enhancer/
+│   │   ├── tab.ts                     # Tab enhancement script
+│   │   └── tsconfig.json
+│
+├── docs/                              # Documentation
+│   ├── contributing.md                # Contribution guidelines
+│   └── code_of_conduct.md             # Code of conduct
+│
+├── .github/                           # GitHub configuration
+│   ├── workflows/                     # CI/CD pipelines
+│   ├── ISSUE_TEMPLATE/                # Issue templates
+│   └── PULL_REQUEST_TEMPLATE.md       # PR template
+│
+├── images/                            # Documentation images
+├── package.json                       # Node.js project config
+├── package-lock.json                  # Locked dependencies
+├── vss-extension.json                 # Azure DevOps extension manifest
+├── README.md                          # User-facing documentation
+├── overview.md                        # Marketplace overview
+├── LICENSE                            # Apache 2.0 license
+├── checkmarx-license-terms.md         # Checkmarx license terms
+├── .eslintrc.json                     # ESLint configuration
+├── .nycrc                             # Code coverage config
+├── .gitignore                         # Git ignore rules
+└── CODEOWNERS                         # Code ownership rules
 ```
 
 ---
 
 ## Technology Stack
 
-### Core Technologies
-- **Language**: TypeScript 5.6.3
-- **Runtime**: Node.js (ES2015 target)
-- **Module System**: CommonJS (compiled from TypeScript)
-
-### Build & Compilation
-- **Compiler**: TypeScript 5.6.3
-- **Build Process**: tsc (TypeScript compiler)
-- **Build Output**: `dist/` directory with source maps
-
-### Testing
-- **Test Framework**: Jest 29.7.0
-- **Test Runner Configuration**: ts-jest
-- **Mocking**: ts-mockito 2.6.1
-- **Coverage Threshold**: Lines 80%, Functions 80%, Branches 60%, Statements 80%
-
-### Linting & Code Quality
-- **Linter**: ESLint 8.57.1
-- **Parser**: @typescript-eslint/parser 5.29.0
-- **Plugins**: @typescript-eslint/eslint-plugin 5.29.0
-- **Preset**: eslint:recommended + typescript-eslint recommended
+### Languages & Runtime
+- **TypeScript** 5.6.3+ - Primary development language
+- **Node.js** 20.0+ - Runtime requirement (specified in `cxAstScan/task.json` as Node20_1)
+- **ES2015** - Compilation target for backward compatibility
 
 ### Core Dependencies
-- **async-mutex**: ^0.5.0 - Synchronization primitives for async code
-- **azure-pipelines-tool-lib**: ^2.0.8 - Azure Pipelines tools (file downloads, caching)
-- **https-proxy-agent**: ^7.0.6 - Proxy support for HTTPS requests
-- **log4js**: ^6.9.1 - Structured logging
-- **node-fetch**: ^3.3.2 - Fetch API for Node.js
-- **tar**: ^7.5.11 - TAR archive handling
-- **unzipper**: ^0.12.3 - ZIP archive extraction
-- **tunnel**: (direct import in AstClient) - HTTPS over HTTP tunneling for proxies (should be added as direct dependency)
+- **azure-pipelines-task-lib** - Azure DevOps task library for ADO integration (task-level dependency in `cxAstScan/package.json`)
+- **vss-web-extension-sdk** 5.141.0 - VSS extension SDK for UI components
+- **@Checkmarx/ast-cli-javascript-wrapper-runtime-cli** - Checkmarx CLI wrapper
+- **typescript-logging** 2.2.0 - Structured logging utility
+- **@babel/helpers** 7.27.0 - Babel helper utilities
 
 ### Development Dependencies
-- **Babel**: @babel/core, @babel/preset-typescript, @babel/preset-env - Code transformation
-- **Type Definitions**: @types/node, @types/jest, @types/adm-zip, @types/tunnel, @types/unzipper
-- **Transpilation**: babel-jest 29.7.0
-- **File Utilities**: copyfiles 2.4.1
+- **TypeScript** 5.6.3+ - Transpilation and type checking
+- **Mocha** 10.7.0 - Test framework
+- **NYC** 17.1.0 - Code coverage reporter
+- **ESLint** 8.57.0 - Code linting with TypeScript plugin
+- **@typescript-eslint/parser** 5.62.0 - TypeScript parser for ESLint
+- **@types/node**, **@types/mocha** - Type definitions
+
+### Build & Publication
+- **NPM Registry** - GitHub Package Registry (`publishConfig.registry`)
+- **npm** - Package management
+
+### Code Quality Tools
+- **ESLint** - Static analysis with TypeScript support
+- **NYC** - Code coverage measurement (targets: 75% lines, 75% statements, 60% functions, 50% branches)
 
 ---
 
 ## Development Setup
 
 ### Prerequisites
-- **Node.js**: 14.x or higher (LTS recommended)
-- **npm**: 6.x or higher
-- **Git**: For version control
+- Node.js 20.0 or higher
+- npm 6.0 or higher
+- Git
+- A Checkmarx One account with OAuth credentials or API Key
+- Azure DevOps account (for testing the plugin)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Checkmarx/ast-cli-javascript-wrapper-runtime-cli.git
-   cd ast-cli-javascript-wrapper-runtime-cli
+   git clone https://github.com/Checkmarx/ast-azure-plugin.git
+   cd ast-azure-plugin
    ```
 
-2. **Install dependencies**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Verify installation**
+3. **Verify Node version:**
    ```bash
-   npm run build
+   node --version  # Should be >= 20
    ```
 
-### Development Workflow
+### Build
 
-- **Build**: `npm run build` - Compiles TypeScript to JavaScript
-- **Build with postbuild**: Automatically copies test data to dist
-- **Lint**: `npm run lint` - Check code style and issues
-- **Lint & Fix**: `npm run lint-and-fix` - Auto-fix linting issues
-- **Test**: `npm run test` - Run all tests with coverage
-- **Unit Tests Only**: `npm run test:unit` - Run unit tests without coverage
-
-### Environment Variables for Testing
-
-For integration tests, set these environment variables:
-
-**Linux/macOS**:
 ```bash
-export CX_CLIENT_ID="your-client-id"
-export CX_CLIENT_SECRET="your-client-secret"
-export CX_APIKEY="your-api-key"
-export CX_BASE_URI="https://ast.checkmarx.net"
-export CX_BASE_AUTH_URI="https://auth.checkmarx.net"
-export CX_TENANT="your-tenant"
-export PATH_TO_EXECUTABLE="/path/to/ast-cli"
+# Build TypeScript to JavaScript
+npm run build
+
+# This runs:
+# - tsc -b cxAstScan/tsconfig.json (plugin code)
+# - tsc -b ui/enhancer/tsconfig.json (UI enhancements)
 ```
 
-**Windows PowerShell**:
-```powershell
-setx CX_CLIENT_ID "your-client-id"
-setx CX_CLIENT_SECRET "your-client-secret"
-setx CX_APIKEY "your-api-key"
-setx CX_BASE_URI "https://ast.checkmarx.net"
-setx CX_BASE_AUTH_URI "https://auth.checkmarx.net"
-setx CX_TENANT "your-tenant"
-setx PATH_TO_EXECUTABLE "C:\path\to\ast-cli.exe"
+Output compiled files are placed in:
+- `cxAstScan/dist/` - Plugin compiled code
+- `ui/enhancer/dist/` - UI compiled code
+
+### Running Locally
+
+#### Development Testing
+```bash
+# Run the test suite
+npm test
+
+# Run with coverage report
+npm run coverage
 ```
+
+#### Manual Testing
+1. Build the project: `npm run build`
+2. Test via local ADO instance or use the Azure DevOps task locally with `azure-pipelines-task-tool`
+3. Verify compilation output in `dist/` directories
+
+### Development Server Setup
+
+The plugin does not have a traditional web server. Instead:
+- The task runs in the ADO agent execution context
+- UI components run within the Azure DevOps web interface
+- Development testing is done via unit tests and integration tests with mock ADO environments
 
 ---
 
 ## Coding Standards
 
-### TypeScript Configuration
-- **Target**: ES2015
-- **Module**: CommonJS
-- **Declaration Files**: Generated automatically
-- **Source Maps**: Enabled for debugging
-- **Strict Settings**:
-  - `noImplicitAny`: true - All types must be explicit
-  - `forceConsistentCasingInFileNames`: true
-  - `noUnusedLocals`: true - No unused variables allowed
+### TypeScript Style Guide
 
-### Code Style
+- **File Naming**: Use PascalCase for class files (`TaskRunner.ts`, `CleanUpRunner.ts`)
+- **Class Naming**: PascalCase (e.g., `TaskRunner`, `CleanUpRunner`)
+- **Variable/Function Naming**: camelCase (e.g., `cxScanConfig`, `generateResults()`)
+- **Constants**: UPPER_SNAKE_CASE
+- **Private Members**: Prefix with underscore (e.g., `_config`)
 
-- **Naming Conventions**:
-  - Classes: PascalCase (e.g., `CxWrapper`, `AstClient`)
-  - Functions/Methods: camelCase (e.g., `downloadFile`, `createProxyRequestHandler`)
-  - Constants: UPPER_SNAKE_CASE (e.g., `MAX_ATTEMPTS`, `DEFAULT_TIMEOUT`)
-  - Private members: Prefix with `_` or use TypeScript `private` keyword
-  - Interfaces: PrefixCamelCase or I-prefix (e.g., `CxConfig`, `IConfigurable`)
+### Code Organization
 
-- **File Organization**:
-  - One main class per file (named matching the file)
-  - Related types/interfaces in the same file as the main class
-  - Imports grouped: external, then relative imports
-  - Exports at end of file
+- Keep related functionality in the same file
+- Separate concerns: UI code in `ui/`, task logic in `cxAstScan/services/`
+- Export public APIs clearly; keep internal utilities local
 
-- **Formatting**:
-  - 2-space indentation (configured in ESLint)
-  - 120-character line length (soft limit)
-  - Trailing commas in multi-line structures
-  - Single quotes for strings (no template literals unless needed)
-  - Prefer `const` over `let`, avoid `var`
+### Type Safety
 
-### Documentation
+- **Implicit Any**: Allowed in `cxAstScan/tsconfig.json` (`"noImplicitAny": false`)
+- Use explicit types where practical; `any` is permitted when necessary
+- Enable `noUnusedLocals` - all variables must be used
+- Note: ESLint rule `@typescript-eslint/no-explicit-any` is disabled (0)
 
-- **JSDoc Comments**: Use for public APIs and complex logic
-- **Inline Comments**: Only for non-obvious implementation details
-- **No Over-Documentation**: Self-documenting code is preferred; comments explain WHY, not WHAT
+### Imports & Modules
 
-### Import/Export
+```typescript
+// Order imports: external libs → internal utilities
+import * as taskLib from "azure-pipelines-task-lib/task";
+import { CxWrapper } from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli";
+import { getConfiguration } from "./Utils";
+```
 
-- Use ES6 module syntax
-- Explicit imports (no wildcard imports unless necessary)
-- Named exports preferred for multiple exports per file
-- Default export for main class per module
+### Comments & Documentation
 
-### Error Handling
+- Document public classes and methods with JSDoc-style comments
+- Add comments for non-obvious logic or business rules
+- Keep comments concise and current with code changes
 
-- Always throw `CxError` for custom errors
-- Wrap external errors with context information
-- Log errors before throwing (use `logger` from loggerConfig)
-- Include stack traces in logs for debugging
+### Formatting
+
+- Use ESLint for consistent formatting: `npm run lint-and-fix`
+- 2-space indentation (standard Node.js)
+- No trailing semicolons (ESLint configured to allow)
+- Maximum line length: Follow ESLint defaults
 
 ---
 
-## Project Rules & Constraints
+## Project Rules
 
-### Critical Rules (Don'ts)
+### Development Constraints
 
-1. **Never Commit Secrets**
-   - No API keys, tokens, or credentials in code
-   - Use environment variables and `.gitignore` for sensitive data
-   - Review all commits for accidental secret inclusion
+1. **Node.js Minimum Version**: Must support Node.js 20.0+ (specified in `cxAstScan/task.json` as Node20_1)
+2. **CLI Tool**: The Checkmarx One CLI is downloaded at runtime from `download.checkmarx.com` (users must whitelist this domain)
+3. **No Bundling of CLI**: Since v3.0.0+, the CLI tool is not bundled with the plugin to reduce package size
+4. **Azure DevOps Compatibility**: Must work with current and 2-3 prior versions of Azure DevOps
 
-2. **Proxy Support is Mandatory**
-   - All HTTP requests must respect `HTTP_PROXY` environment variable
-   - Use `AstClient` for downloads with proxy support
-   - Test proxy scenarios in PR reviews
+### What NOT to Do
 
-3. **Type Safety First**
-   - No `any` types without explicit justification
-   - Strict TypeScript compilation required
-   - Use discriminated unions and type guards where possible
+- ❌ Don't bundle the CLI tool with the plugin
+- ❌ Don't hardcode credentials in code (use ADO task variables/secrets)
+- ❌ Don't modify `vss-extension.json` without coordination (defines marketplace listing)
+- ❌ Don't remove or rename public task inputs/outputs without migration plan
+- ❌ Don't add dependencies without reviewing licensing (Apache 2.0 compatible only)
+- ❌ Don't break backward compatibility for task inputs without major version bump
 
-4. **Test Coverage Requirements**
-   - Minimum 80% line coverage required (enforced by Jest)
-   - 60% branch coverage minimum
-   - New features must include unit tests
-   - Integration tests for CLI interactions
+### Contribution Requirements
 
-5. **No Breaking Changes Without Review**
-   - Document API changes in PR description
-   - Semver versioning: MAJOR.MINOR.PATCH
-   - Deprecation period for major changes
+- All PRs must be associated with an issue (review [contributing.md](docs/contributing.md))
+- Changes must include unit/integration tests
+- Code coverage must maintain or improve existing thresholds (75% lines, 75% statements, 60% functions, 50% branches)
+- ESLint validation must pass: `npm run lint`
+- Follow the [Code of Conduct](docs/code_of_conduct.md)
 
-6. **Async/Await for Concurrency**
-   - Use `async/await` instead of callbacks
-   - Respect `CxWrapper` semaphore for CLI execution
-   - No concurrent CLI invocations without synchronization
+### Breaking Changes
 
-7. **Dependency Management**
-   - Use npm for all dependency management
-   - Override rules in package.json for security patches
-   - Minimize external dependencies
-
-### Must-Have Checks Before PR
-
-- TypeScript compilation succeeds (`npm run build`)
-- All tests pass (`npm run test`)
-- ESLint passes (`npm run lint`)
-- Coverage thresholds met
-- No console.log statements (use logger)
-- No hardcoded paths or credentials
-
-### Git Workflow
-
-- Base all work on `main` branch
-- Feature branch naming: `feature/description`, `fix/issue-description`
-- Commit messages: descriptive and present tense
-- Squash commits before merge when appropriate
-- Require PR review before merging to main
+- Require issue discussion and team consensus
+- Must include deprecation period in release notes
+- Update documentation and migration guides
 
 ---
 
 ## Testing Strategy
 
-### Test Organization
+### Testing Framework
+- **Test Runner**: Mocha 10.7.0
+- **Coverage Tool**: NYC 17.1.0
+- **Test Location**: `cxAstScan/test/`
 
-Tests are located in `src/tests/` with the following structure:
-- `*.test.ts` - Test files for individual modules (AuthTest, ChatTest, MaskTest, ProjectTest, ResultTest, ScanTest, etc.)
-- `unit/` - Additional unit tests
-- `data/` - Test fixtures and mock data (copied to dist during build)
+### Test Types
 
-### Test Execution
+#### Unit Tests
+- Located in `cxAstScan/test/` with filenames matching test scenario
+- `_suite.ts` is the Mocha entry point that imports all individual test files
+- Tests cover both success and failure scenarios
+
+#### Success Test Cases (Positive Path)
+- `success_api_key.ts` - Authentication with API key
+- `success_cancel.ts` - Scan cancellation
+- `success_no_cancel.ts` - Scan completion without cancellation
+- `success_nowait.ts` - Non-blocking scan execution
+- `success_waitmode.ts` - Blocking scan execution with wait
+- `success_custom_source_file.ts` - Custom source file specification
+- `success_custom_source_file_with_whitespaces.ts` - File paths with spaces
+
+#### Failure Test Cases (Negative Path)
+- `failure_additional_params.ts` - Invalid additional parameters
+- `failure_wrong_preset.ts` - Invalid preset configuration
+- `failure_custom_source_file_not_exist_file.ts` - Non-existent source file
+
+### Test Data
+- Located in `cxAstScan/test/data/`
+- `test-repo.zip` - Standard test repository
+- `WebGoat name with spaces.zip` - Test fixture for path handling
+
+### Running Tests
 
 ```bash
-# Run all tests with coverage
-npm run test
+# Run all tests
+npm test
 
-# Run unit tests only (no coverage)
-npm run test:unit
+# Run tests with coverage report
+npm run coverage
 
-# Run specific test file
-npm run test -- --testPathPattern=CxWrapper
-
-# Watch mode
-npm run test -- --watch
+# Output: Coverage reports in HTML and text format
 ```
 
-### Coverage Thresholds (Enforced)
+### Coverage Requirements
+- **Lines**: 75%
+- **Statements**: 75%
+- **Functions**: 60%
+- **Branches**: 50%
 
-- **Lines**: 80%
-- **Functions**: 80%
-- **Branches**: 60%
-- **Statements**: 80%
+### Test Execution Flow
+1. Build: `tsc -b cxAstScan/tsconfig.json`
+2. Run: `mocha cxAstScan/dist/test/_suite.js --exit`
+3. Exit on completion (--exit flag)
 
-### Testing Best Practices
+### Mocking & Test Setup
 
-1. **Use ts-mockito for Mocking**
-   - Mock external dependencies (AstClient, ExecutionService)
-   - Verify method calls and arguments
-   - Avoid mocking internal state when possible
-
-2. **Test Data Management**
-   - Store test fixtures in `src/tests/data/`
-   - Reference fixtures with relative paths
-   - Keep fixtures small and focused
-   - Document fixture purpose with comments
-
-3. **Async Testing**
-   - Use `async/await` in test functions
-   - Handle rejections properly
-   - Don't forget to await promises
-
-4. **Environment Variables**
-   - Mock via `process.env` before tests
-   - Restore original values after tests
-   - Document required env vars in tests
-
-5. **Error Cases**
-   - Test both success and failure paths
-   - Verify error messages and types
-   - Test timeout scenarios where applicable
+Tests use:
+- Mock Azure DevOps task library responses
+- Fixture data (test ZIP files)
+- Environment variable mocking
+- Parameterized test data
 
 ---
 
-## Known Issues & Limitations
+## Known Issues
 
 ### Current Limitations
 
-1. **Single AST CLI Binary Per Process**
-   - Only one version of AST CLI can be active at a time
-   - Downloading a different version replaces the existing one
-   - Multiple parallel scans must use the same CLI version
+1. **CLI Tool Download** - Users must whitelist `download.checkmarx.com` for plugin to function (as of v3.0.0+)
+2. **TFVC Repo Support** - Only basic Team Foundation Version Control support (not fully optimized)
+3. **UI Tab Rendering** - Report tab may not render in older Azure DevOps installations (pre-v2022)
+4. **Large Repository Handling** - Performance degradation with repositories >1GB in size
+5. **Network Timeout** - Scans may timeout on unstable network connections (no retry logic)
 
-2. **Proxy Configuration**
-   - Only `HTTP_PROXY` environment variable is supported
-   - `HTTPS_PROXY` and `NO_PROXY` not yet implemented
-   - Proxy authentication requires URL-encoded credentials
+### Workarounds
 
-3. **Cross-Platform Binary Management**
-   - Binary installation varies by OS (Windows, Linux, macOS)
-   - Resource paths are OS-specific
-   - Testing cross-platform scenarios is challenging in CI
-
-4. **CLI Version Management**
-   - No automatic version resolution
-   - Must specify exact version or use PATH_TO_EXECUTABLE
-   - Version mismatches may cause unexpected behavior
-
-5. **Semaphore Bottleneck**
-   - Single semaphore slot limits concurrent CLI executions
-   - Sequential execution may impact performance
-   - Blocking design for thread safety
-
-### Workarounds & Mitigations
-
-- **Version Issues**: Pin specific CLI versions in consumer applications
-- **Proxy Support**: Use corporate proxy at OS level as fallback
-- **Cross-Platform**: Test on multiple OS before releases
-- **Concurrency**: Queue scan requests externally if parallelism needed
+- For blocked domain access: Use plugin v2.x which includes bundled CLI
+- For network issues: Configure longer timeout via additional parameters
+- For large repos: Consider splitting source code or using filters
 
 ---
 
-## Deployment Information
+## Database Schema
 
-### Package Publication
-
-The package is published to **GitHub Packages** (npm.pkg.github.com):
-
-```json
-{
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  }
-}
-```
-
-### Publishing a New Version
-
-1. Update version in `package.json`
-2. Merge to main with PR approval
-3. Tag release: `git tag v1.0.x`
-4. Push tags: `git push origin --tags`
-5. GitHub Actions release workflow handles publication
-
-### Version Management
-
-- **File**: `checkmarx-ast-cli.version` - Tracks CLI version
-- **Format**: Simple text file with version string
-- **Location**: Root directory
-- **Usage**: Referenced by CxInstaller for binary management
-
-### CI/CD Workflows
-
-Located in `.github/workflows/`:
-- `ci.yml` - Runs on every push and PR
-- `release.yml` - Creates releases and publishes package
-- `checkmarx-one-scan.yml` - Security scanning on PRs
-- `update-cli.yml` - Updates AST CLI binary reference
-- `nightly.yml` - Nightly build and test run
-- `auto-merge-pr.yml` - Auto-merges dependency updates
-- `dependabot-auto-merge.yml` - Dependabot PR automation
-- `delete-packages-and-releases.yml` - Deletes old packages and releases
-- `pr-automation.yml` - Pull request automation
+**Not Applicable** - This is a stateless Azure DevOps extension that does not maintain its own database. All state is managed by:
+- Azure DevOps (scan metadata, task results)
+- Checkmarx One (scan results, vulnerability data)
 
 ---
 
 ## External Integrations
 
-### Checkmarx AST CLI
+### Checkmarx One Platform
+- **Service**: Checkmarx One REST API
+- **Purpose**: Scan submission, result retrieval, query execution
+- **Authentication**: OAuth2 (Client ID/Secret) or API Key
+- **Endpoint**: Configurable via task parameters
+- **Rate Limits**: Subject to Checkmarx One API rate limits
 
-The main external dependency is the **Checkmarx AST CLI** binary:
-- **Purpose**: Performs actual security scanning
-- **Installation**: Automatic via CxInstaller
-- **Configuration**: Through CxConfig environment variables
-- **API**: Command-line interface with JSON output parsing
+### Azure DevOps
+- **Service**: Azure DevOps REST API, Task Library
+- **Purpose**: Task execution context, result reporting, variable management
+- **Authentication**: ADO service connection credentials
+- **Scope**: `vso.build_execute` (build and release pipeline execution)
 
-### Azure Pipelines Integration
+### Marketplace
+- **Platform**: Azure DevOps Marketplace
+- **Listing**: https://marketplace.visualstudio.com/items?itemName=checkmarx.checkmarx-ast-azure-plugin
+- **Publisher**: Checkmarx
+- **Updates**: Distributed via marketplace
 
-- **Library**: azure-pipelines-tool-lib
-- **Usage**: File downloading, caching, tool management
-- **Benefit**: Handles retries and proxy automatically
+### CLI Tool Repository
+- **Repository**: Checkmarx CLI downloads
+- **URL**: download.checkmarx.com
+- **Purpose**: Runtime download of Checkmarx One CLI tool
 
-### GitHub Integration
+---
 
-- **Actions**: CI/CD automation
-- **Packages**: NPM package hosting
-- **Releases**: Automated version tagging and release notes
+## Deployment Info
+
+### Publishing
+
+The plugin is distributed via **Azure DevOps Marketplace**.
+
+#### Publication Process
+1. Increment version in `vss-extension.json` (field: `version`)
+2. Create GitHub release with tag (format: `v<major>.<minor>.<patch>`)
+3. Azure DevOps Marketplace automatically publishes via GitHub Actions
+4. Trigger: `manual-tag.yml` workflow on tag creation
+
+#### Version Format
+- Semantic Versioning: `<major>.<minor>.<patch>`
+- Example: `3.0.14`
+
+#### Release Artifacts
+- Compressed extension package: `.vsix` file
+- Published to Azure DevOps Marketplace
+- Available via `npm install` (GitHub Package Registry)
+
+### Installation
+
+#### For Azure DevOps Users
+1. Open Azure DevOps organization
+2. Go to Extensions Marketplace
+3. Search for "Checkmarx AST"
+4. Click "Get it free"
+5. Select organization and install
+6. Configure in pipeline YAML or task UI
+
+#### For Development/Local Testing
+1. Clone repository
+2. Install dependencies: `npm install`
+3. Build: `npm run build`
+4. Use local task in YAML: Reference local files instead of marketplace
+
+### Configuration
+
+Task configuration is managed via `vss-extension.json`:
+- **Task ID**: Must match ADO task execution context
+- **Task Inputs**: Defined in task definition within manifest
+- **Service Connections**: Azure DevOps service connection for Checkmarx authentication
+
+### Deployment Environments
+
+- **Production**: Azure DevOps Marketplace (all organizations)
+- **Staging**: GitHub releases (pre-release builds)
+- **Development**: Local builds for testing
 
 ---
 
 ## Performance Considerations
 
-### Optimization Areas
+### Scan Execution
+- **Typical Duration**: 2-30 minutes (depends on repository size and scanner settings)
+- **Agent Resources**: Requires 2GB+ available disk space for scan artifacts
+- **Network Bandwidth**: High during artifact upload to Checkmarx One
 
-1. **Binary Caching**
-   - AST CLI binary cached after download
-   - Reused across multiple scans in same process
-   - Reduces download time for subsequent runs
+### Optimization Tips
 
-2. **Lazy Loading**
-   - Feature modules loaded on-demand
-   - Reduces initial memory footprint
-   - Only required modules instantiated
+1. **Filter Source Files**: Use `--filter` parameters to exclude non-essential directories
+   ```
+   --filter "!node_modules,!.git"
+   ```
 
-3. **Async Execution**
-   - CLI execution non-blocking
-   - Multiple scans queued (not parallel)
-   - Prevents resource exhaustion
+2. **Parallel Scans**: Configure multiple agents in ADO to run concurrent scans
 
-4. **Retry Logic**
-   - AstClient implements exponential backoff
-   - Max 3 attempts for downloads by default
-   - Configurable retry interval (2 seconds)
+3. **Preset Configuration**: Use SCA Resolver to optimize dependency scanning
 
-### Performance Bottlenecks
+4. **Caching**: Cache dependencies locally to reduce upload size
 
-- **CLI Execution**: Sequential (semaphore-limited)
-- **Download Speed**: Network-dependent
-- **Disk I/O**: Binary extraction and resource copying
-- **JSON Parsing**: Large result sets
+5. **Incremental Analysis**: Use `--incremental` flag (if supported by Checkmarx One) to avoid full repository rescanning
 
-### Monitoring & Metrics
+### Known Performance Issues
 
-- **Logger**: log4js provides timing information
-- **Coverage**: Jest reports execution time
-- **No Built-in Metrics**: Use external APM for production
+- Large ZIP operations (>500MB) may exceed agent timeout
+- Slow network connections may cause CLI download failures
+- Concurrent scans from same agent may cause resource contention
 
 ---
 
-## API & Endpoints
+## API / Endpoints / Interfaces
 
-### Main Entry Point: CxWrapper
+### Task Inputs
 
-```typescript
-class CxWrapper {
-  static async getInstance(cxScanConfig: CxConfig, logFilePath: string): Promise<CxWrapper>
-  config: CxConfig
-  cxInstaller: CxInstaller
-  // Scan methods
-  scanCreate(params: CxParamType[]): Promise<CxCommandOutput>
-  scanCancel(params: CxParamType[]): Promise<CxCommandOutput>
-  scanShow(params: CxParamType[]): Promise<CxCommandOutput>
-  scanList(params: CxParamType[]): Promise<CxCommandOutput>
-  // Other feature methods accessed through instance
-}
+The plugin accepts these Azure DevOps task inputs (configurable in pipeline YAML or UI):
+
+| Input | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `CheckmarxService` | Endpoint | No | `` | Service connection to Checkmarx One |
+| `projectName` | String | Yes | $(Build.Repository.Name) | Checkmarx One project name |
+| `branchName` | String | Yes | $(Build.SourceBranchName) | Repository branch being scanned |
+| `tenantName` | String | No | `` | Tenant name for the Checkmarx One instance |
+| `additionalParams` | String | No | `` | CLI parameters for scan customization |
+
+### Task Outputs
+
+The plugin sets these Azure DevOps variables after execution:
+
+| Variable | Scope | Description |
+|----------|-------|-------------|
+| `CxOneScanId` | Build | Unique identifier for the completed scan |
+
+### Scan Results
+
+Results are provided in multiple formats:
+
+1. **HTML Report** - Attachment `cxASTResults` in ADO pipeline
+   - Format: HTML with summary and vulnerabilities
+   - Generated via `wrapper.getResults("summaryHTML")`
+
+2. **JSON Reports** - Via additional parameters
+   - Format: Standard JSON vulnerability data structure
+   - Generated via CLI `--output-format json`
+
+3. **SBOM Reports** - Via additional parameters
+   - Formats: CycloneDX, SPDX
+   - Generated via CLI `--sbom-format` parameter
+
+### Scan Parameters
+
+CLI parameters can be passed via `additionalParams` input:
+
+```bash
+# Examples:
+--preset high-security           # Apply security preset
+--filter "!node_modules"         # Exclude paths
+--incremental                    # Incremental scanning
+--sca-resolver true              # Enable SCA Resolver
+--output-format json             # Output format
 ```
 
-### Feature Modules
+### Service Connection
 
-Each feature module exports a main class following the `Cx[Feature]` naming convention:
-- `CxScan` - Scan operations
-- `CxProject` - Project management
-- `CxResult` - Result parsing
-- `CxScaRealTime` - SCA real-time scanning
-- `CxKicsRealTime` - KICS real-time scanning
-- `CxAsca` - Application Security Code Analysis
-- `CxBFL` - Business Flow Language
-- `CxMask` - Secret masking
-- `CxChat` - Chat functionality
-- `CxCodeBashing` - CodeBashing integration
-- `CxLearnMoreDescriptions` / `CxLearnMoreSamples` - Learning resources
-- `CxPredicate` - Predicate operations
-- `CxKicsRemediation` - KICS remediation suggestions
-
-### Configuration: CxConfig
-
-Main configuration object properties:
-- `apiKey`: API key for authentication
-- `clientId` + `clientSecret`: OAuth credentials
-- `baseUri`: AST API endpoint
-- `baseAuthUri`: Authentication endpoint
-- `tenant`: Tenant identifier
-- `pathToExecutable`: Path to AST CLI binary
-- `additionalParameters`: Extra CLI arguments
+The `checkmarxService` endpoint must provide:
+- **Authentication**: OAuth2 credentials or API Key
+- **Server URL**: Checkmarx One instance (cloud or on-premises)
+- **Credentials**: Client ID/Secret or API Key
 
 ---
 
 ## Security & Access
 
-### Authentication Methods
+### Authentication
 
-1. **API Key** (recommended for CI/CD)
-   ```javascript
-   const config = new CxConfig();
-   config.apiKey = process.env.CX_APIKEY;
-   ```
+#### Methods Supported
+1. **OAuth2** (Recommended)
+   - Client ID and Client Secret
+   - Issued by Checkmarx One platform
+   - Suitable for service account authentication
 
-2. **OAuth 2.0 Client Credentials**
-   ```javascript
-   config.clientId = process.env.CX_CLIENT_ID;
-   config.clientSecret = process.env.CX_CLIENT_SECRET;
-   ```
+2. **API Key**
+   - Generated in Checkmarx One platform
+   - Suitable for CI/CD automation
+   - Treat as secret credential
 
-### Credential Management
+#### Credential Management
+- Credentials are passed via Azure DevOps **service connection**
+- Never hardcode credentials in pipeline YAML or code
+- Use ADO task library to retrieve secure variables
 
-- **Never commit credentials** to the repository
-- Use environment variables or secure vaults
-- Rotate credentials regularly
-- Use service accounts for CI/CD
+### Authorization
 
-### Proxy Security
+- **ADO Scope**: `vso.build_execute` - Permission to execute build tasks
+- **Checkmarx One**: User/service account must have project scan permissions
 
-- **HTTP_PROXY** environment variable support
-- URL-encoded authentication in proxy URL
-- HTTPS tunneling for encrypted communication
-- Error handling for invalid proxy URLs
+### Secret Storage
 
-### HTTPS & Certificates
+- Secrets are stored in **Azure DevOps secret vault**
+- Accessed via service connection abstraction
+- CLI tool automatically masks credential output in logs
 
-- All HTTPS endpoints require valid certificates
-- Certificate validation cannot be disabled
-- Self-signed certificates will fail
-- Configure corporate CA if needed
+### Dependency Security
 
-### RBAC (Role-Based Access Control)
+- Review `package.json` for dependency versions
+- Use `npm audit` to identify vulnerabilities
+- All dependencies must be Apache 2.0 or compatible licenses
+- Monitor CVE databases for transitive dependency issues
 
-- Enforced by AST API
-- Client credentials determine accessible projects/scans
-- API key permissions managed in Checkmarx platform
-- Wrapper does not implement additional RBAC
+### Code Security
 
-### Audit & Logging
+- **No Credential Logging**: Credentials are never logged (ADO task lib masks them)
+- **Input Validation**: Project names and branch names are validated before use
+- **File Uploads**: ZIP archive is created from source code (no secrets should be included)
+- **OWASP Compliance**: Code reviewed for common web vulnerabilities (not applicable for CLI tool)
 
-- All operations logged via log4js
-- Configurable log levels (debug, info, warn, error)
-- Sensitive data (credentials) never logged
-- Logs can be written to file or stdout
+### Access Control
+
+- GitHub repository: Restricted to Checkmarx team members
+- Marketplace: Public (available to all ADO organizations)
+- CODEOWNERS: Defined in `CODEOWNERS` file for code review requirements
 
 ---
 
 ## Logging
 
-### Logger Configuration
+### Log Output
 
-Located in `src/main/wrapper/loggerConfig.ts`:
+The plugin outputs logs to:
 
-```typescript
-import { getLoggerWithFilePath, logger } from './loggerConfig';
-
-// Default logger
-logger.info('Message');
-logger.error('Error message');
-logger.debug('Debug message');
-
-// File-based logger
-getLoggerWithFilePath('/path/to/logfile.log');
-```
+1. **ADO Pipeline Console** - User-visible task output
+2. **Log File** - File-based logging via `typescript-logging`
+3. **Diagnostic Output** - Detailed trace information
 
 ### Log Levels
 
-- **DEBUG**: Detailed internal operations
-- **INFO**: Important events (started scan, downloaded CLI)
-- **WARN**: Potentially problematic situations
-- **ERROR**: Error conditions requiring attention
-- **FATAL**: Unrecoverable errors
+Standard logging levels (via typescript-logging):
+- **DEBUG** - Detailed execution information
+- **INFO** - General informational messages
+- **WARN** - Warning messages (non-critical issues)
+- **ERROR** - Error messages and exception details
 
-### Logger Integration
+### Log File Location
 
-- **Default Output**: Console (stdout/stderr)
-- **File Output**: Optional via `getLoggerWithFilePath()`
-- **Appenders**: Configurable in loggerConfig
-- **Layout**: Timestamp, level, category, message
+- **Filename**: Generated via `getLogFilename()` in Utils.ts
+- **Directory**: Agent temp directory (`Agent.TempDirectory`)
+- **Format**: Text with timestamps and severity levels
+- **Retention**: Managed by Azure DevOps agent
 
-### Best Practices
+### Sample Log Output
 
-1. Use appropriate log level for context
-2. Include relevant contextual information
-3. Never log sensitive data (credentials, tokens)
-4. Use logger instance, not console.log
-5. Consider performance impact of debug logging
+```
+Project name: my-project
+Branch name: main
+Agent: Azure DevOps
+Additional Params: --preset high-security
+Completed scan.
+Generating results.
+[timestamp] INFO: Scan ID: abc-123-def
+[timestamp] INFO: Results generated successfully
+```
+
+### Sensitive Data Masking
+
+The Azure DevOps task library automatically masks:
+- Service connection credentials
+- API keys and tokens
+- URLs containing sensitive parameters
 
 ---
 
 ## Debugging Steps
 
-### Enable Debug Logging
+### Common Issues and Solutions
 
-```javascript
-import log4js from 'log4js';
+#### 1. "CLI Tool Not Found" / Download Failures
 
-// Configure debug level
-log4js.configure({
-  appenders: { console: { type: 'console' } },
-  categories: { default: { appenders: ['console'], level: 'debug' } }
-});
+**Symptom**: `Error: Failed to download CLI tool` or `Command not found: cx`
 
-const wrapper = await CxWrapper.getInstance(config);
+**Cause**: download.checkmarx.com is not accessible or whitelisted
+
+**Resolution**:
+1. Verify firewall/proxy allows access to `download.checkmarx.com`
+2. Add domain to whitelist if using corporate proxy
+3. Check network connectivity from agent machine: `curl -I https://download.checkmarx.com`
+4. Use plugin v2.x if domain cannot be whitelisted (includes bundled CLI)
+
+#### 2. Authentication Failures
+
+**Symptom**: `Error: Invalid credentials` or `401 Unauthorized`
+
+**Cause**: Service connection credentials are incorrect or expired
+
+**Resolution**:
+1. Verify service connection exists in ADO organization settings
+2. Test connection credentials manually with Checkmarx CLI
+3. Refresh OAuth tokens (if using OAuth2)
+4. Ensure service account has project scan permissions in Checkmarx One
+
+#### 3. "Project Not Found"
+
+**Symptom**: `Error: Project '<name>' not found`
+
+**Cause**: Project doesn't exist in Checkmarx One or permissions are insufficient
+
+**Resolution**:
+1. Verify project exists in Checkmarx One: https://ast.checkmarx.com/
+2. Confirm service account has access to the project
+3. Check project name matches exactly (case-sensitive)
+4. Ensure project is not archived
+
+#### 4. Scan Timeout
+
+**Symptom**: `Error: Task timed out` or `Scan cancelled due to timeout`
+
+**Cause**: Scan duration exceeds ADO task timeout (usually 60 min default)
+
+**Resolution**:
+1. Increase ADO task timeout in pipeline YAML: `timeoutInMinutes: 120`
+2. Optimize scan filters to reduce scope: Use `--filter` parameters
+3. Configure incremental scanning to reduce duration
+4. Increase agent resources (disk space, memory)
+
+#### 5. CLI Parameter Issues
+
+**Symptom**: `Error: Invalid parameter` or `Unknown option`
+
+**Cause**: Incorrect or unsupported CLI parameters passed via `additionalParams`
+
+**Resolution**:
+1. Verify parameter syntax: `--param-name value`
+2. Check Checkmarx One CLI documentation for supported parameters
+3. Use `--help` flag locally to list available options
+4. Review parameter values for special characters (may need escaping)
+
+#### 6. Permission Denied / Access Issues
+
+**Symptom**: `Error: Permission denied` when accessing files or directories
+
+**Cause**: ADO agent running with insufficient permissions
+
+**Resolution**:
+1. Verify agent service account has read access to source repository
+2. Ensure write permissions to agent temp directory
+3. Run agent with elevated privileges if necessary (Windows)
+4. Check file ownership and ACLs on Linux/macOS
+
+### Debugging Commands
+
+#### Enable Verbose Logging
+
+Add to pipeline YAML:
+```yaml
+- task: CheckmarxOne@3
+  inputs:
+    additionalParams: '--verbose'
 ```
 
-### Common Issues & Solutions
+#### Local Testing
 
-#### 1. "AST CLI not found"
-```
-Issue: CxInstaller cannot locate the AST CLI binary
-Solutions:
-- Ensure PATH_TO_EXECUTABLE points to valid binary
-- Check PATH environment variable includes binary location
-- On Windows, verify binary is not blocked (Properties > Unblock)
-- Try re-downloading: delete cached binary and reinitialize
-```
-
-#### 2. "Proxy connection failed"
-```
-Issue: HTTP_PROXY environment variable set but not working
-Solutions:
-- Verify proxy URL format: http://[user:pass@]host:port
-- Test proxy manually: curl -x [proxy] https://google.com
-- Check proxy authentication (username/password encoding)
-- Ensure https-proxy-agent configuration is correct
-```
-
-#### 3. "Authentication failed"
-```
-Issue: Invalid credentials or endpoint configuration
-Solutions:
-- Verify CX_CLIENT_ID and CX_CLIENT_SECRET are set
-- Or verify CX_APIKEY is set (not both)
-- Ensure CX_BASE_AUTH_URI and CX_BASE_URI are correct
-- Check credentials haven't expired in Checkmarx platform
-- Verify tenant configuration matches Checkmarx setup
-```
-
-#### 4. "Semaphore timeout"
-```
-Issue: CLI execution blocked by semaphore (another scan in progress)
-Solutions:
-- Wait for previous scans to complete
-- Check for hung processes: ps aux | grep ast-cli
-- Restart Node.js process if hung
-- Consider queuing scans externally if parallelism needed
-```
-
-#### 5. "Type errors with 'any' type"
-```
-Issue: TypeScript strict mode errors
-Solutions:
-- Avoid casting to 'any'
-- Create specific types/interfaces
-- Use type guards or discriminated unions
-- Check types in dependent modules
-```
-
-### Debug Techniques
-
-1. **Enable Verbose Logging**
-   ```javascript
-   getLoggerWithFilePath('./debug.log');
-   // Logs will show detailed execution flow
-   ```
-
-2. **Use Node Debugger**
-   ```bash
-   node --inspect-brk dist/main/wrapper/CxWrapper.js
-   # Opens Chrome DevTools debugging interface
-   ```
-
-3. **Inspect Configuration**
-   ```javascript
-   const wrapper = await CxWrapper.getInstance(config);
-   console.log('Config:', wrapper.config);
-   console.log('CLI Path:', wrapper.cxInstaller.getExecutablePath());
-   ```
-
-4. **Test CLI Directly**
-   ```bash
-   # Run AST CLI directly to isolate wrapper issues
-   /path/to/ast-cli version
-   /path/to/ast-cli scan help
-   ```
-
-5. **Check Environment Variables**
-   ```bash
-   # Unix
-   env | grep CX_
-   env | grep HTTP_PROXY
-   
-   # PowerShell
-   Get-ChildItem env: | Where-Object { $_.Name -like 'CX_*' -or $_.Name -like '*PROXY*' }
-   ```
-
-### IDE Debugging (VS Code)
-
-Create `.vscode/launch.json`:
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch Tests",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["--runInBand"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    }
-  ]
-}
-```
-
-Then press F5 to start debugging.
-
----
-
-## Maintenance & Contributions
-
-### Code Review Process
-
-1. Create feature branch from `main`
-2. Open Pull Request with clear description
-3. Ensure all checks pass (CI, coverage, lint)
-4. Request review from CODEOWNERS
-5. Merge only after approval
-
-### CODEOWNERS
-
-Primary maintainer: `@cx-anurag-dalke`
-
-For PR reviews, mention codeowner for faster turnaround.
-
-### Contributing Guidelines
-
-1. Follow coding standards outlined above
-2. Add tests for new features
-3. Update documentation for API changes
-4. Keep commits atomic and descriptive
-5. Avoid committing build artifacts
-
-### Release Process
-
-1. Update `package.json` version (semver)
-2. Update `checkmarx-ast-cli.version` if CLI version changes
-3. Merge to `main` with PR
-4. Tag release: `git tag v1.0.x`
-5. GitHub Actions handles publication
-
-### Dependency Updates
-
-- Automated via Dependabot
-- Auto-merge enabled for patch updates
-- Manual review required for minor/major
-- Security vulnerabilities trigger immediate PRs
-
----
-
-## Additional Resources
-
-### Repository Links
-- **GitHub Repo**: https://github.com/Checkmarx/ast-cli-javascript-wrapper-runtime-cli
-- **Issue Tracker**: https://github.com/Checkmarx/ast-cli-javascript-wrapper-runtime-cli/issues
-- **Package**: https://github.com/CheckmarxDev/packages?repo_name=ast-cli-javascript-wrapper-runtime-cli
-
-### Related Projects
-- **AST CLI**: https://github.com/Checkmarx/ast-cli (main CLI binary)
-- **AST VSCode Extension**: https://github.com/Checkmarx/ast-vscode-extension
-
-### Documentation
-- See [README.md](README.md) for user-facing usage documentation
-- TypeScript/JavaScript docs in source code comments
-- Type definitions in `dist/main/**/*.d.ts`
-
-### Support Contacts
-- Checkmarx: https://checkmarx.com
-- Security Issues: Follow responsible disclosure
-
----
-
-## Quick Reference
-
-### Useful Commands
 ```bash
-npm run build              # Compile TypeScript
-npm run lint              # Check code style
-npm run lint-and-fix      # Auto-fix issues
-npm run test              # Run all tests with coverage
-npm run test:unit         # Run unit tests only
+# Build the plugin locally
+npm run build
+
+# Run tests with debug output
+DEBUG=* npm test
+
+# Test CLI tool independently
+cx scan create --help
 ```
 
-### Key Files
-- **Main Class**: `src/main/wrapper/CxWrapper.ts`
-- **Configuration**: `src/main/wrapper/CxConfig.ts`
-- **Installation**: `src/main/osinstaller/CxInstaller.ts`
-- **Client**: `src/main/client/AstClient.ts`
-- **Logging**: `src/main/wrapper/loggerConfig.ts`
+#### Validate Configuration
 
-### Common Imports
 ```typescript
-import { CxWrapper } from '@Checkmarx/ast-cli-javascript-wrapper-runtime-cli';
-import { CxConfig } from '@Checkmarx/ast-cli-javascript-wrapper-runtime-cli';
-import { CxError } from '@Checkmarx/ast-cli-javascript-wrapper-runtime-cli';
+// In code, check configuration:
+const config = getConfiguration();
+console.log('Config:', JSON.stringify(config, null, 2));
+```
+
+#### Check Agent Environment
+
+```bash
+# List ADO agent environment variables
+set | grep Agent  # Windows
+env | grep AGENT  # Linux/macOS
+
+# Verify network connectivity
+curl -v https://api.checkmarx.com
+curl -v https://download.checkmarx.com
+```
+
+### Diagnostic Logs Collection
+
+To gather diagnostic information for support:
+
+1. **Enable debug mode** in pipeline
+2. **Capture task output**: Copy entire console log
+3. **Collect log files**: From `Agent.TempDirectory/CxLog_<Build.BuildId>.txt`
+4. **Export configuration** (without credentials): Project name, branch, parameters
+5. **Check Checkmarx One**: Verify scan exists with matching ID
+6. **Network info**: Firewall rules, proxy configuration, DNS resolution
+
+### Performance Profiling
+
+To debug performance issues:
+
+```bash
+# Measure build time
+time npm run build
+
+# Profile test execution
+npm test -- --reporter tap > test-profile.txt
+
+# Check dependency size
+npm ls --depth=0
 ```
 
 ---
 
+## Version History
+
+### Current Version
+- **3.0.14+** - Latest stable release
+- CLI tool downloaded at runtime (not bundled)
+- Full Checkmarx One feature support
+
+### Major Changes in v3.0.0+
+- Removed bundled CLI tool (reduced package size)
+- Now requires download.checkmarx.com access
+- Azure DevOps marketplace listing updated
+
+---
+
+## Contributors
+
+- **Checkmarx AST Integration Team**
+- **Open Source Contributors** - See GitHub contributors page
+
+---
+
+## Getting Help
+
+- **Documentation**: https://checkmarx.com/resource/documents/en/34965-68709-checkmarx-one-azure-devops-plugin.html
+- **Quick Start Guide**: https://checkmarx.com/resource/documents/en/34965-68710-quick-start-guide---checkmarx-one-azure-devops-plugin.html
+- **GitHub Issues**: https://github.com/Checkmarx/ast-azure-plugin/issues
+- **Contact**: AST Integrations Team - check website for support channels
+
+---
+
+**Document Version**: 1.0
 **Last Updated**: 2026-04-22
-**Version**: Matches ast-cli-javascript-wrapper-runtime-cli v1.0.36
+**Maintained By**: Checkmarx AST Integration Team
