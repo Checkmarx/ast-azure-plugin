@@ -14,7 +14,7 @@
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix"
   },
-  "author": "Jay Nanduri",
+  "author": "Checkmarx",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
     "nyc": "^17.1.0",
