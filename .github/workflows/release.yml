@@ -33,6 +33,7 @@ jobs:
     runs-on: cx-public-ubuntu-x64
     permissions:
       contents: write
+      packages: read
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
@@ -107,7 +108,12 @@ jobs:
       - name: Configure GitHub Packages auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+          # Build a temp npmrc for the cxAstScan subdirectory install.
+          # cxAstScan/.npmrc is bundled into the VSIX, so we must never write the token there.
+          cat cxAstScan/.npmrc > /tmp/cxAstScan-npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> /tmp/cxAstScan-npmrc
 
       - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
 
@@ -115,7 +121,7 @@ jobs:
         run: |
           npm install
           cd cxAstScan/
-          npm install
+          npm install --userconfig /tmp/cxAstScan-npmrc
 
       - run: npm run build
 
