@@ -6,10 +6,10 @@ on:
 permissions:
   contents: read
 
-jobs:
-  pr-labeler:
-    runs-on: cx-public-ubuntu-x64
-    steps:
-      - uses: TimonVS/pr-labeler-action@f9c084306ce8b3f488a8f3ee1ccedc6da131d1af #v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+# jobs:
+#   pr-labeler:
+#     runs-on: cx-public-ubuntu-x64
+#     steps:
+#       - uses: TimonVS/pr-labeler-action@f9c084306ce8b3f488a8f3ee1ccedc6da131d1af #v5
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
