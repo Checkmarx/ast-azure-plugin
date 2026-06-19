@@ -185,7 +185,9 @@ jobs:
 
       - name: Release to marketplace
         if: inputs.publish == true
-        run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
+        env:
+          AZURE_TOKEN: ${{ secrets.AZURETOKEN }}
+        run: tfx extension publish --vsix *.vsix --token "${AZURE_TOKEN}"
 
   # notify:
   #   if: inputs.dev == false
