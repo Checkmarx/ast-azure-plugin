@@ -15,14 +15,24 @@ on:
         description: 'Is dev build'
         required: false
         default: true
-        type: boolean   
-      
+        type: boolean
+      publish:
+        description: 'Publish to Azure DevOps Marketplace'
+        required: false
+        default: false
+        type: boolean
+
 env:
   PUBLISHER: Checkmarx
+
+permissions:
+  contents: read
 
 jobs:
   release:
     runs-on: cx-public-ubuntu-x64
+    permissions:
+      contents: write
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
@@ -40,15 +50,17 @@ jobs:
           else
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
           fi
-        
+
       - name: Determine Release Version
         id: set_tag_name
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ -z "${{ inputs.tag }}" ]]; then
             # Fetch the latest GitHub release tag
             LATEST_TAG=$(curl -sL \
               -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+              -H "Authorization: token ${GH_TOKEN}" \
               "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
 
             # If no release is found, fallback to default
@@ -79,7 +91,7 @@ jobs:
           echo "RELEASE_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "TAG_NAME=$NEW_VERSION" >> $GITHUB_ENV
           echo "TAG_NAME=$NEW_VERSION" >> $GITHUB_OUTPUT
-      
+
       - name: Tag and Push New Version
         run: |
           git config user.name "${GITHUB_ACTOR}"
@@ -87,30 +99,30 @@ jobs:
           git tag -a "${{ env.RELEASE_VERSION }}" -m "Release ${{ env.RELEASE_VERSION }}"
           git push origin "${{ env.RELEASE_VERSION }}"
 
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
+          registry-url: https://npm.echohq.com/
 
-      - run: npm install
+      - name: Configure GitHub Packages auth
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
-      - run: sudo npm install -g tfx-cli
-
-      - name: Authenticate with GitHub package registry
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }}" > ~/.npmrc
+      - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
 
       - name: Build step
         run: |
           npm install
           cd cxAstScan/
           npm install
+
       - run: npm run build
-      
+
       - name: Set major, minor, patch values
         run: |
           CLEAN_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | sed 's/^v//')
-  
+
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
@@ -132,8 +144,8 @@ jobs:
           CLI_VERSION=$(cat ./cxAstScan/node_modules/@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "CLI version being packed is $CLI_VERSION"
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
-          echo "::set-output name=CLI_VERSION::$CLI_VERSION"
-      
+          echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_OUTPUT
+
       - name: Set versions in files
         run: |
           cat <<< $(jq ".version = \"${{ env.CLEAN_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
@@ -141,7 +153,7 @@ jobs:
           cat <<< $(jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
-      
+
       - name: Set ID public and publisher fields if dev release
         run: |
           if [ "${{ inputs.dev }}" == "true" ]; then
@@ -149,14 +161,13 @@ jobs:
             cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}\"" vss-extension.json) > vss-extension.json
             cat <<< $(jq ".publisher = \"${{ inputs.publisherID }}\"" vss-extension.json) > vss-extension.json
           fi
-      
+
       - name: Remove test folder
         run: rm -rf ./cxAstScan/test
-          
-      - name: Create extension
-        run: tfx extension create --manifest-globs vss-extension.json        
 
-      # Create the release
+      - name: Create extension
+        run: tfx extension create --manifest-globs vss-extension.json
+
       - name: Create Release
         uses: step-security/action-gh-release@277bfa82abcfdb73e5bbb19e213fd76532ee2be5 # v3.0.0
         with:
@@ -167,18 +178,18 @@ jobs:
           prerelease: ${{ inputs.dev }}
 
       - name: Release to marketplace
-        if: inputs.dev == false
+        if: inputs.publish == true
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
-  notify:
-    if: inputs.dev == false
-    needs: release
-    uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
-    with:
-      product_name: Azure Plugin
-      release_version: ${{ needs.release.outputs.TAG_NAME }}
-      cli_release_version: ${{ needs.release.outputs.CLI_VERSION }}
-      release_author: "Phoenix Team"
-      release_url: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ needs.release.outputs.TAG_NAME }}
-      jira_product_name: ADO
-    secrets: inherit  
+  # notify:
+  #   if: inputs.dev == false
+  #   needs: release
+  #   uses: Checkmarx/plugins-release-workflow/.github/workflows/release-notify.yml@main
+  #   with:
+  #     product_name: Azure Plugin
+  #     release_version: ${{ needs.release.outputs.TAG_NAME }}
+  #     cli_release_version: ${{ needs.release.outputs.CLI_VERSION }}
+  #     release_author: "Phoenix Team"
+  #     release_url: https://github.com/Checkmarx/ast-azure-plugin/releases/tag/${{ needs.release.outputs.TAG_NAME }}
+  #     jira_product_name: ADO
+  #   secrets: inherit
