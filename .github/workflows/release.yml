@@ -108,12 +108,7 @@ jobs:
       - name: Configure GitHub Packages auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
-          # Build a temp npmrc for the cxAstScan subdirectory install.
-          # cxAstScan/.npmrc is bundled into the VSIX, so we must never write the token there.
-          cat cxAstScan/.npmrc > /tmp/cxAstScan-npmrc
-          echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> /tmp/cxAstScan-npmrc
+        run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
       - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
 
@@ -121,7 +116,7 @@ jobs:
         run: |
           npm install
           cd cxAstScan/
-          npm install --userconfig /tmp/cxAstScan-npmrc
+          npm install
 
       - run: npm run build
 
