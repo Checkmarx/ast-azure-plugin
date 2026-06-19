@@ -16,6 +16,11 @@ on:
         required: false
         default: true
         type: boolean
+      publish:
+        description: 'Publish to Azure DevOps Marketplace'
+        required: false
+        default: false
+        type: boolean
 
 env:
   PUBLISHER: Checkmarx
@@ -173,7 +178,7 @@ jobs:
           prerelease: ${{ inputs.dev }}
 
       - name: Release to marketplace
-        if: inputs.dev == false
+        if: inputs.publish == true
         run: tfx extension publish --vsix *.vsix --token ${{ secrets.AZURETOKEN }}
 
   # notify:
