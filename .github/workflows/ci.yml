@@ -22,13 +22,16 @@ jobs:
       - name: Configure GitHub Packages auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+          cat cxAstScan/.npmrc > /tmp/cxAstScan-npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> /tmp/cxAstScan-npmrc
 
       - name: npm install
         run: |
           npm install
           cd cxAstScan/
-          npm install
+          npm install --userconfig /tmp/cxAstScan-npmrc
 
       - name: Code Linting
         run: npm run lint
