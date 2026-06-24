@@ -24,11 +24,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
-      - name: npm install
+      - name: npm ci
         run: |
-          npm install
+          npm ci
           cd cxAstScan/
-          npm install
+          npm ci
 
       - name: Code Linting
         run: npm run lint
