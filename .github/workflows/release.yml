@@ -114,9 +114,9 @@ jobs:
 
       - name: Build step
         run: |
-          npm install
+          npm ci
           cd cxAstScan/
-          npm install
+          npm ci
 
       - run: npm run build
 
