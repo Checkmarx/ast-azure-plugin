@@ -22,6 +22,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
+      - name: Verify single lockfile
+        run: |
+          if [ -f package-lock.json ] && [ -f yarn.lock ]; then
+            echo "ERROR: Both lockfiles exist"
+            exit 1
+          fi
+
       - name: Determine Version
         id: get_version
         run: |
@@ -59,9 +66,9 @@ jobs:
 
       - name: Build step
         run: |
-          npm install
+          npm ci
           cd cxAstScan/
-          npm install
+          npm ci
 
       - name: Commit Changes
         run: |

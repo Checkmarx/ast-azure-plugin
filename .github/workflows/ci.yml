@@ -14,6 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
+      - name: Verify single lockfile
+        run: |
+          if [ -f package-lock.json ] && [ -f yarn.lock ]; then
+            echo "ERROR: Both lockfiles exist"
+            exit 1
+          fi
+
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 20
@@ -26,9 +33,9 @@ jobs:
 
       - name: npm install
         run: |
-          npm install
+          npm ci
           cd cxAstScan/
-          npm install
+          npm ci
 
       - name: Code Linting
         run: npm run lint
