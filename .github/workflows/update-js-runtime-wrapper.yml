@@ -71,9 +71,9 @@ jobs:
 
       - name: Build step
         run: |
-          npm ci
+          npm ci --ignore-scripts
           cd cxAstScan/
-          npm ci
+          npm ci --ignore-scripts
 
       - name: Commit Changes
         run: |

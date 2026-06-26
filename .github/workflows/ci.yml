@@ -38,9 +38,9 @@ jobs:
 
       - name: npm install
         run: |
-          npm ci
+          npm ci --ignore-scripts
           cd cxAstScan/
-          npm ci
+          npm ci --ignore-scripts
 
       - name: Code Linting
         run: npm run lint
