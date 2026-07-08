@@ -34,9 +34,9 @@ jobs:
       - name: Configure registry auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ECHOHQ_TOKEN: ${{ secrets.ECHOHQ_TOKEN }}
+          ECHO_NPM_TOKEN: ${{ secrets.ECHO_NPM_TOKEN }}
         run: |
-          npm config set //packages.echohq.com/:_authToken "${ECHOHQ_TOKEN}"
+          npm config set //packages.echohq.com/:_authToken "${ECHO_NPM_TOKEN}"
           npm config set always-auth true
           npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
