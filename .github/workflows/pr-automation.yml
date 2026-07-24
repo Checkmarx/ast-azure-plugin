@@ -1,16 +1,22 @@
 name: PR Automation
-on:
+on: # zizmor: ignore[dangerous-triggers] - pull_request_target required to access secrets; mitigated by bot check
   pull_request_target:
     types: [ready_for_review, opened, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  contents: none
-  issues: write
-  pull-requests: write
+  contents: none  # no repository content access needed
 
 jobs:
   add-assignee-and-reviewers:
+    name: Add Assignee and Reviewers
     runs-on: cx-public-ubuntu-x64
+    permissions:
+      issues: write  # for GH CLI access to edit PR
+      pull-requests: write  # for GH CLI access to edit PR
     if: ${{ github.event.pull_request.user.type != 'Bot' }}
     steps:
       - name: Request reviewers

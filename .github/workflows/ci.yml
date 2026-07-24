@@ -2,17 +2,23 @@ name: AST Azure wrapper CI
 
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
-  integration-tests:
+  integration-tests: # zizmor: ignore[anonymous-definition]
     runs-on: cx-public-ubuntu-x64
     permissions:
       contents: read
-      packages: read
+      packages: read  # for npm registry auth
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
       - name: Verify single lockfile
         run: |
@@ -34,9 +40,9 @@ jobs:
       - name: Configure registry auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ECHO_NPM_TOKEN: ${{ secrets.ECHO_NPM_TOKEN }}
+          ECHO_LIBRARIES_ACCESS_KEY: ${{ secrets.ECHO_LIBRARIES_ACCESS_KEY }}
         run: |
-          npm config set //packages.echohq.com/:_authToken "${ECHO_NPM_TOKEN}"
+          npm config set //packages.echohq.com/:_authToken "${ECHO_LIBRARIES_ACCESS_KEY}"
           npm config set always-auth true
           npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 

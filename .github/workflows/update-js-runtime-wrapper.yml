@@ -8,19 +8,26 @@ on:
         required: false
         default: ""
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   update-js-wrapper:
+    name: Update JavaScript Wrapper Version
     runs-on: cx-public-ubuntu-x64
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write  # for git commit and push
+      pull-requests: write  # for creating pull request
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
       - name: Verify single lockfile
         run: |
@@ -36,9 +43,11 @@ jobs:
 
       - name: Determine Version
         id: get_version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
         run: |
-          if [[ -n "${{ github.event.inputs.version }}" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            VERSION="${INPUT_VERSION}"
           else
             VERSION=$(curl -s "https://api.github.com/repos/Checkmarx/ast-cli-javascript-wrapper-runtime-cli/releases" | jq -r '[.[] | select(.prerelease == false) | .tag_name | select(test("^v?[0-9]+\\.[0-9]+\\.[0-9]+$")) | ltrimstr("v")] | sort_by(split(".") | map(tonumber)) | .[-1]')
           fi
@@ -67,9 +76,9 @@ jobs:
       - name: Configure registry auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ECHO_NPM_TOKEN: ${{ secrets.ECHO_NPM_TOKEN }}
+          ECHO_LIBRARIES_ACCESS_KEY: ${{ secrets.ECHO_LIBRARIES_ACCESS_KEY }}
         run: |
-          npm config set //packages.echohq.com/:_authToken "${ECHO_NPM_TOKEN}"
+          npm config set //packages.echohq.com/:_authToken "${ECHO_LIBRARIES_ACCESS_KEY}"
           npm config set always-auth true
           npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
@@ -80,6 +89,8 @@ jobs:
           npm ci --ignore-scripts
 
       - name: Commit Changes
+        env:
+          VERSION: ${{ env.VERSION }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
