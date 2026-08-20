@@ -1,11 +1,23 @@
 import * as taskLib from "azure-pipelines-task-lib/task";
 import * as path from "path";
+import * as fs from "fs";
 import { CxWrapper } from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli";
 import { CxCommandOutput } from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxCommandOutput";
 import { CxParamType } from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxParamType";
 import CxScan from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/scan/CxScan";
 import { getConfiguration, getLogFilename } from "./Utils";
 import CxWrapperFactory from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
+
+function getPluginVersion(): string {
+    try {
+        const taskJsonPath = path.join(__dirname, '..', '..', 'task.json');
+        const taskJson = JSON.parse(fs.readFileSync(taskJsonPath, 'utf8'));
+        const v = taskJson.version;
+        return `_${v.Major}.${v.Minor}.${v.Patch}`;
+    } catch {
+        return '';
+    }
+}
 
 export class TaskRunner {
     cxWrapperFactory = new CxWrapperFactory();
@@ -20,7 +32,7 @@ export class TaskRunner {
         const params: Map<CxParamType, string> = new Map<CxParamType, string>();
         params.set(CxParamType.PROJECT_NAME, projectName);
         params.set(CxParamType.BRANCH, branchName);
-        params.set(CxParamType.AGENT, "Azure DevOps");
+        params.set(CxParamType.AGENT, "Azure DevOps" + getPluginVersion());
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
 
         if (!/(?:^|\s)(--file-source|-s)(?=\s|$)/.test(additionalParams)) {
