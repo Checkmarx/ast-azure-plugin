@@ -14,7 +14,8 @@ function getPluginVersion(): string {
         const taskJson = JSON.parse(fs.readFileSync(taskJsonPath, 'utf8'));
         const v = taskJson.version;
         return `_${v.Major}.${v.Minor}.${v.Patch}`;
-    } catch {
+    } catch (e) {
+        console.log("Failed to read plugin version: " + e);
         return '';
     }
 }
