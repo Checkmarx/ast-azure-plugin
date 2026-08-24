@@ -1,4 +1,4 @@
-name: Release Creation
+﻿name: Release Creation
 
 on:
   workflow_dispatch:
@@ -32,14 +32,16 @@ jobs:
   release:
     runs-on: cx-public-ubuntu-x64
     permissions:
-      contents: write
-      packages: read
+      contents: write  # Required to create tags and releases
+      packages: read   # Required to pull @Checkmarx package from GitHub Packages
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
 
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
       - name: Verify single lockfile
         run: |
@@ -54,11 +56,14 @@ jobs:
           fi
 
       - name: Set Extension and Publisher ID
+        env:
+          IS_DEV: ${{ inputs.dev }}
+          PUBLISHER_ID: ${{ inputs.publisherID }}
         run: |
-          if [ "${{ inputs.dev }}" == "true" ]; then
+          if [ "$IS_DEV" == "true" ]; then
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin-dev" >> $GITHUB_ENV
-            if [ -n "${{ inputs.publisherID }}" ]; then
-              echo "PUBLISHER=${{ inputs.publisherID }}" >> $GITHUB_ENV
+            if [ -n "$PUBLISHER_ID" ]; then
+              echo "PUBLISHER=$PUBLISHER_ID" >> $GITHUB_ENV
             fi
           else
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
@@ -68,15 +73,14 @@ jobs:
         id: set_tag_name
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
-          if [[ -z "${{ inputs.tag }}" ]]; then
-            # Fetch the latest GitHub release tag
+          if [[ -z "$INPUT_TAG" ]]; then
             LATEST_TAG=$(curl -sL \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token ${GH_TOKEN}" \
               "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
 
-            # If no release is found, fallback to default
             if [[ "$LATEST_TAG" == "null" || -z "$LATEST_TAG" ]]; then
               echo "No release found, should provide a tag"
               exit 1
@@ -84,7 +88,6 @@ jobs:
 
             echo "Latest GitHub release tag: $LATEST_TAG"
 
-            # Extract numeric parts safely
             if [[ $LATEST_TAG =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
               MAJOR="${BASH_REMATCH[1]}"
               MINOR="${BASH_REMATCH[2]}"
@@ -94,11 +97,10 @@ jobs:
               exit 1
             fi
 
-            # Bump patch version
             NEW_PATCH=$((PATCH + 1))
             NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
           else
-            NEW_VERSION="${{ inputs.tag }}"
+            NEW_VERSION="$INPUT_TAG"
           fi
 
           echo "RELEASE_VERSION=$NEW_VERSION" >> $GITHUB_ENV
@@ -135,12 +137,10 @@ jobs:
       - name: Set major, minor, patch values
         run: |
           CLEAN_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | sed 's/^v//')
-
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
           echo "PATCH_VERSION=$(echo $CLEAN_VERSION | cut -d. -f3)" >> $GITHUB_ENV
-
 
       - name: New version
         run: |
@@ -152,8 +152,6 @@ jobs:
       - name: Extract CLI version
         id: extract_cli_version
         run: |
-          ls -la
-          pwd
           CLI_VERSION=$(cat ./cxAstScan/node_modules/@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "CLI version being packed is $CLI_VERSION"
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
@@ -168,11 +166,14 @@ jobs:
           cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
 
       - name: Set ID public and publisher fields if dev release
+        env:
+          IS_DEV: ${{ inputs.dev }}
+          PUBLISHER_ID: ${{ inputs.publisherID }}
         run: |
-          if [ "${{ inputs.dev }}" == "true" ]; then
+          if [ "$IS_DEV" == "true" ]; then
             cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
             cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}\"" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".publisher = \"${{ inputs.publisherID }}\"" vss-extension.json) > vss-extension.json
+            cat <<< $(jq ".publisher = \"$PUBLISHER_ID\"" vss-extension.json) > vss-extension.json
           fi
 
       - name: Remove test folder
