@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '00 7 * * *' # Every day at 07:00
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # false for scheduled runs to avoid cancelling daily scans
+
 jobs:
   cx-scan:
     name: Checkmarx One Scan

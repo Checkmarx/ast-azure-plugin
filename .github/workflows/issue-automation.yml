@@ -4,6 +4,10 @@ on:
   issues:
     types: [opened, closed]
 
+permissions:
+  contents: read  # Minimum required for workflow execution
+  issues: write   # Required to interact with issues
+
 jobs:
   notify_jira:
     if: github.event.action == 'opened'
