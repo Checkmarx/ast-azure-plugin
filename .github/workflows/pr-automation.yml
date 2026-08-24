@@ -1,22 +1,26 @@
 name: PR Automation
 on:
-  pull_request_target:
+  pull_request:
     types: [ready_for_review, opened, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: none
-  issues: write
-  pull-requests: write
 
 jobs:
   add-assignee-and-reviewers:
+    name: Add Assignee and Reviewers
     runs-on: cx-public-ubuntu-x64
+    permissions:
+      pull-requests: write  # Required to add reviewers to PRs
     if: ${{ github.event.pull_request.user.type != 'Bot' }}
     steps:
       - name: Request reviewers
         env:
           GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN  }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           PRNUM: ${{ github.event.pull_request.number }}
-          PRAUTHOR: ${{ github.event.pull_request.user.login }}
-        run: gh pr edit $PRNUM --add-reviewer cx-plugins-releases
+        run: gh pr edit "$PRNUM" --add-reviewer cx-plugins-releases
