@@ -5,7 +5,7 @@ on:
     types: [opened, closed]
 
 permissions:
-  contents: none
+  contents: none  # Explicitly deny all content access at workflow level
 
 jobs:
   notify_jira:

@@ -12,13 +12,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false  # false for scheduled runs to avoid cancelling daily scans
 
+permissions:
+  contents: read  # Minimum required for workflow execution
+
 jobs:
   cx-scan:
     name: Checkmarx One Scan
     runs-on: cx-public-ubuntu-x64
+    permissions:
+      contents: read  # Required to checkout repository for scanning
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          persist-credentials: false
       - name: Checkmarx One CLI Action
         uses: checkmarx/ast-github-action@03a90e7253dadd7e2fff55f5dfbce647b39040a1 # v.2.0.37
         with:

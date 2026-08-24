@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: none
+  contents: none  # Explicitly deny all content access at workflow level
 
 jobs:
   pr-labeler:
