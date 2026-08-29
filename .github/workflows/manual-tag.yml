@@ -7,25 +7,35 @@ on:
         description: 'Next release tag'
         required: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   tag-creation:
+    name: Create Release Tag
     permissions:
-      contents: write  # for Git to git push
+      contents: write  # for git push tag
     runs-on: cx-public-ubuntu-x64
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          persist-credentials: false
       - name: Tag
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo ${{ github.event.inputs.tag }}
-          echo "NEXT_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
-          tag=${{ github.event.inputs.tag }}
-          message='${{ github.event.inputs.tag }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
+          echo ${INPUT_TAG}
+          echo "NEXT_VERSION=${INPUT_TAG}" >> $GITHUB_ENV
+          tag=${INPUT_TAG}
+          message="${INPUT_TAG}: PR #${PR_NUMBER} ${PR_TITLE}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "${tag}" -m "${message}"

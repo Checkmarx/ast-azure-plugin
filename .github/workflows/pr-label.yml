@@ -3,6 +3,10 @@ on:
   pull_request:
     types: [opened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 

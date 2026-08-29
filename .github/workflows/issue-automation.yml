@@ -4,23 +4,29 @@ on:
   issues:
     types: [opened, closed]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
 jobs:
-  notify_jira:
+  notify_jira: # zizmor: ignore[secrets-inherit] - Checkmarx internal workflow requires Jira secrets
     if: github.event.action == 'opened'
     name: Notify Jira
-    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_notify.yml@main
+    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_notify.yml@d0ad5e1c4cf1edacf4d91c250c2b7a4a5478baab
     with:
       title: ${{ github.event.issue.title }}
       body: ${{ github.event.issue.body }}
       html_url: ${{ github.event.issue.html_url }}
       repo: ${{ github.event.repository.full_name }}
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
 
   close_jira:
     if: github.event.action == 'closed'
     name: Close Jira
-    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_close.yml@main
+    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_close.yml@d0ad5e1c4cf1edacf4d91c250c2b7a4a5478baab
     with:
       issue_number: ${{ github.event.issue.number }}
       repo: ${{ github.event.repository.full_name }}
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
