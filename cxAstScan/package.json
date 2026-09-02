@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli": "file:../../../../AppData/Local/Temp/Checkmarx-ast-cli-javascript-wrapper-runtime-cli-1.0.40.tgz",
+    "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli": "1.0.40",
     "azure-pipelines-task-lib": "4.17.3"
   },
   "overrides": {
