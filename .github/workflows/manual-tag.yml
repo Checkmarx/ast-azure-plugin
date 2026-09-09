@@ -24,12 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          persist-credentials: false
       - name: Tag
         env:
           TAG: ${{ github.event.inputs.tag }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
+          PUSH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
           echo "$TAG"
           echo "NEXT_VERSION=$TAG" >> $GITHUB_ENV
@@ -37,4 +39,4 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git tag -a "$TAG" -m "$message"
-          git push origin "$TAG"
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${REPO}.git" "$TAG"
