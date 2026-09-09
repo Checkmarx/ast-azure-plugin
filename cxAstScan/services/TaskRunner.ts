@@ -8,14 +8,14 @@ import CxScan from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/
 import { getConfiguration, getLogFilename } from "./Utils";
 import CxWrapperFactory from "@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/dist/main/wrapper/CxWrapperFactory";
 
-function getPluginVersion(): string {
+export function getPluginVersion(): string {
     try {
         const taskJsonPath = path.join(__dirname, '..', '..', 'task.json');
         const taskJson = JSON.parse(fs.readFileSync(taskJsonPath, 'utf8'));
         const v = taskJson.version;
         return `_${v.Major}.${v.Minor}.${v.Patch}`;
     } catch (e) {
-        console.log("Failed to read plugin version: " + e);
+        taskLib.warning("Failed to read plugin version: " + e);
         return '';
     }
 }

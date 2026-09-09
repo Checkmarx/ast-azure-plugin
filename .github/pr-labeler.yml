@@ -1,23 +1,15 @@
-feature:
-  - head-branch: ['^feature/', '^feat/']
+feature: ['feature/*', 'feat/*']
 
-bug:
-  - head-branch: ['^bug/', '^fix/', '^hotfix/']
+bug: ['bug/*', 'fix/*', 'hotfix/*']
 
-chore:
-  - head-branch: ['^chore/', '^refactor/', '^cleanup/']
+chore: ['chore/*', 'refactor/*', 'cleanup/*']
 
-documentation:
-  - head-branch: ['^docs/', '^doc
+documentation: ['docs/*', 'doc/*']
 
-ci/cd:
-  - head-branch: ['^ci/', '^cd/', '^pipeline/']
+ci/cd: ['ci/*', 'cd/*', 'pipeline/*']
 
-dependencies:
-  - head-branch: ['^deps/', '^dep
+dependencies: ['deps/*', 'dep/*']
 
-security:
-  - head-branch: ['^security/', '^sec/']
+security: ['security/*', 'sec/*']
 
-AST:
-  - head-branch: '^AST-'
+AST: ['AST-*']
