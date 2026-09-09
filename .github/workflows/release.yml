@@ -28,8 +28,13 @@ env:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
+    name: Create Release
     runs-on: cx-public-ubuntu-x64
     permissions:
       contents: write  # Required to create tags and releases
@@ -74,12 +79,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_TAG: ${{ inputs.tag }}
+          REPO: ${{ github.repository }}
         run: |
           if [[ -z "$INPUT_TAG" ]]; then
             LATEST_TAG=$(curl -sL \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token ${GH_TOKEN}" \
-              "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
+              "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)
 
             if [[ "$LATEST_TAG" == "null" || -z "$LATEST_TAG" ]]; then
               echo "No release found, should provide a tag"
@@ -188,11 +194,12 @@ jobs:
         env:
           IS_DEV: ${{ inputs.dev }}
           PUBLISHER_ID: ${{ inputs.publisherID }}
+          EXTENSION_ID: ${{ env.EXTENSION_ID }}
         run: |
           if [ "$IS_DEV" == "true" ]; then
             cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}\"" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".publisher = \"$PUBLISHER_ID\"" vss-extension.json) > vss-extension.json
+            cat <<< $(jq --arg v "$EXTENSION_ID" '.id = $v' vss-extension.json) > vss-extension.json
+            cat <<< $(jq --arg v "$PUBLISHER_ID" '.publisher = $v' vss-extension.json) > vss-extension.json
           fi
 
       - name: Remove test folder
