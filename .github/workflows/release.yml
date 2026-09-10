@@ -133,7 +133,7 @@ jobs:
 
       - name: Configure GitHub Packages auth
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
 
       - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
