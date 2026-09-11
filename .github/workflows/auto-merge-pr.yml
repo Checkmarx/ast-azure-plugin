@@ -1,12 +1,20 @@
 name: Post-Check Actions
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  contents: write
+  contents: none  # Explicitly deny all content access at workflow level
 
 jobs:
   dependabot-merge:
+    name: Auto-merge feature/update_js_wrapper PRs
     runs-on: cx-public-ubuntu-x64
+    permissions:
+      contents: write       # Required to push the auto-merge commit
+      pull-requests: write  # Required to merge PRs
     if: contains(github.head_ref, 'feature/update_js_wrapper')
     steps:
       - name: Enable auto-merge for Dependabot PRs

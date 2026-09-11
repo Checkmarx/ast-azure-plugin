@@ -1,4 +1,15 @@
 feature: ['feature/*', 'feat/*']
-bug: ['fix/*', 'bug/*']
-dependencies: dependabot/*
-cxone: dependabot/npm_and_yarn/cxAstScan/checkmarx/ast-cli-javascript-wrapper*
+
+bug: ['bug/*', 'fix/*', 'hotfix/*']
+
+chore: ['chore/*', 'refactor/*', 'cleanup/*']
+
+documentation: ['docs/*', 'doc/*']
+
+ci/cd: ['ci/*', 'cd/*', 'pipeline/*']
+
+dependencies: ['deps/*', 'dep/*']
+
+security: ['security/*', 'sec/*']
+
+AST: ['AST-*']

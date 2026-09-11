@@ -33,8 +33,13 @@
   },
   "overrides": {
     "serialize-javascript": "^7.0.5",
-     "codecov": {
-      "js-yaml": "4.1.1"
+    "brace-expansion": "2.1.4",
+    "tar": "7.5.21",
+    "js-yaml": ">=3.15.1",
+    "browserslist": "4.28.7",
+    "adm-zip": "0.5.18",
+    "codecov": {
+      "js-yaml": "4.3.1"
     },
     "@humanwhocodes/config-array": {
       "minimatch": "3.1.4"
