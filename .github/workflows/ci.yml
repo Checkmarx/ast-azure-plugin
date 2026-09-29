@@ -57,6 +57,15 @@ jobs:
 
       - run: npm run build
 
+      # MockTestRunner downloads Node from nodejs.org, which the runner cannot reach.
+      # Seed its cache with the Node installed by setup-node so no download is needed.
+      - name: Seed task-lib Node cache
+        run: |
+          DEST="$HOME/azure-pipelines-task-lib/_download/node20"
+          mkdir -p "$DEST/node-v20.13.1-linux-x64/bin"
+          ln -sf "$(command -v node)" "$DEST/node-v20.13.1-linux-x64/bin/node"
+          touch "$DEST.completed"
+
       - name: Run tests
         env:
           CX_CLIENT_ID: ${{ secrets.CX_CLIENT_ID }}
