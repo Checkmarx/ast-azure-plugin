@@ -6,9 +6,9 @@ import { getPluginVersion } from '../services/TaskRunner';
 describe('getPluginVersion', function () {
     const taskJsonPath = path.join(__dirname, '..', '..', 'task.json');
 
-    it('returns the versioned suffix read from task.json', function () {
+    it('returns the version read from task.json', function () {
         const taskJson = JSON.parse(fs.readFileSync(taskJsonPath, 'utf8'));
-        const expected = `_${taskJson.version.Major}.${taskJson.version.Minor}.${taskJson.version.Patch}`;
+        const expected = `${taskJson.version.Major}.${taskJson.version.Minor}.${taskJson.version.Patch}`;
 
         assert.strictEqual(getPluginVersion(), expected);
     });

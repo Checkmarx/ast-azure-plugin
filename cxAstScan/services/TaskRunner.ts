@@ -13,7 +13,7 @@ export function getPluginVersion(): string {
         const taskJsonPath = path.join(__dirname, '..', '..', 'task.json');
         const taskJson = JSON.parse(fs.readFileSync(taskJsonPath, 'utf8'));
         const v = taskJson.version;
-        return `_${v.Major}.${v.Minor}.${v.Patch}`;
+        return `${v.Major}.${v.Minor}.${v.Patch}`;
     } catch (e) {
         taskLib.warning("Failed to read plugin version: " + e);
         return '';
@@ -33,7 +33,8 @@ export class TaskRunner {
         const params: Map<CxParamType, string> = new Map<CxParamType, string>();
         params.set(CxParamType.PROJECT_NAME, projectName);
         params.set(CxParamType.BRANCH, branchName);
-        params.set(CxParamType.AGENT, "Azure DevOps" + getPluginVersion());
+        const pluginVersion = getPluginVersion();
+        params.set(CxParamType.AGENT, pluginVersion ? `Azure DevOps_${pluginVersion}` : "Azure DevOps");
         params.set(CxParamType.ADDITIONAL_PARAMETERS, additionalParams);
 
         if (!/(?:^|\s)(--file-source|-s)(?=\s|$)/.test(additionalParams)) {
