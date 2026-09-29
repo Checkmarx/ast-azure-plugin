@@ -4,23 +4,36 @@ on:
   issues:
     types: [opened, closed]
 
+permissions:
+  contents: none  # Explicitly deny all content access at workflow level
+
 jobs:
   notify_jira:
     if: github.event.action == 'opened'
     name: Notify Jira
-    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_notify.yml@main
+    permissions:
+      issues: write  # Required to interact with issues via reusable workflow
+    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_notify.yml@e03847305df9c065dbba91c7878355723d1d38f8
     with:
       title: ${{ github.event.issue.title }}
       body: ${{ github.event.issue.body }}
       html_url: ${{ github.event.issue.html_url }}
       repo: ${{ github.event.repository.full_name }}
-    secrets: inherit
+    secrets:
+      AST_JIRA_API_TOKEN: ${{ secrets.AST_JIRA_API_TOKEN }}
+      AST_JIRA_USER_EMAIL: ${{ secrets.AST_JIRA_USER_EMAIL }}
+      JIRA_FIELDS_BUG: ${{ secrets.JIRA_FIELDS_BUG }}
+      JIRA_FIELDS_OTHER: ${{ secrets.JIRA_FIELDS_OTHER }}
 
   close_jira:
     if: github.event.action == 'closed'
     name: Close Jira
-    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_close.yml@main
+    permissions:
+      issues: write  # Required to interact with issues via reusable workflow
+    uses: Checkmarx/plugins-release-workflow/.github/workflows/jira_close.yml@e03847305df9c065dbba91c7878355723d1d38f8
     with:
       issue_number: ${{ github.event.issue.number }}
       repo: ${{ github.event.repository.full_name }}
-    secrets: inherit
+    secrets:
+      AST_JIRA_API_TOKEN: ${{ secrets.AST_JIRA_API_TOKEN }}
+      AST_JIRA_USER_EMAIL: ${{ secrets.AST_JIRA_USER_EMAIL }}

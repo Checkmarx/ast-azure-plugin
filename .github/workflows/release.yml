@@ -28,18 +28,25 @@ env:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
+    name: Create Release
     runs-on: cx-public-ubuntu-x64
     permissions:
-      contents: write
-      packages: read
+      contents: write  # Required to create tags and releases
+      packages: read   # Required to pull @Checkmarx package from GitHub Packages
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
 
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
 
       - name: Verify single lockfile
         run: |
@@ -54,11 +61,14 @@ jobs:
           fi
 
       - name: Set Extension and Publisher ID
+        env:
+          IS_DEV: ${{ inputs.dev }}
+          PUBLISHER_ID: ${{ inputs.publisherID }}
         run: |
-          if [ "${{ inputs.dev }}" == "true" ]; then
+          if [ "$IS_DEV" == "true" ]; then
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin-dev" >> $GITHUB_ENV
-            if [ -n "${{ inputs.publisherID }}" ]; then
-              echo "PUBLISHER=${{ inputs.publisherID }}" >> $GITHUB_ENV
+            if [ -n "$PUBLISHER_ID" ]; then
+              echo "PUBLISHER=$PUBLISHER_ID" >> $GITHUB_ENV
             fi
           else
             echo "EXTENSION_ID=checkmarx-ast-azure-plugin" >> $GITHUB_ENV
@@ -68,15 +78,15 @@ jobs:
         id: set_tag_name
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+          REPO: ${{ github.repository }}
         run: |
-          if [[ -z "${{ inputs.tag }}" ]]; then
-            # Fetch the latest GitHub release tag
+          if [[ -z "$INPUT_TAG" ]]; then
             LATEST_TAG=$(curl -sL \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: token ${GH_TOKEN}" \
-              "https://api.github.com/repos/${{ github.repository }}/releases/latest" | jq -r .tag_name)
+              "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)
 
-            # If no release is found, fallback to default
             if [[ "$LATEST_TAG" == "null" || -z "$LATEST_TAG" ]]; then
               echo "No release found, should provide a tag"
               exit 1
@@ -84,7 +94,6 @@ jobs:
 
             echo "Latest GitHub release tag: $LATEST_TAG"
 
-            # Extract numeric parts safely
             if [[ $LATEST_TAG =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
               MAJOR="${BASH_REMATCH[1]}"
               MINOR="${BASH_REMATCH[2]}"
@@ -94,11 +103,14 @@ jobs:
               exit 1
             fi
 
-            # Bump patch version
             NEW_PATCH=$((PATCH + 1))
             NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
           else
-            NEW_VERSION="${{ inputs.tag }}"
+            if [[ ! $INPUT_TAG =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Invalid tag format: $INPUT_TAG"
+              exit 1
+            fi
+            NEW_VERSION="$INPUT_TAG"
           fi
 
           echo "RELEASE_VERSION=$NEW_VERSION" >> $GITHUB_ENV
@@ -106,21 +118,26 @@ jobs:
           echo "TAG_NAME=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Tag and Push New Version
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git tag -a "${{ env.RELEASE_VERSION }}" -m "Release ${{ env.RELEASE_VERSION }}"
-          git push origin "${{ env.RELEASE_VERSION }}"
+          git tag -a "$RELEASE_VERSION" -m "Release $RELEASE_VERSION"
+          git push origin "$RELEASE_VERSION"
 
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 20
           registry-url: https://npm.echohq.com/
 
-      - name: Configure GitHub Packages auth
+      - name: Configure registry auth
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+          ECHO_LIBRARIES_ACCESS_KEY: ${{ secrets.ECHO_LIBRARIES_ACCESS_KEY }}
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
+          npm config set //npm.echohq.com/:_authToken "${ECHO_LIBRARIES_ACCESS_KEY}"
 
       - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
 
@@ -133,46 +150,59 @@ jobs:
       - run: npm run build
 
       - name: Set major, minor, patch values
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
-          CLEAN_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | sed 's/^v//')
-
+          CLEAN_VERSION=$(echo "$RELEASE_VERSION" | sed 's/^v//')
           echo "CLEAN_VERSION=$CLEAN_VERSION" >> $GITHUB_ENV
           echo "MAJOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f1)" >> $GITHUB_ENV
           echo "MINOR_VERSION=$(echo $CLEAN_VERSION | cut -d. -f2)" >> $GITHUB_ENV
           echo "PATCH_VERSION=$(echo $CLEAN_VERSION | cut -d. -f3)" >> $GITHUB_ENV
 
-
       - name: New version
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          MAJOR_VERSION: ${{ env.MAJOR_VERSION }}
+          MINOR_VERSION: ${{ env.MINOR_VERSION }}
+          PATCH_VERSION: ${{ env.PATCH_VERSION }}
         run: |
-          echo "The new version is ${{ env.RELEASE_VERSION }}"
-          echo "The new major version is ${{ env.MAJOR_VERSION }}"
-          echo "The new minor version is ${{ env.MINOR_VERSION }}"
-          echo "The new patch version is ${{ env.PATCH_VERSION }}"
+          echo "The new version is $RELEASE_VERSION"
+          echo "The new major version is $MAJOR_VERSION"
+          echo "The new minor version is $MINOR_VERSION"
+          echo "The new patch version is $PATCH_VERSION"
 
       - name: Extract CLI version
         id: extract_cli_version
         run: |
-          ls -la
-          pwd
           CLI_VERSION=$(cat ./cxAstScan/node_modules/@Checkmarx/ast-cli-javascript-wrapper-runtime-cli/checkmarx-ast-cli.version | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+')
           echo "CLI version being packed is $CLI_VERSION"
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_OUTPUT
 
       - name: Set versions in files
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          CLEAN_VERSION: ${{ env.CLEAN_VERSION }}
+          MAJOR_VERSION: ${{ env.MAJOR_VERSION }}
+          MINOR_VERSION: ${{ env.MINOR_VERSION }}
+          PATCH_VERSION: ${{ env.PATCH_VERSION }}
         run: |
-          cat <<< $(jq ".version = \"${{ env.CLEAN_VERSION }}\"" ./vss-extension.json) > ./vss-extension.json
-          cat <<< $(jq ".version = \"${{ env.RELEASE_VERSION }}\"" ./package.json) > ./package.json
-          cat <<< $(jq ".version.Major = ${{ env.MAJOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
-          cat <<< $(jq ".version.Minor = ${{ env.MINOR_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
-          cat <<< $(jq ".version.Patch = ${{ env.PATCH_VERSION }}" ./cxAstScan/task.json) > ./cxAstScan/task.json
+          cat <<< $(jq --arg v "$CLEAN_VERSION" '.version = $v' ./vss-extension.json) > ./vss-extension.json
+          cat <<< $(jq --arg v "$RELEASE_VERSION" '.version = $v' ./package.json) > ./package.json
+          cat <<< $(jq --argjson v "$MAJOR_VERSION" '.version.Major = $v' ./cxAstScan/task.json) > ./cxAstScan/task.json
+          cat <<< $(jq --argjson v "$MINOR_VERSION" '.version.Minor = $v' ./cxAstScan/task.json) > ./cxAstScan/task.json
+          cat <<< $(jq --argjson v "$PATCH_VERSION" '.version.Patch = $v' ./cxAstScan/task.json) > ./cxAstScan/task.json
 
       - name: Set ID public and publisher fields if dev release
+        env:
+          IS_DEV: ${{ inputs.dev }}
+          PUBLISHER_ID: ${{ inputs.publisherID }}
+          EXTENSION_ID: ${{ env.EXTENSION_ID }}
         run: |
-          if [ "${{ inputs.dev }}" == "true" ]; then
+          if [ "$IS_DEV" == "true" ]; then
             cat <<< $(jq ".public = false" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".id = \"${{ env.EXTENSION_ID }}\"" vss-extension.json) > vss-extension.json
-            cat <<< $(jq ".publisher = \"${{ inputs.publisherID }}\"" vss-extension.json) > vss-extension.json
+            cat <<< $(jq --arg v "$EXTENSION_ID" '.id = $v' vss-extension.json) > vss-extension.json
+            cat <<< $(jq --arg v "$PUBLISHER_ID" '.publisher = $v' vss-extension.json) > vss-extension.json
           fi
 
       - name: Remove test folder
