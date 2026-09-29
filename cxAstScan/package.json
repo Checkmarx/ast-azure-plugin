@@ -7,9 +7,9 @@
     "semver": "^7.5.2",
     "underscore": "^1.13.8",
     "qs": "^6.16.0",
-    "brace-expansion": "2.1.4",
+    "brace-expansion": "2.1.7",
     "tar": "7.5.21",
-    "js-yaml": ">=3.15.1",
+    "js-yaml": "4.3.2",
     "browserslist": "4.28.7",
     "adm-zip": "0.6.1",
     "azure-pipelines-task-lib": {
