@@ -57,6 +57,24 @@ jobs:
 
       - run: npm run build
 
+      # The runner cannot reach download.checkmarx.com, so fetch the CLI from its GitHub
+      # release instead. The wrapper skips its own download when cx and cli-version exist.
+      - name: Pre-install Checkmarx CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          WRAPPER=cxAstScan/node_modules/@Checkmarx/ast-cli-javascript-wrapper-runtime-cli
+          VERSION=$(grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+' "$WRAPPER/checkmarx-ast-cli.version")
+          CHECKSUM=$(grep '"linux_x64"' "$WRAPPER/checkmarx-ast-cli.checksums" | grep -Eo '[0-9a-f]{64}')
+          ASSET="ast-cli_${VERSION}_linux_x64.tar.gz"
+          DEST="$WRAPPER/dist/main/wrapper/resources"
+          gh release download "$VERSION" -R Checkmarx/ast-cli -p "$ASSET" -D "$RUNNER_TEMP"
+          echo "$CHECKSUM  $RUNNER_TEMP/$ASSET" | sha256sum -c -
+          mkdir -p "$DEST"
+          tar -xzf "$RUNNER_TEMP/$ASSET" -C "$DEST" cx
+          chmod 755 "$DEST/cx"
+          printf '%s' "$VERSION" > "$DEST/cli-version"
+
       # MockTestRunner downloads Node from nodejs.org, which the runner cannot reach.
       # Seed its cache with the Node installed by setup-node so no download is needed.
       - name: Seed task-lib Node cache
