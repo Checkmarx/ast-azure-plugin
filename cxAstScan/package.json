@@ -12,6 +12,7 @@
     "js-yaml": "4.3.2",
     "browserslist": "4.28.7",
     "adm-zip": "0.6.1",
+    "follow-redirects": "1.16.1",
     "azure-pipelines-task-lib": {
       "minimatch": "3.1.4"
     },
