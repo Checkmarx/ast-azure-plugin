@@ -130,7 +130,7 @@ jobs:
           npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
           npm config set //npm.echohq.com/:_authToken "${ECHO_LIBRARIES_ACCESS_KEY}"
 
-      - run: sudo npm install -g tfx-cli --registry https://npm.echohq.com/
+      - run: npm install -g --ignore-scripts tfx-cli@0.24.2 --registry https://npm.echohq.com/
 
       - name: Build step
         run: |
