@@ -36,9 +36,11 @@ jobs:
   release:
     name: Create Release
     runs-on: cx-public-ubuntu-x64
+    environment: release
     permissions:
       contents: write  # Required to create tags and releases
       packages: read   # Required to pull @Checkmarx package from GitHub Packages
+      id-token: write  # Required for AWS OIDC to fetch the Marketplace token from Secrets Manager
     outputs:
       CLI_VERSION: ${{ steps.extract_cli_version.outputs.CLI_VERSION }}
       TAG_NAME: ${{ steps.set_tag_name.outputs.TAG_NAME }}
@@ -212,10 +214,24 @@ jobs:
           generate_release_notes: true
           prerelease: ${{ inputs.dev }}
 
+      - name: Configure AWS Credentials for Secrets Manager
+        if: inputs.publish == true
+        uses: step-security/configure-aws-credentials@1448016543d4432bd608e0de7871c7bf9e9be925 # v6.2.1
+        with:
+          role-to-assume: ${{ secrets.SECRET_MANAGER_ROLE_ARN }}
+          aws-region: ${{ secrets.SECRET_MANAGER_AWS_REGION }}
+          role-session-name: release-secrets-fetch
+
+      - name: Fetch secrets from AWS Secrets Manager
+        if: inputs.publish == true
+        uses: step-security/aws-secretsmanager-get-secrets@102b6b2a2528747bcc321bb99ef326d8be7ef58f # v3.0.1
+        with:
+          secret-ids: |
+            ,${{ secrets.SECRET_MANAGER_SECRET_NAME }}
+          parse-json-secrets: true
+
       - name: Release to marketplace
         if: inputs.publish == true
-        env:
-          AZURE_TOKEN: ${{ secrets.AZURETOKEN }}
         run: tfx extension publish --vsix *.vsix --token "${AZURE_TOKEN}"
 
   # notify:
