@@ -43,10 +43,10 @@
       "js-yaml": "4.3.2"
     },
     "@humanwhocodes/config-array": {
-      "minimatch": "3.1.4"
+      "minimatch": "11.0.1"
     },
     "@eslint/eslintrc": {
-      "minimatch": "3.1.4"
+      "minimatch": "11.0.1"
     }
   },
   "publishConfig": {
