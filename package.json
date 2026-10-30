@@ -47,6 +47,9 @@
     },
     "@eslint/eslintrc": {
       "minimatch": "11.0.1"
+    },
+    "eslint": {
+      "minimatch": "11.0.1"
     }
   },
   "publishConfig": {
