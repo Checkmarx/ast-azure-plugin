@@ -132,7 +132,8 @@ jobs:
           npm config set //npm.pkg.github.com/:_authToken "${GH_TOKEN}"
           npm config set //npm.echohq.com/:_authToken "${ECHO_LIBRARIES_ACCESS_KEY}"
 
-      - run: npm install -g --ignore-scripts tfx-cli@0.24.2 --registry https://npm.echohq.com/
+      # tfx-cli is pinned to an exact version and installed with --ignore-scripts; it is only a packaging/publish tool
+      - run: npm install -g --ignore-scripts tfx-cli@0.24.2 --registry https://npm.echohq.com/ # zizmor: ignore[adhoc-packages]
 
       - name: Build step
         run: |
