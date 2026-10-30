@@ -17,7 +17,7 @@
   "author": "Checkmarx",
   "license": "SEE LICENSE IN checkmarx-license-terms.md",
   "dependencies": {
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "typescript-logging": "2.2.0",
     "vss-web-extension-sdk": "5.141.0",
     "@babel/helpers": "^7.27.0"
@@ -43,16 +43,28 @@
       "js-yaml": "4.3.2"
     },
     "@humanwhocodes/config-array": {
-      "minimatch": "11.0.1"
+      "minimatch": {
+        ".": "11.0.1",
+        "brace-expansion": "5.0.9"
+      }
     },
     "@eslint/eslintrc": {
-      "minimatch": "11.0.1"
+      "minimatch": {
+        ".": "11.0.1",
+        "brace-expansion": "5.0.9"
+      }
     },
     "eslint": {
-      "minimatch": "11.0.1"
+      "minimatch": {
+        ".": "11.0.1",
+        "brace-expansion": "5.0.9"
+      }
     },
     "glob": {
-      "minimatch": "11.0.1"
+      "minimatch": {
+        ".": "11.0.1",
+        "brace-expansion": "5.0.9"
+      }
     }
   },
   "publishConfig": {
