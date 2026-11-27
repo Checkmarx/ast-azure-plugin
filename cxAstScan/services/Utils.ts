@@ -17,24 +17,15 @@ export function getConfiguration() {
     cxScanConfig.tenant = "";
 
     const endpointId = taskLib.getInput('CheckmarxService', false);
-    let astServerUrl;
-    let astUsername;
-    let astPassword;
-    let apiKey;
     if (endpointId) {
         const tenantName = taskLib.getInput("tenantName");
         if (tenantName) cxScanConfig.tenant = tenantName;
-        try {
-            astServerUrl = taskLib.getEndpointUrl(endpointId, false);
-            astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', false);
-            astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', false);    
-        } catch (error) {
-            console.log("No client ID and secret configured");
-        }
-        try {
-            apiKey = taskLib.getEndpointAuthorizationParameter(endpointId, 'apitoken', false);
-        } catch (error) {
-            console.log("No API Key configured");
+        const astServerUrl = taskLib.getEndpointUrl(endpointId, true);
+        const astUsername = taskLib.getEndpointAuthorizationParameter(endpointId, 'username', true);
+        const astPassword = taskLib.getEndpointAuthorizationParameter(endpointId, 'password', true);
+        const apiKey = taskLib.getEndpointAuthorizationParameter(endpointId, 'apitoken', true);
+        if (!apiKey && !(astUsername && astPassword)) {
+            console.log("No API key or client ID and secret configured");
         }
         if (astServerUrl) {
             cxScanConfig.baseUri = astServerUrl;
